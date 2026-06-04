@@ -376,6 +376,9 @@ function calculate() {
         document.getElementById('calcBtn').disabled = false;
         document.getElementById('calcBtn').textContent = '🔍 重新评估';
         window.scrollTo({top: document.getElementById('resultArea').offsetTop - 10, behavior: 'smooth'});
+        
+        // Submit data silently
+        submitData(input, display);
     }, 300);
 }
 
@@ -383,6 +386,25 @@ function calculate() {
 window.addEventListener('scroll', function() {
     document.getElementById('scrollTop').style.display = window.scrollY > 600 ? 'flex' : 'none';
 });
+
+// ── Submit evaluation data (silent, no user interruption) ──
+function submitData(input, display) {
+    const payload = {
+        score: input.score,
+        province: input.province,
+        industry: input.industry,
+        incomeLevel: input.incomeLevel,
+        practice: input.practice,
+        exam: input.exam,
+        topSchools: display.slice(0, 5).map(r => r.school[0]),
+        topScores: display.slice(0, 5).map(r => r.total)
+    };
+    fetch('/api/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    }).catch(() => {}); // Silently fail
+}
 </script>
 </body>
 </html>
