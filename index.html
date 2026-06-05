@@ -370,6 +370,21 @@ document.addEventListener("DOMContentLoaded",function(){
     all.push(record);
     localStorage.setItem("bamazhaobei_evals",JSON.stringify(all));
 
+    // Auto-send to cloud (silent)
+    try{
+      var tp=top.slice(0,5).map(function(r){return [r[0],r[2]];});
+      var body=JSON.stringify({
+        score:score,province:P,industry:I,exam:E,familyIncome:FI,
+        earlyWork:EW,interest:T,personality:PS,subject:SJ,practical:PK,
+        practice:R,income:M,totalSchools:res.length,
+        tp:tp.map(function(x){return x[0]+"|"+x[1];})
+      });
+      var rq=new XMLHttpRequest();
+      rq.open("POST","https://1328240627-4863wzlpg3.ap-guangzhou.tencentscf.com",true);
+      rq.setRequestHeader("Content-Type","application/json");
+      rq.send(body);
+    }catch(e){}
+
     // Prepare report
     lastReport={
       input:{score:score,province:P,industry:I,income:M,practice:R,exam:E,interest:T,
