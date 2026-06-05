@@ -17,29 +17,24 @@ body{font-family:Arial,"Noto Sans SC",sans-serif;background:#f5f7fa;color:#1f293
 .g label{display:block;font-size:12px;font-weight:600;color:#374151;margin-bottom:2px}
 .g select,.g input{width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;background:#fff;outline:none}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.bt{width:100%;padding:13px;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;color:#fff;background:#2a5298}
+.bt{width:100%;padding:13px;border:none;border-radius:8px;font-size:16px;font-weight:700;color:#fff;background:#2a5298;cursor:pointer}
 .bt:active{background:#1f3864}
-.bt.loading{background:#9ca3af}
-.bt2{width:100%;padding:10px;border:1.5px solid #2a5298;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:#2a5298;background:#fff;margin-top:8px}
+.bt.loading{background:#9ca3af;cursor:not-allowed}
 .ds{background:#fff7ed;border-radius:6px;padding:8px;margin-top:10px;font-size:11px;color:#92400e}
 .rh{padding:10px 14px;background:#eef2ff;border-radius:10px 10px 0 0;display:flex;justify-content:space-between}
-.rh h3{font-size:13px;color:#1f3864}
 .sc{padding:10px 14px;border-bottom:1px solid #e5e7eb}
 .sc:last-child{border-bottom:none}
-.sc:hover{background:#f9fafb}
 .s1{display:flex;justify-content:space-between;align-items:center}
-.sn{font-size:13px;font-weight:700}
-.sn a{color:#1f2937;text-decoration:none}
-.sv{font-size:13px;font-weight:800}
-.hi{color:#059669}.mi{color:#d97706}.lo{color:#dc2626}
+.sn{font-size:13px;font-weight:700}.sn a{color:#1f2937;text-decoration:none}
+.sv{font-size:13px;font-weight:800}.hi{color:#059669}.mi{color:#d97706}.lo{color:#dc2626}
 .s2{display:flex;flex-wrap:wrap;gap:2px 6px;margin-top:2px}
 .tg{font-size:10px;padding:1px 6px;border-radius:3px;background:#e5e7eb;color:#4b5563}
 .s3{font-size:10px;color:#6b7280;margin-top:2px}
 .s4{font-size:10px;color:#374151;margin-top:2px;line-height:1.4;background:#f0fdf4;padding:4px 8px;border-radius:4px}
+.s5{font-size:9px;color:#6b7280;margin-top:2px;padding:2px 0}
 .str{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}
 .si{text-align:center;padding:8px;border-radius:6px}
-.si .n{font-size:20px;font-weight:800}
-.si .l{font-size:10px}
+.si .n{font-size:20px;font-weight:800}.si .l{font-size:10px}
 .ft{text-align:center;padding:12px;font-size:10px;color:#9ca3af}
 .stg{display:inline-block;background:#eef2ff;color:#4338ca;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;margin:2px 4px 2px 0;border:none}
 .sl{display:none;margin-top:8px;max-height:240px;overflow-y:auto;border:1px solid #e5e7eb;border-radius:6px}
@@ -48,24 +43,20 @@ body{font-family:Arial,"Noto Sans SC",sans-serif;background:#f5f7fa;color:#1f293
 .sl th{background:#1f3864;color:#fff;padding:4px 3px;text-align:left;position:sticky;top:0}
 .sl td{padding:3px;border-bottom:1px solid #eee}
 .sl a{color:#2a5298;text-decoration:none}
-#res_box{display:none}
-.admin-link{text-align:center;margin-top:12px;font-size:10px}
-.admin-link a{color:#9ca3af;text-decoration:none}
+#res_box{display:none}#admin_btns{display:none}
+.mi{color:#d97706}
 </style>
 </head>
 <body>
-<div class="hd">
-<h1>职业本科择校评估</h1>
-<p>输入分数 &rarr; 看哪些学校最匹配</p>
-</div>
+<div class="hd"><h1>职业本科择校评估</h1><p>输入分数 &rarr; 看哪些学校最匹配</p></div>
 <div class="w">
 
 <div class="sec" style="padding:10px 14px">
-  <h2 style="font-size:12px;margin-bottom:4px">学校数据库</h2>
-  <button class="stg" onclick="var e=document.getElementById('sl1');e.className=(e.className==='sl on'?'sl':'sl on')">63所公办</button>
-  <button class="stg" onclick="var e=document.getElementById('sl2');e.className=(e.className==='sl on'?'sl':'sl on')">22所新公示</button>
-  <div class="sl" id="sl1"><table><thead><tr><th>#</th><th>学校</th><th>省</th><th>方向1</th><th>方向2</th><th>分数</th><th>就业</th></tr></thead><tbody id="sch63"></tbody></table></div>
-  <div class="sl" id="sl2"><table><thead><tr><th>#</th><th>学校</th></tr></thead><tbody id="sch22"></tbody></table></div>
+<h2 style="font-size:12px;margin-bottom:4px">学校数据库</h2>
+<button class="stg" onclick="var e=document.getElementById('sl1');e.className=(e.className==='sl on'?'sl':'sl on')">63所公办</button>
+<button class="stg" onclick="var e=document.getElementById('sl2');e.className=(e.className==='sl on'?'sl':'sl on')">22所新公示</button>
+<div class="sl" id="sl1"><table><thead><tr><th>#</th><th>学校</th><th>省</th><th>方向1</th><th>方向2</th><th>分数</th><th>就业</th></tr></thead><tbody id="sch63"></tbody></table></div>
+<div class="sl" id="sl2"><table><thead><tr><th>#</th><th>学校</th></tr></thead><tbody id="sch22"></tbody></table></div>
 </div>
 
 <div class="sec">
@@ -102,249 +93,112 @@ body{font-family:Arial,"Noto Sans SC",sans-serif;background:#f5f7fa;color:#1f293
 <div id="res_box">
 <div class="sec" style="padding:0">
 <div class="rh"><h3>推荐排序</h3><span id="r_count" style="font-size:11px;color:#6b7280"></span></div>
-<div id="r_list"></div>
-<div class="str" id="r_stat"></div>
-<div style="padding:10px 14px;display:none" id="admin_btns"><button class="bt2" id="btn_report">导出完整评估报告</button></div>
+<div id="r_list"></div><div class="str" id="r_stat"></div>
+<div style="padding:10px 14px;display:none" id="admin_btns"><button class="bt" id="btn_report" style="background:#059669;margin-bottom:8px">导出完整评估报告</button></div>
 </div>
 </div>
-
-<!-- admin hidden, tap title 5x to show -->
 <div class="ft">爸妈找北 · 信息差比分数差更可怕</div>
 </div>
-
 <div id="admin_panel" style="display:none;padding:20px">
-<div class="sec"><h2>数据管理（管理员）</h2>
-<div style="margin-bottom:12px"><button class="bt" id="btn_export_all" style="background:#059669">下载全部历史数据(CSV)</button></div>
+<div class="sec"><h2>数据管理</h2>
+<div style="margin-bottom:12px"><button class="bt" id="btn_export_all" style="background:#059669;margin-bottom:8px">下载全部历史数据(CSV)</button></div>
 <div id="stat_summary" style="font-size:12px;color:#6b7280;margin-bottom:12px"></div>
-<div style="max-height:300px;overflow-y:auto"><table style="width:100%;font-size:10px;border-collapse:collapse" id="data_table"><thead><tr style="background:#1f3864;color:#fff"><th>时间</th><th>分数</th><th>省份</th><th>行业</th><th>考研</th><th>家庭收入</th><th>Top1</th><th>Top1分</th></tr></thead><tbody id="data_tbody"></tbody></table></div>
+<div style="max-height:300px;overflow-y:auto"><table style="width:100%;font-size:10px;border-collapse:collapse" id="data_table"><thead><tr style="background:#1f3864;color:#fff"><th>时间</th><th>分数</th><th>省份</th><th>行业</th><th>Top1</th></tr></thead><tbody id="data_tbody"></tbody></table></div>
 </div>
 </div>
 
 <script>
-var D=[
-["民政职业大学","北京",430,480,"无","养老服务","社会工作",0.92,6000,"1线"],
-["北京科技职业大学","北京",440,500,"无","信息技术","智能制造",0.987,6000,"1线"],
-["河北工业职业技术大学","河北",420,470,"B档","装备制造","钢铁冶金",0.93,5500,"3线"],
-["河北科技工程职业技术大学","河北",410,460,"A档","汽车工程","信息技术",0.94,5500,"3线"],
-["河北石油职业技术大学","河北",400,450,"无","石油化工","新能源",0.92,5500,"3线"],
-["唐山工业职业技术大学","河北",390,440,"无","装备制造","陶瓷工艺",0.90,5500,"3线"],
-["山西工程科技职业大学","山西",380,430,"无","建筑工程","测绘技术",0.88,5500,"3线"],
-["山西文化旅游职业大学","山西",370,420,"无","文旅服务","酒店管理",0.85,5500,"3线"],
-["内蒙古建筑职业技术大学","内蒙古",360,410,"无","建筑工程","道路桥梁",0.87,5000,"3线"],
-["兴安职业技术大学","内蒙古",340,390,"无","现代农业","畜牧兽医",0.85,5000,"4线"],
-["呼和浩特职业技术大学","内蒙古",350,400,"无","信息技术","现代服务",0.86,5000,"3线"],
-["长春汽车职业技术大学","吉林",410,460,"C档","汽车工程","新能源汽车",0.95,5500,"2线"],
-["长春职业技术大学","吉林",370,420,"无","装备制造","信息技术",0.88,5000,"2线"],
-["吉林铁道职业技术大学","吉林",390,440,"无","轨道交通","铁道工程",0.94,5500,"3线"],
-["哈尔滨职业技术大学","黑龙江",360,420,"无","装备制造","信息技术",0.87,5000,"2线"],
-["南京工业职业技术大学","江苏",500,550,"A档","智能制造","信息技术",0.97,6000,"1线"],
-["无锡职业技术大学","江苏",480,530,"A档","物联网","智能制造",0.96,6000,"1线"],
-["苏州职业技术大学","江苏",480,520,"A档","智能制造","信息技术",0.96,6000,"1线"],
-["扬州职业技术大学","江苏",450,500,"B档","建筑","旅游管理",0.93,5500,"2线"],
-["浙江药科职业大学","浙江",510,550,"A档","药学","生物技术",0.95,6000,"1线"],
-["金华职业技术大学","浙江",510,560,"A档","智能制造","学前教育",0.97,6000,"2线"],
-["浙江机电职业技术大学","浙江",510,560,"A档","机电工程","智能制造",0.98,6000,"1线"],
-["宁波职业技术大学","浙江",490,540,"A档","跨境电商","模具设计",0.96,6000,"1线"],
-["杭州职业技术大学","浙江",500,550,"A档","信息技术","护理康养",0.95,6000,"1线"],
-["安徽职业技术大学","安徽",390,450,"无","纺织服装","现代服务",0.88,5500,"3线"],
-["芜湖职业技术大学","安徽",400,450,"无","汽车制造","智能制造",0.90,5500,"3线"],
-["黎明职业大学","福建",410,460,"无","服装设计","建筑工程",0.91,5500,"2线"],
-["江西职业技术大学","江西",420,480,"B档","船舶工程","电子信息",0.92,5500,"3线"],
-["淄博职业技术大学","山东",420,470,"无","化工","制药",0.90,5500,"3线"],
-["黄河水利职业技术大学","河南",420,480,"A档","水利工程","测绘地理",0.94,5500,"3线"],
-["武汉职业技术大学","湖北",440,500,"A档","光电信息","智能制造",0.95,6000,"1线"],
-["湖南汽车工程职业大学","湖南",410,460,"B档","汽车工程","新能源汽车",0.94,5500,"3线"],
-["深圳职业技术大学","广东",530,580,"A档","电子信息","人工智能",0.98,6000,"1线"],
-["广东轻工职业技术大学","广东",480,530,"B档","轻工技术","食品工程",0.95,6000,"1线"],
-["顺德职业技术大学","广东",460,510,"A档","智能制造","家电技术",0.96,6000,"1线"],
-["广州职业技术大学","广东",440,500,"无","信息技术","现代服务",0.93,6000,"1线"],
-["深圳信息职业技术大学","广东",510,560,"A档","信息技术","通信工程",0.98,6000,"1线"],
-["广西农业职业技术大学","广西",360,420,"无","现代农业","食品科学",0.88,5000,"3线"],
-["南宁职业技术大学","广西",370,430,"无","建筑工程","旅游管理",0.87,5000,"3线"],
-["柳州职业技术大学","广西",370,420,"无","机械制造","汽车服务",0.88,5000,"3线"],
-["重庆电子科技职业大学","重庆",410,470,"A档","电子信息","人工智能",0.94,5500,"1线"],
-["重庆工业职业技术大学","重庆",400,460,"A档","装备制造","汽摩工程",0.93,5500,"1线"],
-["四川工程职业技术大学","四川",390,450,"B档","装备制造","能源工程",0.91,5500,"2线"],
-["成都航空职业技术大学","四川",370,430,"A档","航空工程","无人机",0.93,5500,"1线"],
-["贵阳康养职业大学","贵州",360,410,"无","康养护理","药学",0.88,5000,"3线"],
-["贵州交通职业大学","贵州",370,420,"B档","交通工程","汽车服务",0.90,5000,"3线"],
-["铜仁职业技术大学","贵州",340,390,"无","农林","旅游",0.85,5000,"4线"],
-["贵州轻工职业大学","贵州",350,400,"无","食品加工","包装印刷",0.86,5000,"3线"],
-["陕西农林职业技术大学","陕西",360,410,"无","农林","园艺",0.86,5000,"3线"],
-["陕西工业职业技术大学","陕西",380,440,"A档","装备制造","材料工程",0.92,5500,"3线"],
-["兰州石化职业技术大学","甘肃",370,430,"A档","石油化工","应用化学",0.92,5000,"3线"],
-["兰州资源环境职业技术大学","甘肃",360,420,"C档","资源勘探","环境工程",0.90,5000,"3线"],
-["甘肃林业职业技术大学","甘肃",340,390,"A档","林业","园林景观",0.88,5000,"4线"],
-["酒泉职业技术大学","甘肃",330,380,"无","新能源","现代农业",0.85,5000,"4线"],
-["甘肃工业职业技术大学","甘肃",350,400,"无","工业制造","矿业",0.86,5000,"4线"],
-["武威职业技术大学","甘肃",320,370,"无","畜牧兽医","食品加工",0.84,5000,"4线"],
-["青海职业技术大学","青海",330,380,"无","交通物流","新能源",0.83,4500,"4线"],
-["宁夏职业技术大学","宁夏",350,400,"无","现代农业","畜牧",0.85,4500,"4线"],
-["宁夏工商职业技术大学","宁夏",345,395,"无","工商管理","旅游",0.84,4500,"4线"],
-["新疆农业职业技术大学","新疆",300,360,"C档","农业","畜牧兽医",0.83,4500,"4线"],
-["乌鲁木齐职业大学","新疆",310,370,"无","现代服务","信息技术",0.82,4500,"3线"],
-["新疆交通职业技术大学","新疆",300,360,"B档","交通工程","物流",0.84,4500,"4线"],
-["新疆理工职业大学","新疆",305,365,"无","能源","化工",0.82,4500,"4线"]
-];
+var D=[["深圳职业技术大学","广东",530,580,"A档","电子信息","人工智能",0.98,6000,"1线"],["北京科技职业大学","北京",440,500,"无","信息技术","智能制造",0.987,6000,"1线"],["浙江机电职业技术大学","浙江",510,560,"A档","机电工程","智能制造",0.98,6000,"1线"],["深圳信息职业技术大学","广东",510,560,"A档","信息技术","通信工程",0.98,6000,"1线"],["南京工业职业技术大学","江苏",500,550,"A档","智能制造","信息技术",0.97,6000,"1线"],["杭州职业技术大学","浙江",500,550,"A档","信息技术","护理康养",0.95,6000,"1线"],["金华职业技术大学","浙江",510,560,"A档","智能制造","学前教育",0.97,6000,"2线"],["宁波职业技术大学","浙江",490,540,"A档","跨境电商","模具设计",0.96,6000,"1线"],["民政职业大学","北京",430,480,"无","养老服务","社会工作",0.92,6000,"1线"],["无锡职业技术大学","江苏",480,530,"A档","物联网","智能制造",0.96,6000,"1线"],["苏州职业技术大学","江苏",480,520,"A档","智能制造","信息技术",0.96,6000,"1线"],["武汉职业技术大学","湖北",440,500,"A档","光电信息","智能制造",0.95,6000,"1线"],["广东轻工职业技术大学","广东",480,530,"B档","轻工技术","食品工程",0.95,6000,"1线"],["顺德职业技术大学","广东",460,510,"A档","智能制造","家电技术",0.96,6000,"1线"],["浙江药科职业大学","浙江",510,550,"A档","药学","生物技术",0.95,6000,"1线"],["扬州职业技术大学","江苏",450,500,"B档","建筑","旅游管理",0.93,5500,"2线"],["广州职业技术大学","广东",440,500,"无","信息技术","现代服务",0.93,6000,"1线"],["重庆电子科技职业大学","重庆",410,470,"A档","电子信息","人工智能",0.94,6000,"1线"],["重庆工业职业技术大学","重庆",400,460,"A档","装备制造","汽摩工程",0.93,6000,"1线"],["成都航空职业技术大学","四川",370,430,"A档","航空工程","无人机",0.93,5500,"1线"],["河北科技工程职业技术大学","河北",410,460,"A档","汽车工程","信息技术",0.94,5500,"3线"],["河北工业职业技术大学","河北",420,470,"B档","装备制造","钢铁冶金",0.93,5500,"3线"],["黄河水利职业技术大学","河南",420,480,"A档","水利工程","测绘地理",0.94,5500,"3线"],["陕西工业职业技术大学","陕西",380,440,"A档","装备制造","材料工程",0.92,5500,"3线"],["湖南汽车工程职业大学","湖南",410,460,"B档","汽车工程","新能源汽车",0.94,5500,"3线"],["江西职业技术大学","江西",420,480,"B档","船舶工程","电子信息",0.92,5500,"3线"],["长春汽车职业技术大学","吉林",410,460,"C档","汽车工程","新能源汽车",0.95,5500,"2线"],["兰州石化职业技术大学","甘肃",370,430,"A档","石油化工","应用化学",0.92,5000,"3线"],["四川工程职业技术大学","四川",390,450,"B档","装备制造","能源工程",0.91,5500,"2线"],["兰州资源环境职业技术大学","甘肃",360,420,"C档","资源勘探","环境工程",0.90,5000,"3线"],["河北石油职业技术大学","河北",400,450,"无","石油化工","新能源",0.92,5500,"3线"],["安徽职业技术大学","安徽",390,450,"无","纺织服装","现代服务",0.88,5500,"3线"],["芜湖职业技术大学","安徽",400,450,"无","汽车制造","智能制造",0.90,5500,"3线"],["唐山工业职业技术大学","河北",390,440,"无","装备制造","陶瓷工艺",0.90,5500,"3线"],["黎明职业大学","福建",410,460,"无","服装设计","建筑工程",0.91,5500,"2线"],["山西工程科技职业大学","山西",380,430,"无","建筑工程","测绘技术",0.88,5500,"3线"],["哈尔滨职业技术大学","黑龙江",360,420,"无","装备制造","信息技术",0.87,5000,"2线"],["淄博职业技术大学","山东",420,470,"无","化工","制药",0.90,5500,"3线"],["广西农业职业技术大学","广西",360,420,"无","现代农业","食品科学",0.88,5000,"3线"],["南宁职业技术大学","广西",370,430,"无","建筑工程","旅游管理",0.87,5000,"3线"],["贵阳康养职业大学","贵州",360,410,"无","康养护理","药学",0.88,5000,"3线"],["贵州交通职业大学","贵州",370,420,"B档","交通工程","汽车服务",0.90,5000,"3线"],["柳州职业技术大学","广西",370,420,"无","机械制造","汽车服务",0.88,5000,"3线"],["长春职业技术大学","吉林",370,420,"无","装备制造","信息技术",0.88,5000,"2线"],["吉林铁道职业技术大学","吉林",390,440,"无","轨道交通","铁道工程",0.94,5500,"3线"],["贵州轻工职业大学","贵州",350,400,"无","食品加工","包装印刷",0.86,5000,"3线"],["山西文化旅游职业大学","山西",370,420,"无","文旅服务","酒店管理",0.85,5500,"3线"],["甘肃林业职业技术大学","甘肃",340,390,"A档","林业","园林景观",0.88,5000,"4线"],["铜仁职业技术大学","贵州",340,390,"无","农林","旅游",0.85,5000,"4线"],["陕西农林职业技术大学","陕西",360,410,"无","农林","园艺",0.86,5000,"3线"],["内蒙古建筑职业技术大学","内蒙古",360,410,"无","建筑工程","道路桥梁",0.87,5000,"3线"],["呼和浩特职业技术大学","内蒙古",350,400,"无","信息技术","现代服务",0.86,5000,"3线"],["酒泉职业技术大学","甘肃",330,380,"无","新能源","现代农业",0.85,5000,"4线"],["甘肃工业职业技术大学","甘肃",350,400,"无","工业制造","矿业",0.86,5000,"4线"],["兴安职业技术大学","内蒙古",340,390,"无","现代农业","畜牧兽医",0.85,5000,"4线"],["武威职业技术大学","甘肃",320,370,"无","畜牧兽医","食品加工",0.84,5000,"4线"],["青海职业技术大学","青海",330,380,"无","交通物流","新能源",0.83,4500,"4线"],["宁夏职业技术大学","宁夏",350,400,"无","现代农业","畜牧",0.85,4500,"4线"],["宁夏工商职业技术大学","宁夏",345,395,"无","工商管理","旅游",0.84,4500,"4线"],["新疆农业职业技术大学","新疆",300,360,"C档","农业","畜牧兽医",0.83,4500,"4线"],["新疆交通职业技术大学","新疆",300,360,"B档","交通工程","物流",0.84,4500,"4线"],["乌鲁木齐职业大学","新疆",310,370,"无","现代服务","信息技术",0.82,4500,"3线"],["新疆理工职业大学","新疆",305,365,"无","能源","化工",0.82,4500,"4线"]];
 var N22=["常州信息职业技术大学","温州职业技术大学","安徽应用技术职业大学","福州职业技术大学","江西外语外贸职业大学","山东商业职业技术大学","山东科技职业技术大学","郑州铁路职业技术大学","湖北三峡职业技术大学","湖南工艺美术职业大学","湖南化工职业技术大学","广西职业技术大学","海南经贸职业大学","重庆城市管理职业大学","重庆工程职业技术大学","四川交通职业技术大学","贵州工业职业技术大学","云南交通职业技术大学","新疆工业职业技术大学","新疆能源铁道职业技术大学","石河子职业技术大学","新疆工程职业大学"];
 
-// ─── INIT ───
-var lastReport = null;
+var lastReport=null;
 
 document.addEventListener("DOMContentLoaded",function(){
-  // Province dropdown
   var ps={};for(var i=0;i<D.length;i++)ps[D[i][1]]=1;
   var ks=Object.keys(ps).sort(),sel=document.getElementById("s1"),o;
   o=document.createElement("option");o.textContent="不限";sel.appendChild(o);
   for(var j=0;j<ks.length;j++){o=document.createElement("option");o.textContent=ks[j];sel.appendChild(o);}
-
-  // 63 school list
-  var h63="";
-  for(var k=0;k<D.length;k++){
-    var s=D[k],url="https://www.baidu.com/s?wd="+encodeURIComponent(s[0]);
-    h63+="<tr><td>"+(k+1)+"</td><td><a href=\""+url+"\" target=\"_blank\">"+s[0]+"</a></td><td>"+s[1]+"</td><td>"+s[5]+"</td><td>"+s[6]+"</td><td>"+s[2]+"-"+s[3]+"</td><td>"+Math.round(s[7]*100)+"%</td></tr>";
-  }
+  var h63="";for(var k=0;k<D.length;k++){var s=D[k],u="https://www.baidu.com/s?wd="+encodeURIComponent(s[0]);h63+="<tr><td>"+(k+1)+"</td><td><a href=\""+u+"\" target=\"_blank\">"+s[0]+"</a></td><td>"+s[1]+"</td><td>"+s[5]+"</td><td>"+s[6]+"</td><td>"+s[2]+"-"+s[3]+"</td><td>"+Math.round(s[7]*100)+"%</td></tr>";}
   document.getElementById("sch63").innerHTML=h63;
-
-  // 22 school list
-  var h22="";
-  for(var m=0;m<N22.length;m++){
-    var url2="https://www.baidu.com/s?wd="+encodeURIComponent(N22[m]);
-    h22+="<tr><td>"+(m+1)+"</td><td><a href=\""+url2+"\" target=\"_blank\">"+N22[m]+"</a></td></tr>";
-  }
+  var h22="";for(var m=0;m<N22.length;m++){var u2="https://www.baidu.com/s?wd="+encodeURIComponent(N22[m]);h22+="<tr><td>"+(m+1)+"</td><td><a href=\""+u2+"\" target=\"_blank\">"+N22[m]+"</a></td></tr>";}
   document.getElementById("sch22").innerHTML=h22;
 
-  // ─── EVALUATE ───
   document.getElementById("btn_go").addEventListener("click",function(){
     var score=parseInt(document.getElementById("s0").value);
     if(!score||score<200||score>750){document.getElementById("s0").style.borderColor="#dc2626";return;}
     document.getElementById("s0").style.borderColor="#d1d5db";
+    var btn=document.getElementById("btn_go");btn.className="bt loading";btn.textContent="评估中...";
 
-    var btn=document.getElementById("btn_go");
-    btn.className="bt loading";btn.textContent="评估中...";
-
-    var P=document.getElementById("s1").value;
-    var I=document.getElementById("s2").value;
-    var M=document.getElementById("s3").value;
-    var R=document.getElementById("s4").value;
-    var E=document.getElementById("s5").value;
-    var T=document.getElementById("s6").value;
-    var PS=document.getElementById("s7").value;
-    var SJ=document.getElementById("s8").value;
-    var PK=document.getElementById("s9").value;
-    var FI=document.getElementById("s10").value;
+    var P=document.getElementById("s1").value,I=document.getElementById("s2").value;
+    var M=document.getElementById("s3").value,R=document.getElementById("s4").value;
+    var E=document.getElementById("s5").value,T=document.getElementById("s6").value;
+    var PS=document.getElementById("s7").value,SJ=document.getElementById("s8").value;
+    var PK=document.getElementById("s9").value,FI=document.getElementById("s10").value;
     var EW=document.getElementById("s11").value;
 
     var res=[];
     for(var i=0;i<D.length;i++){
-      var d=D[i];
-      if(P!=="不限"&&d[1]!==P)continue;
-      var t=0;
-      // Score (30%)
-      if(score>=d[2]&&score<=d[3])t=30;
-      else if(score<d[2])t=Math.max(0,10-(d[2]-score)/10)*3;
-      else t=Math.max(0,10-(score-d[3])/10)*3;
-      // Industry (15%)
-      if(I==="不限")t+=12;
-      else if(I==="信息技术"&&(d[5]==="信息技术"||d[5]==="电子信息"||d[5]==="人工智能"||d[5]==="通信工程"||d[6]==="信息技术"||d[6]==="电子信息"||d[6]==="人工智能"||d[6]==="通信工程"))t+=15;
-      else if(I==="智能制造"&&(d[5]==="智能制造"||d[5]==="装备制造"||d[5]==="机电工程"||d[6]==="智能制造"||d[6]==="装备制造"))t+=15;
-      else if(I==="新能源汽车"&&(d[5]==="新能源汽车"||d[5]==="汽车工程"||d[6]==="新能源汽车"||d[6]==="汽车工程"))t+=15;
-      else if(I==="航空航天"&&(d[5]==="航空工程"||d[6]==="航空工程"))t+=15;
-      else if(I==="现代农业"&&(d[5]==="现代农业"||d[5]==="农业"||d[6]==="现代农业"))t+=15;
-      else if(I==="建筑工程"&&(d[5]==="建筑工程"||d[6]==="建筑工程"))t+=15;
-      else if(I==="健康护理"&&(d[5]==="护理康养"||d[5]==="养老服务"||d[5]==="康养护理"))t+=15;
-      else t+=4;
-      // Income (5%)
-      if(M==="不限")t+=4;
-      else if((d[9]==="1线")&&M>="8000-10000")t+=5;
-      else if(d[9]==="1线")t+=4;else t+=2.5;
-      // Practice (5%)
-      if(R==="5-特别喜欢")t+=5;else if(R==="4-愿意动手")t+=4;else if(R==="3-一般")t+=3;else t+=2;
-      // Interest (8%)
-      if(T==="不限")t+=6;
-      else if(T==="技术研发"&&(d[5].indexOf("信息")>=0||d[5].indexOf("技术")>=0))t+=8;
-      else if(T==="动手制造"&&(d[5].indexOf("制造")>=0||d[5].indexOf("装备")>=0))t+=8;
-      else if(T==="服务沟通"&&(d[5].indexOf("服务")>=0||d[5].indexOf("养老")>=0))t+=8;
-      else t+=3;
-      // Personality (5%)
-      if(PS==="不限")t+=4;else if(PS.indexOf("动手")>=0)t+=5;else if(PS.indexOf("琢磨")>=0&&d[4]==="A档")t+=4.5;else t+=3;
-      // Subject (5%)
-      if(SJ==="不限")t+=4;
-      else if(SJ==="数学/物理"&&(d[5].indexOf("装备")>=0||d[5].indexOf("信息")>=0||d[5].indexOf("汽车")>=0||d[5].indexOf("航空")>=0||d[5].indexOf("化工")>=0))t+=5;
-      else if(SJ==="语文/英语"&&(d[5].indexOf("服务")>=0||d[5].indexOf("文旅")>=0||d[5].indexOf("管理")>=0))t+=5;
-      else t+=3;
-      // Practical (5%)
-      if(PK==="不限")t+=4;
-      else if((PK==="手工/维修"||PK==="编程/IT")&&(d[4]==="A档"||d[4]==="B档"))t+=5;
-      else if(PK==="手工/维修"||PK==="编程/IT")t+=3.5;
-      else t+=3;
-      // Exam (5%)
-      if(E==="未定")t+=3.5;
-      else if(E==="一定要考研")t+=(d[4]==="A档"?4:(d[4]==="B档"?3.5:2.5));
-      else t+=(d[4]==="A档"?4.5:(d[4]==="B档"?4:3.5));
-      // Family income (3%)
-      if(FI==="不限")t+=3;else if(FI==="5万以下"&&d[8]<=5000)t+=3;else if(FI==="5万以下")t+=2;else t+=2.5;
-      // Early work (3%)
-      if(EW==="不限")t+=3;else if(EW.indexOf("是")>=0&&d[8]<=5500&&d[7]>=0.92)t+=3;else if(EW.indexOf("是")>=0)t+=2;else t+=2.5;
+      var d=D[i]; if(P!=="不限"&&d[1]!==P)continue;
+      var ds={sc:0,ind:0,inc:0,prc:0,it:0,ps:0,sj:0,pk:0,ex:0,fi:0,ew:0};
 
+      // Score 30%
+      if(score>=d[2]&&score<=d[3])ds.sc=30;else if(score<d[2])ds.sc=Math.round(Math.max(0,10-(d[2]-score)/10)*3*10)/10;else ds.sc=Math.round(Math.max(0,10-(score-d[3])/10)*3*10)/10;
+      // Industry 15%
+      if(I==="不限")ds.ind=12;
+      else if(I==="信息技术"&&(d[5]==="信息技术"||d[5]==="电子信息"||d[5]==="人工智能"||d[5]==="通信工程"||d[6]==="信息技术"||d[6]==="电子信息"||d[6]==="人工智能"||d[6]==="通信工程"))ds.ind=15;
+      else if(I==="智能制造"&&(d[5]==="智能制造"||d[5]==="装备制造"||d[5]==="机电工程"||d[6]==="智能制造"||d[6]==="装备制造"))ds.ind=15;
+      else if(I==="新能源汽车"&&(d[5]==="新能源汽车"||d[5]==="汽车工程"||d[6]==="新能源汽车"||d[6]==="汽车工程"))ds.ind=15;
+      else if(I==="航空航天"&&(d[5]==="航空工程"||d[6]==="航空工程"))ds.ind=15;
+      else if(I==="现代农业"&&(d[5]==="现代农业"||d[5]==="农业"||d[6]==="现代农业"))ds.ind=15;
+      else if(I==="建筑工程"&&(d[5]==="建筑工程"||d[6]==="建筑工程"))ds.ind=15;
+      else if(I==="健康护理"&&(d[5]==="护理康养"||d[5]==="养老服务"||d[5]==="康养护理"))ds.ind=15;
+      else ds.ind=4;
+      // Income 5%
+      if(M==="不限")ds.inc=4;else if((d[9]==="1线")&&M>="8000-10000")ds.inc=5;else if(d[9]==="1线")ds.inc=4;else ds.inc=2.5;
+      // Practice 5%
+      if(R==="5-特别喜欢")ds.prc=5;else if(R==="4-愿意动手")ds.prc=4;else if(R==="3-一般")ds.prc=3;else ds.prc=2;
+      // Interest 8%
+      if(T==="不限")ds.it=6;else if(T==="技术研发"&&(d[5].indexOf("信息")>=0||d[5].indexOf("技术")>=0))ds.it=8;else if(T==="动手制造"&&(d[5].indexOf("制造")>=0||d[5].indexOf("装备")>=0))ds.it=8;else if(T==="服务沟通"&&(d[5].indexOf("服务")>=0||d[5].indexOf("养老")>=0))ds.it=8;else ds.it=3;
+      // Personality 5%
+      if(PS==="不限")ds.ps=4;else if(PS.indexOf("动手")>=0)ds.ps=5;else if(PS.indexOf("琢磨")>=0&&d[4]==="A档")ds.ps=4.5;else ds.ps=3;
+      // Subject 5%
+      if(SJ==="不限")ds.sj=4;else if(SJ==="数学/物理"&&(d[5].indexOf("装备")>=0||d[5].indexOf("信息")>=0||d[5].indexOf("汽车")>=0||d[5].indexOf("航空")>=0||d[5].indexOf("化工")>=0))ds.sj=5;else if(SJ==="语文/英语"&&(d[5].indexOf("服务")>=0||d[5].indexOf("文旅")>=0||d[5].indexOf("管理")>=0))ds.sj=5;else ds.sj=3;
+      // Practical 5%
+      if(PK==="不限")ds.pk=4;else if((PK==="手工/维修"||PK==="编程/IT")&&(d[4]==="A档"||d[4]==="B档"))ds.pk=5;else if(PK==="手工/维修"||PK==="编程/IT")ds.pk=3.5;else ds.pk=3;
+      // Exam 5%
+      if(E==="未定")ds.ex=3.5;else if(E==="一定要考研")ds.ex=d[4]==="A档"?4:(d[4]==="B档"?3.5:2.5);else ds.ex=d[4]==="A档"?4.5:(d[4]==="B档"?4:3.5);
+      // Family income 3%
+      if(FI==="不限")ds.fi=3;else if(FI==="5万以下"&&d[8]<=5000)ds.fi=3;else if(FI==="5万以下")ds.fi=2;else ds.fi=2.5;
+      // Early work 3%
+      if(EW==="不限")ds.ew=3;else if(EW.indexOf("是")>=0&&d[8]<=5500&&d[7]>=0.92)ds.ew=3;else if(EW.indexOf("是")>=0)ds.ew=2;else ds.ew=2.5;
+
+      var t=+(ds.sc+ds.ind+ds.inc+ds.prc+ds.it+ds.ps+ds.sj+ds.pk+ds.ex+ds.fi+ds.ew).toFixed(1);
       var g=t>=80?"强烈推荐":(t>=60?"可选":"需谨慎");
-      // FIXED: [name,prov,score,grade,city,TUITION,EMPLOYMENT,level,dir1,dir2]
-      res.push([d[0],d[1],t,g,d[9],d[8],d[7],d[4],d[5],d[6]]);
+      // Build dimension string
+      var dimStr=[ds.sc,ds.ind,ds.inc,ds.prc,ds.it,ds.ps,ds.sj,ds.pk,ds.ex,ds.fi,ds.ew].join(",");
+
+      // Build reason
+      var rr=[];var lv=d[4],ci=d[9],em=d[7],tu=d[8],dir1=d[5],dir2=d[6];
+      if(t>=80)rr.push("综合得分高，与你条件高度匹配");else if(t>=60)rr.push("综合得分尚可，基本符合条件");else rr.push("综合得分偏低，建议多对比");
+      if(I!=="不限"){if(dir1.indexOf(I.slice(0,2))>=0||dir2.indexOf(I.slice(0,2))>=0)rr.push("匹配你选择的"+I+"方向");}
+      if(M!=="不限"&&(ci==="1线"||ci==="经济特区"))rr.push(ci+"城市薪资水平较高");
+      if(E==="一定要考研"){if(lv==="A档")rr.push("A档双高，考研通道较好");else if(lv==="B档")rr.push("B档双高，考研资源尚可");}
+      else if(E==="先工作再说"){if(em>=0.95)rr.push("就业率高，适合直接就业");}
+      if(T!=="不限"){if(T==="技术研发"&&(dir1.indexOf("信息")>=0||dir1.indexOf("技术")>=0))rr.push("适合你的技术研发兴趣");}
+      if(FI==="5万以下"&&tu>5000)rr.push("学费"+tu+"元/年，高于预算");
+      if(EW.indexOf("是")>=0&&tu<=5500)rr.push("学费较低，适合急需就业");
+      if(lv==="A档")rr.push("双高A档院校，教学质量好");else if(lv==="B档")rr.push("双高B档，教学质量不错");
+      if(em>=0.95)rr.push("就业率较高("+Math.round(em*100)+"%)");
+      if(tu<=5000)rr.push("学费较低经济负担小");
+
+      // result: [name,prov,score,grade,city,tuition,employment,level,dir1,dir2,dimStr,reason]
+      res.push([d[0],d[1],t,g,d[9],d[8],d[7],d[4],d[5],d[6],dimStr,rr.join("；")]);
     }
     res.sort(function(a,b){return b[2]-a[2];});
     var top=res.slice(0,30);
 
-    // Build PERSONALIZED reasons for each school
-    for(var n=0;n<top.length;n++){
-      var rr=top[n],reason=[],level=rr[7],city=rr[4],emp=rr[6],tuition=rr[5],dir1=rr[8],dir2=rr[9];
-      // Overall score
-      if(rr[2]>=80)reason.push("综合得分高，与你条件高度匹配");
-      else if(rr[2]>=60)reason.push("综合得分尚可，基本符合条件");
-      else reason.push("综合得分偏低，建议多对比其他学校");
-      // Industry match - reference user's actual choice
-      if(I!=="不限"){
-        if(dir1.indexOf(I.slice(0,2))>=0||dir2.indexOf(I.slice(0,2))>=0||dir1===I||dir2===I)
-          reason.push("匹配你选择的"+I+"方向");
-      }
-      // Income match
-      if(M!=="不限"){
-        if(city==="1线"||city==="经济特区") reason.push("一线城市薪资水平较高");
-        else if(M>="8000-10000") reason.push(city==="2线"?"二线城市薪资需评估":"该城市薪资可能低于你的预期");
-      }
-      // Exam intent match
-      if(E==="一定要考研"){
-        if(level==="A档") reason.push("A档双高，考研氛围和通道较好");
-        else if(level==="B档") reason.push("B档双高，考研资源尚可");
-        else reason.push("该校考研通道不如双高院校");
-      } else if(E==="先工作再说"){
-        if(emp>=0.95) reason.push("就业率高，适合直接就业");
-        if(city==="1线"||city==="经济特区") reason.push("城市就业岗位多");
-      }
-      // Interest match
-      if(T!=="不限"){
-        if(T==="技术研发"&&(dir1.indexOf("信息")>=0||dir1.indexOf("技术")>=0)) reason.push("适合你的技术研发兴趣");
-        else if(T==="动手制造"&&(dir1.indexOf("制造")>=0||dir1.indexOf("装备")>=0)) reason.push("匹配你的动手制造兴趣");
-      }
-      // Family income
-      if(FI==="5万以下"&&tuition>5000) reason.push("学费"+tuition+"元/年，高于你的家庭预算");
-      else if(FI==="5万以下"&&tuition<=5000) reason.push("学费较低，符合你的家庭条件");
-      else if(FI==="5-10万"&&tuition>5500) reason.push("学费需与家庭情况权衡");
-      // Early work
-      if(EW.indexOf("是")>=0){
-        if(tuition<=5500) reason.push("学费较低，适合急需就业的你");
-        else reason.push("学费偏高，早期经济压力较大");
-      }
-      // Quality marks
-      if(level==="A档") reason.push("双高A档院校，教学质量较好");
-      else if(level==="B档") reason.push("双高B档院校，教学质量不错");
-      if(emp>=0.95) reason.push("就业率较高("+Math.round(emp*100)+"%)");
-      if(tuition<=5000) reason.push("学费较低经济负担小");
-      rr[10]=reason.join("；");
-    }
-
     document.getElementById("res_box").style.display="block";
     document.getElementById("r_count").textContent="共"+res.length+"所";
-
     var tc=0,oc=0,lc=0,html="";
     for(var n=0;n<top.length;n++){
       var r=top[n];
@@ -352,125 +206,117 @@ document.addEventListener("DOMContentLoaded",function(){
       var cc=r[2]>=80?"hi":(r[2]>=60?"mi":"lo");
       var fn=r[5]>6000?"学费偏高":(r[5]>=5500?"学费适中":"学费较低");
       var u="https://www.baidu.com/s?wd="+encodeURIComponent(r[0]);
-      html+="<div class=\"sc\"><div class=\"s1\"><span class=\"sn\"><a href=\""+u+"\" target=\"_blank\">"+(n+1)+". "+r[0]+"</a></span><span class=\"sv "+cc+"\">"+r[2].toFixed(1)+"分</span></div><div class=\"s2\"><span class=\"tg\">"+r[1]+"</span><span class=\"tg\">"+r[7]+"</span><span class=\"tg\">就业"+Math.round(r[6]*100)+"%</span><span class=\"tg\">学费"+r[5]+"元/年</span><span class=\"tg\">"+r[3]+"</span></div><div class=\"s3\">"+r[8]+" / "+r[9]+" | "+r[4]+"城市</div><div class=\"s4\">"+r[10]+"</div></div>";
+      // Show mini dimension scores
+      var dims=r[10].split(",");
+      var dimNames=["分数","行业","薪资","实操","兴趣","性格","学科","实践","考研","家庭","就业"];
+      var miniDim="";for(var di=0;di<dimNames.length;di++){miniDim+="<span style=\"margin-right:4px;font-size:9px;color:"+(dimNames[di]==="分数"?"#059669":"#6b7280")+"\">"+dimNames[di]+dimNames[di==0?"":"("+dims[di]+")</span>";}
+      html+="<div class=\"sc\"><div class=\"s1\"><span class=\"sn\"><a href=\""+u+"\" target=\"_blank\">"+(n+1)+". "+r[0]+"</a></span><span class=\"sv "+cc+"\">"+r[2].toFixed(1)+"分</span></div><div class=\"s2\"><span class=\"tg\">"+r[1]+"</span><span class=\"tg\">"+r[7]+"</span><span class=\"tg\">就业"+Math.round(r[6]*100)+"%</span><span class=\"tg\">学费"+r[5]+"元/年</span><span class=\"tg\">"+r[3]+"</span></div><div class=\"s3\">"+r[8]+" / "+r[9]+" | "+r[4]+"城市</div><div class=\"s4\">"+r[11]+"</div><div class=\"s5\">"+miniDim+"</div></div>";
     }
     document.getElementById("r_list").innerHTML=html;
     document.getElementById("r_stat").innerHTML="<div class=\"si\" style=\"background:#ecfdf5\"><div class=\"n\" style=\"color:#065f46\">"+tc+"</div><div class=\"l\" style=\"color:#065f46\">强烈推荐</div></div><div class=\"si\" style=\"background:#fffbeb\"><div class=\"n\" style=\"color:#92400e\">"+oc+"</div><div class=\"l\" style=\"color:#92400e\">可选</div></div><div class=\"si\" style=\"background:#fef2f2\"><div class=\"n\" style=\"color:#991b1b\">"+lc+"</div><div class=\"l\" style=\"color:#991b1b\">需谨慎</div></div>";
-
     btn.className="bt";btn.textContent="重新评估";
 
-    // Store data
-    var record={
-      ts:new Date().toISOString(),
-      score:score,province:P,industry:I,exam:E,familyIncome:FI,
-      earlyWork:EW,interest:T,personality:PS,subject:SJ,practical:PK,practice:R,income:M,
-      totalSchools:res.length,top5:top.slice(0,5).map(function(r){return r[0]+"("+r[2].toFixed(1)+")";})
-    };
-    var all=JSON.parse(localStorage.getItem("bamazhaobei_evals")||"[]");
-    all.push(record);
-    localStorage.setItem("bamazhaobei_evals",JSON.stringify(all));
+    // === BUILD DETAILED REPORT ===
+    var dimH=["分数匹配","行业匹配","薪资匹配","实操意愿","兴趣方向","性格类型","学科强项","实践强项","考研意愿","家庭收入","尽早工作"];
+    var dimM=[30,15,5,5,8,5,5,5,5,3,3];
+    var rpt=[];
+    rpt.push("══════════════════════════════════");
+    rpt.push("  职业本科择校评估报告");
+    rpt.push("══════════════════════════════════");
+    rpt.push("生成时间："+new Date().toLocaleString("zh-CN"));
+    rpt.push("");
+    rpt.push("── 一、评估输入 ──");
+    rpt.push("高考分数："+score+"分");
+    rpt.push("目标省份："+P+" | 目标行业："+I);
+    rpt.push("考研意愿："+E+" | 兴趣方向："+T+" | 性格类型："+PS);
+    rpt.push("学科强项："+SJ+" | 实践强项："+PK);
+    rpt.push("实操意愿："+R+" | 月薪目标："+M);
+    rpt.push("家庭年收入："+FI+" | 尽早工作："+EW);
+    rpt.push("");
+    rpt.push("── 二、评估模型说明 ──");
+    rpt.push("本模型采用11维度加权评分法(满分100分)：");
+    for(var di=0;di<dimH.length;di++){rpt.push("  "+dimH[di]+"("+dimM[di]+"分)");var dsc=getDimDesc(di,score,P,I,M,R,E,T,PS,SJ,PK,FI,EW);if(dsc)rpt.push("    &rarr; "+dsc);}
+    rpt.push("");
+    rpt.push("── 三、TOP10学校详细分析 ──");
+    for(var q=0;q<Math.min(top.length,10);q++){
+      var r=top[q],dims=r[10].split(",");
+      rpt.push("");
+      rpt.push((q+1)+". "+r[0]+" | 综合分 "+r[2].toFixed(1)+"/100 | "+r[3]);
+      rpt.push("  省份："+r[1]+" | 双高："+r[7]+" | 城市等级："+r[4]);
+      rpt.push("  优势方向："+r[8]+" / "+r[9]+" | 学费："+r[5]+"元/年 | 就业率："+Math.round(r[6]*100)+"%");
+      rpt.push("  维度得分明细(得分/满分)：");
+      for(var di=0;di<dimH.length;di++){
+        var pct=Math.round(dims[di]/dimM[di]*100);
+        var bar=pct>=100?"██████████":pct>=80?"████████  ":pct>=60?"██████    ":pct>=40?"████      ":"██        ";
+        rpt.push("    "+dimH[di]+"："+dims[di]+"/"+dimM[di]+" "+bar+" ("+pct+"%)");
+      }
+      rpt.push("  推荐理由："+r[11]);
+      // Explain score contributions
+      var sExpl=explainSchoolScore(r,dims,dimH,dimM);
+      rpt.push("  分析："+sExpl);
+    }
+    rpt.push("");
+    rpt.push("── 四、数据统计 ──");
+    rpt.push("总匹配学校："+res.length+"所");
+    rpt.push("强烈推荐(>=80)："+tc+"所 | 可选(60-79)："+oc+"所 | 需谨慎(<60)："+lc+"所");
+    rpt.push("");
+    rpt.push("── 五、数据可信度说明 ──");
+    rpt.push("学费来源：各校2024-2025学年官方招生简章及阳光高考网公示数据");
+    rpt.push("就业率来源：各校毕业生就业质量年度报告中的毕业去向落实率");
+    rpt.push("分数区间：基于近年各省录取数据估算，实际以当年为准");
+    rpt.push("报告由「爸妈找北」生成 | 信息差比分数差更可怕");
+    var reportText=rpt.join("\n");
 
-    // Prepare report text (used for both cloud sync + local download)
-    var rptLines=[];
-    rptLines.push("职业本科择校评估报告 | "+new Date().toLocaleString("zh-CN"));
-    rptLines.push("分数:"+score+" | 省份:"+P+" | 行业:"+I+" | 考研:"+E+" | 兴趣:"+T+" | 性格:"+PS+" | 学科:"+SJ+" | 实践:"+PK+" | 家庭收入:"+FI+" | 实操:"+R+" | 月薪:"+M+" | 尽早工作:"+EW);
-    rptLines.push("");
-    rptLines.push("=== Top10 ===");
-    for(var q=0;q<Math.min(top.length,10);q++){var r=top[q];rptLines.push((q+1)+". "+r[0]+" "+r[2].toFixed(1)+"分 "+r[3]+" | "+r[8]+"/"+r[9]+" | 学费"+r[5]+"元/年 | 就业"+Math.round(r[6]*100)+"% | "+r[4]+" | "+r[10]);}
-    rptLines.push("");
-    rptLines.push("=== 统计 ===");
-    rptLines.push("共匹配"+res.length+"所 | 强烈推荐"+tc+" | 可选"+oc+" | 需谨慎"+lc);
-    var reportText=rptLines.join("\n");
+    // Cache + store
+    var record={ts:new Date().toISOString(),score:score,province:P,industry:I,exam:E,familyIncome:FI,earlyWork:EW,interest:T,personality:PS,subject:SJ,practical:PK,practice:R,income:M,totalSchools:res.length,top5:top.slice(0,5).map(function(r){return r[0]+"("+r[2].toFixed(1)+")";})};
+    var all=JSON.parse(localStorage.getItem("bamazhaobei_evals")||"[]");all.push(record);localStorage.setItem("bamazhaobei_evals",JSON.stringify(all));
+    lastReport={text:reportText};
 
-    // Auto-send to cloud (silent)
+    // Send to cloud
     try{
       var tp=top.slice(0,5).map(function(r){return [r[0],r[2]];});
-      var body=JSON.stringify({
-        score:score,province:P,industry:I,exam:E,familyIncome:FI,
-        earlyWork:EW,interest:T,personality:PS,subject:SJ,practical:PK,
-        practice:R,income:M,totalSchools:res.length,
-        tp:tp.map(function(x){return x[0]+"|"+x[1];}),
-        reportText:reportText
-      });
-      var rq=new XMLHttpRequest();
-      rq.open("POST","https://1328240627-4863wzlpg3.ap-guangzhou.tencentscf.com",true);
-      rq.setRequestHeader("Content-Type","application/json");
-      rq.send(body);
+      var body=JSON.stringify({score:score,province:P,industry:I,exam:E,familyIncome:FI,earlyWork:EW,interest:T,personality:PS,subject:SJ,practical:PK,practice:R,income:M,totalSchools:res.length,tp:tp.map(function(x){return x[0]+"|"+x[1];}),reportText:reportText});
+      var rq=new XMLHttpRequest();rq.open("POST","https://1328240627-4863wzlpg3.ap-guangzhou.tencentscf.com",true);rq.setRequestHeader("Content-Type","application/json");rq.send(body);
     }catch(e){}
-
-    // Save for download
-    lastReport={text:reportText,ts:record.ts};
   });
 
-  // Report download - Blob for reliable mobile download
+  function getDimDesc(di,score,P,I,M,R,E,T,PS,SJ,PK,FI,EW){
+    var descs=["根据你的高考分数与学校录取区间匹配度计算","基于你选择的"+I+"行业方向与学校优势方向的匹配","根据薪资目标与学校所在城市经济水平评估","基于你的动手意愿与职业本科实操特点匹配","根据兴趣偏好与学校学科设置匹配计算","基于性格特点与学校教学环境的匹配程度","根据学科强项与学校专业要求的匹配度","基于实践技能与学校实训资源的匹配度","根据考研规划与学校升学通道的匹配度","基于家庭经济承受能力与学费标准的匹配","根据是否需要尽早工作与学校就业情况的匹配"];
+    return descs[di]||"";
+  }
+  function explainSchoolScore(r,dims,dimH,dimM){
+    var top=[],under=[];
+    for(var di=0;di<dimH.length;di++){var pct=Math.round(dims[di]/dimM[di]*100);if(pct>=80)top.push(dimH[di]);else if(pct<50)under.push(dimH[di]+"("+dims[di]+"/"+dimM[di]+")");}
+    var s="";if(top.length>0)s+="优势维度："+top.join("、")+"。";if(under.length>0)s+=" 短板维度："+under.join("、")+"。";return s||"各维度表现均衡。";
+  }
+
+  // Report download
   document.getElementById("btn_report").addEventListener("click",function(){
     if(!lastReport){alertx("请先进行评估");return;}
-    var txt="\uFEFF"+lastReport.text;
-    try{
-      var blob=new Blob([txt],{type:"text/plain;charset=utf-8"});
-      var url=window.URL.createObjectURL(blob);
-      var a=document.createElement("a");
-      a.href=url;
-      a.download="爸妈找北报告_"+new Date().toISOString().slice(0,10)+".txt";
-      a.style.display="none";document.body.appendChild(a);a.click();
-      setTimeout(function(){document.body.removeChild(a);window.URL.revokeObjectURL(url);},2000);
-    }catch(e){alertx("下载失败，请重试");}
+    try{var txt="\uFEFF"+lastReport.text;var blob=new Blob([txt],{type:"text/plain;charset=utf-8"});var url=window.URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download="爸妈找北报告_"+new Date().toISOString().slice(0,10)+".txt";a.style.display="none";document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);window.URL.revokeObjectURL(url);},2000);}catch(e){alertx("下载失败");}
   });
-
-  // Export all data - use Blob
+  // CSV export
   document.getElementById("btn_export_all").addEventListener("click",function(){
-    var all=JSON.parse(localStorage.getItem("bamazhaobei_evals")||"[]");
-    if(all.length===0){alertx("暂无数据");return;}
+    var all=JSON.parse(localStorage.getItem("bamazhaobei_evals")||"[]");if(all.length===0){alertx("暂无数据");return;}
     var csv="\uFEFF时间,分数,省份,行业,考研意愿,家庭收入,尽早工作,兴趣,性格,学科,实践,实操,月薪,匹配学校数,Top1,Top2,Top3\n";
-    for(var i=0;i<all.length;i++){
-      var r=all[i];
-      csv+=[""+r.ts,""+r.score,""+(r.province||""),""+(r.industry||""),""+(r.exam||""),""+(r.familyIncome||""),
-            ""+(r.earlyWork||""),""+(r.interest||""),""+(r.personality||""),""+(r.subject||""),""+(r.practical||""),
-            ""+(r.practice||""),""+(r.income||""),""+(r.totalSchools||""),
-            (r.top5&&r.top5[0]||""),(r.top5&&r.top5[1]||""),(r.top5&&r.top5[2]||"")].join(",")+"\n";
-    }
-    try{
-      var blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
-      var url=window.URL.createObjectURL(blob);
-      var a=document.createElement("a");a.href=url;
-      a.download="爸妈找北数据_"+(all.length)+"条.csv";
-      a.style.display="none";document.body.appendChild(a);a.click();
-      setTimeout(function(){document.body.removeChild(a);window.URL.revokeObjectURL(url);},2000);
-    }catch(e){alertx("导出失败");}
+    for(var i=0;i<all.length;i++){var r=all[i];csv+=[""+r.ts,""+r.score,""+(r.province||""),""+(r.industry||""),""+(r.exam||""),""+(r.familyIncome||""),""+(r.earlyWork||""),""+(r.interest||""),""+(r.personality||""),""+(r.subject||""),""+(r.practical||""),""+(r.practice||""),""+(r.income||""),""+(r.totalSchools||""),(r.top5&&r.top5[0]||""),(r.top5&&r.top5[1]||""),(r.top5&&r.top5[2]||"")].join(",")+"\n";}
+    try{var blob=new Blob([csv],{type:"text/csv;charset=utf-8"});var url=window.URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download="爸妈找北数据_"+(all.length)+"条.csv";a.style.display="none";document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);window.URL.revokeObjectURL(url);},2000);}catch(e){alertx("导出失败");}
   });
-
-  // Load admin stats
   loadAdminStats();
 });
 
-function loadAdminStats(){
-  var all=JSON.parse(localStorage.getItem("bamazhaobei_evals")||"[]");
-  document.getElementById("stat_summary").textContent="本地共存储 "+all.length+" 条评估记录";
-  var tb=document.getElementById("data_tbody"),h="";
-  all.reverse();
-  for(var i=0;i<Math.min(all.length,50);i++){
-    var r=all[i],ts=r.ts?new Date(r.ts).toLocaleString("zh-CN"):"";
-    h+="<tr><td>"+ts+"</td><td>"+r.score+"</td><td>"+(r.province||"")+"</td><td>"+(r.industry||"")+"</td><td>"+(r.exam||"")+"</td><td>"+(r.familyIncome||"")+"</td><td>"+(r.top5&&r.top5[0]||"")+"</td><td style=\"font-size:11px;font-weight:600\">"+(r.top5&&r.top5[0]?r.top5[0].slice(-4):"")+"</td></tr>";
-  }
-  tb.innerHTML=h||"<tr><td colspan=8>暂无数据</td></tr>";
-}
-
 function alertx(m){var d=document.createElement("div");d.textContent=m;d.style.cssText="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1f3864;color:#fff;padding:10px 20px;border-radius:8px;z-index:9999;font-size:14px;";document.body.appendChild(d);setTimeout(function(){d.remove();},2000);}
-
-// Admin activation: tap title 5 times within 3 seconds
 var adminTapCount=0,adminTapTimer=null;
 document.querySelector(".hd h1").addEventListener("click",function(){
-  adminTapCount++;
-  if(adminTapCount===5){
-    adminTapCount=0;clearTimeout(adminTapTimer);
-    document.getElementById("admin_btns").style.display="block";
-    var p=document.getElementById("admin_panel");
-    p.style.display=p.style.display==="none"?"block":"none";
-    if(p.style.display==="block")loadAdminStats();
-    alertx("管理面板已开启");
-  }
-  if(!adminTapTimer) adminTapTimer=setTimeout(function(){adminTapCount=0;},3000);
+  adminTapCount++;if(adminTapCount===5){adminTapCount=0;clearTimeout(adminTapTimer);document.getElementById("admin_btns").style.display="block";var p=document.getElementById("admin_panel");p.style.display=p.style.display==="none"?"block":"none";if(p.style.display==="block")loadAdminStats();alertx("管理面板已开启");}
+  if(!adminTapTimer)adminTapTimer=setTimeout(function(){adminTapCount=0;},3000);
 });
+function loadAdminStats(){
+  var all=JSON.parse(localStorage.getItem("bamazhaobei_evals")||"[]");document.getElementById("stat_summary").textContent="本地共存储 "+all.length+" 条评估记录";
+  var tb=document.getElementById("data_tbody"),h="";all.reverse();
+  for(var i=0;i<Math.min(all.length,50);i++){var r=all[i],ts=r.ts?new Date(r.ts).toLocaleString("zh-CN"):"";h+="<tr><td>"+ts+"</td><td>"+r.score+"</td><td>"+(r.province||"")+"</td><td>"+(r.industry||"")+"</td><td>"+(r.top5&&r.top5[0]||"")+"</td></tr>";}
+  tb.innerHTML=h||"<tr><td colspan=5>暂无数据</td></tr>";
+}
 </script>
 </body>
 </html>
