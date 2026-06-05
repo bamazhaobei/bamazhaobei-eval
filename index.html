@@ -8,8 +8,8 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,"Noto Sans SC",sans-serif;background:#f5f7fa;color:#1f2937;padding:0 0 40px}
 .hd{background:linear-gradient(135deg,#1f3864,#2a5298);color:#fff;padding:20px 16px;text-align:center}
-.hd h1{font-size:18px}
-.hd p{font-size:12px;opacity:.85}
+.hd h1{font-size:18px;user-select:none}
+.hd p{font-size:12px;opacity:.85;user-select:none}
 .w{max-width:640px;margin:0 auto;padding:0 12px}
 .sec{background:#fff;border-radius:10px;padding:14px;margin-top:12px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
 .sec h2{font-size:14px;color:#1f3864;margin-bottom:10px}
@@ -104,11 +104,11 @@ body{font-family:Arial,"Noto Sans SC",sans-serif;background:#f5f7fa;color:#1f293
 <div class="rh"><h3>推荐排序</h3><span id="r_count" style="font-size:11px;color:#6b7280"></span></div>
 <div id="r_list"></div>
 <div class="str" id="r_stat"></div>
-<div style="padding:10px 14px"><button class="bt2" id="btn_report">导出完整评估报告</button></div>
+<div style="padding:10px 14px;display:none" id="admin_btns"><button class="bt2" id="btn_report">导出完整评估报告</button></div>
 </div>
 </div>
 
-<div class="admin-link"><a href="#admin" onclick="showAdmin()">数据管理</a></div>
+<!-- admin hidden, tap title 5x to show -->
 <div class="ft">爸妈找北 · 信息差比分数差更可怕</div>
 </div>
 
@@ -294,20 +294,51 @@ document.addEventListener("DOMContentLoaded",function(){
     res.sort(function(a,b){return b[2]-a[2];});
     var top=res.slice(0,30);
 
-    // Build reason for each school
+    // Build PERSONALIZED reasons for each school
     for(var n=0;n<top.length;n++){
-      var rr=top[n],reason=[],level=rr[7],city=rr[4],emp=rr[6],tuition=rr[5];
-      if(rr[2]>=80)reason.push("综合得分高");
-      else if(rr[2]>=60)reason.push("基本匹配");
-      else reason.push("需结合其他因素");
-      if(level==="A档")reason.push("双高A档 考研就业均优");
-      else if(level==="B档")reason.push("双高B档 质量较好");
-      if(emp>=0.95)reason.push("就业率较高("+Math.round(emp*100)+"%)");
-      if(city==="1线"||city==="经济特区")reason.push("一线城市就业机会多");
-      else if(city==="2线")reason.push("二线城市性价比高");
-      if(tuition<=5000)reason.push("学费较低负担小");
-      else if(tuition>=6000)reason.push("学费偏高需考量");
-      if(rr[9].indexOf("信息")>=0||rr[9].indexOf("智能")>=0)reason.push("热门工科方向");
+      var rr=top[n],reason=[],level=rr[7],city=rr[4],emp=rr[6],tuition=rr[5],dir1=rr[8],dir2=rr[9];
+      // Overall score
+      if(rr[2]>=80)reason.push("综合得分高，与你条件高度匹配");
+      else if(rr[2]>=60)reason.push("综合得分尚可，基本符合条件");
+      else reason.push("综合得分偏低，建议多对比其他学校");
+      // Industry match - reference user's actual choice
+      if(I!=="不限"){
+        if(dir1.indexOf(I.slice(0,2))>=0||dir2.indexOf(I.slice(0,2))>=0||dir1===I||dir2===I)
+          reason.push("匹配你选择的"+I+"方向");
+      }
+      // Income match
+      if(M!=="不限"){
+        if(city==="1线"||city==="经济特区") reason.push("一线城市薪资水平较高");
+        else if(M>="8000-10000") reason.push(city==="2线"?"二线城市薪资需评估":"该城市薪资可能低于你的预期");
+      }
+      // Exam intent match
+      if(E==="一定要考研"){
+        if(level==="A档") reason.push("A档双高，考研氛围和通道较好");
+        else if(level==="B档") reason.push("B档双高，考研资源尚可");
+        else reason.push("该校考研通道不如双高院校");
+      } else if(E==="先工作再说"){
+        if(emp>=0.95) reason.push("就业率高，适合直接就业");
+        if(city==="1线"||city==="经济特区") reason.push("城市就业岗位多");
+      }
+      // Interest match
+      if(T!=="不限"){
+        if(T==="技术研发"&&(dir1.indexOf("信息")>=0||dir1.indexOf("技术")>=0)) reason.push("适合你的技术研发兴趣");
+        else if(T==="动手制造"&&(dir1.indexOf("制造")>=0||dir1.indexOf("装备")>=0)) reason.push("匹配你的动手制造兴趣");
+      }
+      // Family income
+      if(FI==="5万以下"&&tuition>5000) reason.push("学费"+tuition+"元/年，高于你的家庭预算");
+      else if(FI==="5万以下"&&tuition<=5000) reason.push("学费较低，符合你的家庭条件");
+      else if(FI==="5-10万"&&tuition>5500) reason.push("学费需与家庭情况权衡");
+      // Early work
+      if(EW.indexOf("是")>=0){
+        if(tuition<=5500) reason.push("学费较低，适合急需就业的你");
+        else reason.push("学费偏高，早期经济压力较大");
+      }
+      // Quality marks
+      if(level==="A档") reason.push("双高A档院校，教学质量较好");
+      else if(level==="B档") reason.push("双高B档院校，教学质量不错");
+      if(emp>=0.95) reason.push("就业率较高("+Math.round(emp*100)+"%)");
+      if(tuition<=5000) reason.push("学费较低经济负担小");
       rr[10]=reason.join("；");
     }
 
@@ -348,65 +379,64 @@ document.addEventListener("DOMContentLoaded",function(){
     };
   });
 
-  // Report download
+  // Report download - use data URI for better mobile compat
   document.getElementById("btn_report").addEventListener("click",function(){
-    if(!lastReport){alert("请先进行评估");return;}
+    if(!lastReport){alertx("请先进行评估");return;}
     var rep=lastReport,rp=rep.results,ip=rep.input;
-    var txt="职业本科择校评估报告\n";
-    txt+="=".repeat(50)+"\n";
-    txt+="生成时间："+new Date(rep.ts).toLocaleString("zh-CN")+"\n\n";
-    txt+="── 输入信息 ──\n";
-    txt+="高考分数："+ip.score+"\n";
-    txt+="目标省份："+ip.province+"\n";
-    txt+="目标行业："+ip.industry+"\n";
-    txt+="考研意愿："+ip.exam+"\n";
-    txt+="兴趣方向："+ip.interest+"\n";
-    txt+="性格类型："+ip.personality+"\n";
-    txt+="学科强项："+ip.subject+"\n";
-    txt+="实践强项："+ip.practical+"\n";
-    txt+="家庭收入："+ip.familyIncome+"\n";
-    txt+="实操意愿："+ip.practice+"\n";
-    txt+="月薪目标："+ip.income+"\n";
-    txt+="尽早工作："+ip.earlyWork+"\n\n";
-    txt+="── 评估结果 (前10名) ──\n";
-    txt+="排名 | 学校 | 综合分 | 推荐等级 | 省份 | 优势方向 | 学费 | 就业率 | 城市\n";
+    var lines=[];
+    lines.push("职业本科择校评估报告");
+    lines.push("生成时间："+new Date(rep.ts).toLocaleString("zh-CN"));
+    lines.push("");
+    lines.push("── 输入信息 ──");
+    lines.push("高考分数："+ip.score+" | 目标省份："+ip.province+" | 目标行业："+ip.industry);
+    lines.push("考研意愿："+ip.exam+" | 兴趣方向："+ip.interest+" | 性格类型："+ip.personality);
+    lines.push("学科强项："+ip.subject+" | 实践强项："+ip.practical);
+    lines.push("家庭收入："+ip.familyIncome+" | 实操意愿："+ip.practice+" | 月薪目标："+ip.income+" | 尽早工作："+ip.earlyWork);
+    lines.push("");
+    lines.push("── 评估结果 (前10名) ──");
+    lines.push("排名 | 学校 | 综合分 | 推荐等级 | 省份 | 优势方向 | 学费 | 就业率 | 城市 | 推荐理由");
     for(var q=0;q<rp.length;q++){
       var r=rp[q];
-      txt+=(q+1)+" | "+r[0]+" | "+r[2].toFixed(1)+" | "+r[3]+" | "+r[1]+" | "+r[8]+"/"+r[9]+" | "+r[5]+"元/年 | "+Math.round(r[6]*100)+"% | "+r[4]+"\n";
+      lines.push((q+1)+" | "+r[0]+" | "+r[2].toFixed(1)+" | "+r[3]+" | "+r[1]+" | "+r[8]+"/"+r[9]+" | "+r[5]+"元/年 | "+Math.round(r[6]*100)+"% | "+r[4]+" | "+r[10]);
     }
-    txt+="\n── 数据统计 ──\n";
-    txt+="总匹配学校："+rep.stats.total+"所\n";
-    txt+="强烈推荐(>=80)："+rep.stats.recommend+"所\n";
-    txt+="可选(>=60)："+rep.stats.ok+"所\n";
-    txt+="需谨慎(<60)："+rep.stats.weak+"所\n\n";
-    txt+="── 评估数据可信度 ──\n";
-    txt+="学费数据来源：各校2024-2025学年官方招生简章及阳光高考网公示数据，为年度学费标准（不含住宿费、书本费等）。部分学校学费基于相近专业估测，建议以该校最新招生章程为准。\n";
-    txt+="就业率数据来源：各校《毕业生就业质量年度报告》中公布的毕业去向落实率，统计口径以签订就业协议、升学、自主创业等为准。不同学校统计方法存在差异，跨校比较需谨慎。\n\n";
-    txt+="报告由「爸妈找北」生成 | 信息差比分数差更可怕\n";
-
-    var blob=new Blob(["\uFEFF"+txt],{type:"text/plain;charset=utf-8"});
-    var a=document.createElement("a");a.href=URL.createObjectURL(blob);
-    a.download="职业本科择校评估报告_"+new Date().toISOString().slice(0,10)+".txt";
+    lines.push("");
+    lines.push("── 数据统计 ──");
+    lines.push("总匹配学校："+rep.stats.total+"所 | 强烈推荐："+rep.stats.recommend+"所 | 可选："+rep.stats.ok+"所 | 需谨慎："+rep.stats.weak+"所");
+    lines.push("");
+    lines.push("── 数据可信度 ──");
+    lines.push("学费来源：各校2024-2025学年官方招生简章及阳光高考网，为年度学费标准（不含住宿费）。");
+    lines.push("就业率来源：各校毕业生就业质量年度报告的毕业去向落实率。跨校比较需谨慎。");
+    lines.push("报告由「爸妈找北」生成 | 信息差比分数差更可怕");
+    var txt="\uFEFF"+lines.join("\n");
+    // Use data URI - works on all mobile browsers
+    var uri="data:text/plain;charset=utf-8,"+encodeURIComponent(txt);
+    var a=document.createElement("a");
+    a.setAttribute("href",uri);
+    a.setAttribute("download","爸妈找北评估报告_"+new Date().toISOString().slice(0,10)+".txt");
+    a.style.display="none";
+    document.body.appendChild(a);
     a.click();
+    setTimeout(function(){document.body.removeChild(a);},1000);
   });
 
-  // Export all data
+  // Export all data - also use data URI
   document.getElementById("btn_export_all").addEventListener("click",function(){
     var all=JSON.parse(localStorage.getItem("bamazhaobei_evals")||"[]");
-    if(all.length===0){alert("暂无数据");return;}
-    var csv="时间,分数,省份,行业,考研意愿,家庭收入,尽早工作,兴趣,性格,学科,实践,实操,月薪,匹配学校数,Top1,Top2,Top3,Top4,Top5\n";
+    if(all.length===0){alertx("暂无数据");return;}
+    var csv="\uFEFF时间,分数,省份,行业,考研意愿,家庭收入,尽早工作,兴趣,性格,学科,实践,实操,月薪,匹配学校数,Top1,Top2,Top3,Top4,Top5\n";
     for(var i=0;i<all.length;i++){
       var r=all[i];
-      csv+=[r.ts||"",r.score||"",r.province||"",r.industry||"",r.exam||"",r.familyIncome||"",
-            r.earlyWork||"",r.interest||"",r.personality||"",r.subject||"",r.practical||"",
-            r.practice||"",r.income||"",r.totalSchools||"",
-            (r.top5&&r.top5[0])||"",(r.top5&&r.top5[1])||"",(r.top5&&r.top5[2])||"",
-            (r.top5&&r.top5[3])||"",(r.top5&&r.top5[4])||""].map(function(x){return '"'+(x+"").replace(/"/g,'""')+'"';}).join(",")+"\n";
+      csv+=[""+r.ts,""+r.score,""+(r.province||""),""+(r.industry||""),""+(r.exam||""),""+(r.familyIncome||""),
+            ""+(r.earlyWork||""),""+(r.interest||""),""+(r.personality||""),""+(r.subject||""),""+(r.practical||""),
+            ""+(r.practice||""),""+(r.income||""),""+(r.totalSchools||""),
+            (r.top5&&r.top5[0]||""),(r.top5&&r.top5[1]||""),(r.top5&&r.top5[2]||""),
+            (r.top5&&r.top5[3]||""),(r.top5&&r.top5[4]||"")].join(",")+"\n";
     }
-    var blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
-    var a=document.createElement("a");a.href=URL.createObjectURL(blob);
-    a.download="爸妈找北_评估数据_"+(all.length)+"条_"+new Date().toISOString().slice(0,10)+".csv";
-    a.click();
+    var uri="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);
+    var a=document.createElement("a");a.setAttribute("href",uri);
+    a.setAttribute("download","爸妈找北数据_"+(all.length)+"条.csv");
+    a.style.display="none";document.body.appendChild(a);a.click();
+    setTimeout(function(){document.body.removeChild(a);},1000);
   });
 
   // Load admin stats
@@ -425,11 +455,22 @@ function loadAdminStats(){
   tb.innerHTML=h||"<tr><td colspan=8>暂无数据</td></tr>";
 }
 
-function showAdmin(){
-  var p=document.getElementById("admin_panel");
-  p.style.display=p.style.display==="none"?"block":"none";
-  if(p.style.display==="block")loadAdminStats();
-}
+function alertx(m){var d=document.createElement("div");d.textContent=m;d.style.cssText="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1f3864;color:#fff;padding:10px 20px;border-radius:8px;z-index:9999;font-size:14px;";document.body.appendChild(d);setTimeout(function(){d.remove();},2000);}
+
+// Admin activation: tap title 5 times within 3 seconds
+var adminTapCount=0,adminTapTimer=null;
+document.querySelector(".hd h1").addEventListener("click",function(){
+  adminTapCount++;
+  if(adminTapCount===5){
+    adminTapCount=0;clearTimeout(adminTapTimer);
+    document.getElementById("admin_btns").style.display="block";
+    var p=document.getElementById("admin_panel");
+    p.style.display=p.style.display==="none"?"block":"none";
+    if(p.style.display==="block")loadAdminStats();
+    alertx("管理面板已开启");
+  }
+  if(!adminTapTimer) adminTapTimer=setTimeout(function(){adminTapCount=0;},3000);
+});
 </script>
 </body>
 </html>
