@@ -370,6 +370,18 @@ document.addEventListener("DOMContentLoaded",function(){
     all.push(record);
     localStorage.setItem("bamazhaobei_evals",JSON.stringify(all));
 
+    // Prepare report text (used for both cloud sync + local download)
+    var rptLines=[];
+    rptLines.push("职业本科择校评估报告 | "+new Date().toLocaleString("zh-CN"));
+    rptLines.push("分数:"+score+" | 省份:"+P+" | 行业:"+I+" | 考研:"+E+" | 兴趣:"+T+" | 性格:"+PS+" | 学科:"+SJ+" | 实践:"+PK+" | 家庭收入:"+FI+" | 实操:"+R+" | 月薪:"+M+" | 尽早工作:"+EW);
+    rptLines.push("");
+    rptLines.push("=== Top10 ===");
+    for(var q=0;q<Math.min(top.length,10);q++){var r=top[q];rptLines.push((q+1)+". "+r[0]+" "+r[2].toFixed(1)+"分 "+r[3]+" | "+r[8]+"/"+r[9]+" | 学费"+r[5]+"元/年 | 就业"+Math.round(r[6]*100)+"% | "+r[4]+" | "+r[10]);}
+    rptLines.push("");
+    rptLines.push("=== 统计 ===");
+    rptLines.push("共匹配"+res.length+"所 | 强烈推荐"+tc+" | 可选"+oc+" | 需谨慎"+lc);
+    var reportText=rptLines.join("\n");
+
     // Auto-send to cloud (silent)
     try{
       var tp=top.slice(0,5).map(function(r){return [r[0],r[2]];});
@@ -377,7 +389,8 @@ document.addEventListener("DOMContentLoaded",function(){
         score:score,province:P,industry:I,exam:E,familyIncome:FI,
         earlyWork:EW,interest:T,personality:PS,subject:SJ,practical:PK,
         practice:R,income:M,totalSchools:res.length,
-        tp:tp.map(function(x){return x[0]+"|"+x[1];})
+        tp:tp.map(function(x){return x[0]+"|"+x[1];}),
+        reportText:reportText
       });
       var rq=new XMLHttpRequest();
       rq.open("POST","https://1328240627-4863wzlpg3.ap-guangzhou.tencentscf.com",true);
@@ -385,73 +398,45 @@ document.addEventListener("DOMContentLoaded",function(){
       rq.send(body);
     }catch(e){}
 
-    // Prepare report
-    lastReport={
-      input:{score:score,province:P,industry:I,income:M,practice:R,exam:E,interest:T,
-              personality:PS,subject:SJ,practical:PK,familyIncome:FI,earlyWork:EW},
-      results:top.slice(0,10),
-      stats:{total:res.length,recommend:tc,ok:oc,weak:lc},ts:record.ts
-    };
+    // Save for download
+    lastReport={text:reportText,ts:record.ts};
   });
 
-  // Report download - use data URI for better mobile compat
+  // Report download - Blob for reliable mobile download
   document.getElementById("btn_report").addEventListener("click",function(){
     if(!lastReport){alertx("请先进行评估");return;}
-    var rep=lastReport,rp=rep.results,ip=rep.input;
-    var lines=[];
-    lines.push("职业本科择校评估报告");
-    lines.push("生成时间："+new Date(rep.ts).toLocaleString("zh-CN"));
-    lines.push("");
-    lines.push("── 输入信息 ──");
-    lines.push("高考分数："+ip.score+" | 目标省份："+ip.province+" | 目标行业："+ip.industry);
-    lines.push("考研意愿："+ip.exam+" | 兴趣方向："+ip.interest+" | 性格类型："+ip.personality);
-    lines.push("学科强项："+ip.subject+" | 实践强项："+ip.practical);
-    lines.push("家庭收入："+ip.familyIncome+" | 实操意愿："+ip.practice+" | 月薪目标："+ip.income+" | 尽早工作："+ip.earlyWork);
-    lines.push("");
-    lines.push("── 评估结果 (前10名) ──");
-    lines.push("排名 | 学校 | 综合分 | 推荐等级 | 省份 | 优势方向 | 学费 | 就业率 | 城市 | 推荐理由");
-    for(var q=0;q<rp.length;q++){
-      var r=rp[q];
-      lines.push((q+1)+" | "+r[0]+" | "+r[2].toFixed(1)+" | "+r[3]+" | "+r[1]+" | "+r[8]+"/"+r[9]+" | "+r[5]+"元/年 | "+Math.round(r[6]*100)+"% | "+r[4]+" | "+r[10]);
-    }
-    lines.push("");
-    lines.push("── 数据统计 ──");
-    lines.push("总匹配学校："+rep.stats.total+"所 | 强烈推荐："+rep.stats.recommend+"所 | 可选："+rep.stats.ok+"所 | 需谨慎："+rep.stats.weak+"所");
-    lines.push("");
-    lines.push("── 数据可信度 ──");
-    lines.push("学费来源：各校2024-2025学年官方招生简章及阳光高考网，为年度学费标准（不含住宿费）。");
-    lines.push("就业率来源：各校毕业生就业质量年度报告的毕业去向落实率。跨校比较需谨慎。");
-    lines.push("报告由「爸妈找北」生成 | 信息差比分数差更可怕");
-    var txt="\uFEFF"+lines.join("\n");
-    // Use data URI - works on all mobile browsers
-    var uri="data:text/plain;charset=utf-8,"+encodeURIComponent(txt);
-    var a=document.createElement("a");
-    a.setAttribute("href",uri);
-    a.setAttribute("download","爸妈找北评估报告_"+new Date().toISOString().slice(0,10)+".txt");
-    a.style.display="none";
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function(){document.body.removeChild(a);},1000);
+    var txt="\uFEFF"+lastReport.text;
+    try{
+      var blob=new Blob([txt],{type:"text/plain;charset=utf-8"});
+      var url=window.URL.createObjectURL(blob);
+      var a=document.createElement("a");
+      a.href=url;
+      a.download="爸妈找北报告_"+new Date().toISOString().slice(0,10)+".txt";
+      a.style.display="none";document.body.appendChild(a);a.click();
+      setTimeout(function(){document.body.removeChild(a);window.URL.revokeObjectURL(url);},2000);
+    }catch(e){alertx("下载失败，请重试");}
   });
 
-  // Export all data - also use data URI
+  // Export all data - use Blob
   document.getElementById("btn_export_all").addEventListener("click",function(){
     var all=JSON.parse(localStorage.getItem("bamazhaobei_evals")||"[]");
     if(all.length===0){alertx("暂无数据");return;}
-    var csv="\uFEFF时间,分数,省份,行业,考研意愿,家庭收入,尽早工作,兴趣,性格,学科,实践,实操,月薪,匹配学校数,Top1,Top2,Top3,Top4,Top5\n";
+    var csv="\uFEFF时间,分数,省份,行业,考研意愿,家庭收入,尽早工作,兴趣,性格,学科,实践,实操,月薪,匹配学校数,Top1,Top2,Top3\n";
     for(var i=0;i<all.length;i++){
       var r=all[i];
       csv+=[""+r.ts,""+r.score,""+(r.province||""),""+(r.industry||""),""+(r.exam||""),""+(r.familyIncome||""),
             ""+(r.earlyWork||""),""+(r.interest||""),""+(r.personality||""),""+(r.subject||""),""+(r.practical||""),
             ""+(r.practice||""),""+(r.income||""),""+(r.totalSchools||""),
-            (r.top5&&r.top5[0]||""),(r.top5&&r.top5[1]||""),(r.top5&&r.top5[2]||""),
-            (r.top5&&r.top5[3]||""),(r.top5&&r.top5[4]||"")].join(",")+"\n";
+            (r.top5&&r.top5[0]||""),(r.top5&&r.top5[1]||""),(r.top5&&r.top5[2]||"")].join(",")+"\n";
     }
-    var uri="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);
-    var a=document.createElement("a");a.setAttribute("href",uri);
-    a.setAttribute("download","爸妈找北数据_"+(all.length)+"条.csv");
-    a.style.display="none";document.body.appendChild(a);a.click();
-    setTimeout(function(){document.body.removeChild(a);},1000);
+    try{
+      var blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+      var url=window.URL.createObjectURL(blob);
+      var a=document.createElement("a");a.href=url;
+      a.download="爸妈找北数据_"+(all.length)+"条.csv";
+      a.style.display="none";document.body.appendChild(a);a.click();
+      setTimeout(function(){document.body.removeChild(a);window.URL.revokeObjectURL(url);},2000);
+    }catch(e){alertx("导出失败");}
   });
 
   // Load admin stats
