@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded",function(){
       // Show mini dimension scores
       var dims=r[10].split(",");
       var dimNames=["分数","行业","薪资","实操","兴趣","性格","学科","实践","考研","家庭","就业"];
-      var miniDim="";for(var di=0;di<dimNames.length;di++){miniDim+="<span style=\"margin-right:4px;font-size:9px;color:"+(dimNames[di]==="分数"?"#059669":"#6b7280")+"\">"+dimNames[di]+dimNames[di==0?"":"("+dims[di]+")</span>";}
+      var miniDim="";for(var di=0;di<dimNames.length;di++){miniDim+="<span style=\"margin-right:4px;font-size:9px;color:"+(dimNames[di]==="分数"?"#059669":"#6b7280")+"\">"+dimNames[di]+(di==0?"":"("+dims[di]+")")+"</span>";}
       html+="<div class=\"sc\"><div class=\"s1\"><span class=\"sn\"><a href=\""+u+"\" target=\"_blank\">"+(n+1)+". "+r[0]+"</a></span><span class=\"sv "+cc+"\">"+r[2].toFixed(1)+"分</span></div><div class=\"s2\"><span class=\"tg\">"+r[1]+"</span><span class=\"tg\">"+r[7]+"</span><span class=\"tg\">就业"+Math.round(r[6]*100)+"%</span><span class=\"tg\">学费"+r[5]+"元/年</span><span class=\"tg\">"+r[3]+"</span></div><div class=\"s3\">"+r[8]+" / "+r[9]+" | "+r[4]+"城市</div><div class=\"s4\">"+r[11]+"</div><div class=\"s5\">"+miniDim+"</div></div>";
     }
     document.getElementById("r_list").innerHTML=html;
