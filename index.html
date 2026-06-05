@@ -2,429 +2,135 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>职业本科择校评估 · 爸妈找北</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>职业本科择校评估</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans SC",sans-serif;background:#f5f7fa;color:#1f2937;padding:0 0 60px;}
-.header{background:linear-gradient(135deg,#1f3864,#2a5298);color:#fff;padding:24px 16px 18px;text-align:center;}
-.header h1{font-size:19px;font-weight:700;margin-bottom:3px;}
-.header p{font-size:12px;opacity:0.85;}
-.container{max-width:640px;margin:0 auto;padding:0 12px;}
-.section{background:#fff;border-radius:12px;padding:16px;margin-top:12px;box-shadow:0 1px 3px rgba(0,0,0,0.07);}
-.section h2{font-size:15px;font-weight:700;margin-bottom:12px;color:#1f3864;}
-.form-group{margin-bottom:12px;}
-.form-group label{display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:4px;}
-.form-group input,.form-group select{width:100%;padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;background:#fff;outline:none;}
-.form-group input:focus,.form-group select:focus{border-color:#2a5298;box-shadow:0 0 0 3px rgba(42,82,152,0.12);}
-.form-group input{background:#fffdf0;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.btn{display:block;width:100%;padding:13px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;}
-.btn-primary{background:linear-gradient(135deg,#1f3864,#2a5298);color:#fff;}
-.btn-primary:disabled{background:#9ca3af;cursor:not-allowed;}
-.btn-primary:not(:disabled):hover{opacity:0.92;}
-.layer-tag{display:inline-block;font-size:10px;padding:1px 8px;border-radius:10px;margin-bottom:8px;font-weight:600;}
-.l1{background:#eef2ff;color:#4338ca;}
-.l2{background:#ecfdf5;color:#065f46;}
-.l3{background:#fff7ed;color:#9a3412;}
-.result-header{padding:14px 16px;background:#eef2ff;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center;}
-.result-header h3{font-size:14px;color:#1f3864;}
-.result-header .count{font-size:12px;color:#6b7280;}
-.school-card{padding:12px 16px;border-bottom:1px solid #e5e7eb;}
-.school-card:last-child{border-bottom:none;border-radius:0 0 12px 12px;}
-.school-row1{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
-.school-name{font-size:14px;font-weight:700;color:#1f2937;}
-.school-score{font-size:14px;font-weight:800;}
-.s-high{color:#059669;} .s-mid{color:#d97706;} .s-low{color:#dc2626;}
-.school-row2{display:flex;flex-wrap:wrap;gap:3px 6px;margin-bottom:3px;}
-.tag{font-size:10px;padding:1px 7px;border-radius:4px;background:#e5e7eb;color:#4b5563;display:inline-block;}
-.tag-a{background:#dbeafe;color:#1e40af;}
-.tag-b{background:#e0e7ff;color:#3730a3;}
-.tag-p{background:#f3e8ff;color:#6b21a8;}
-.tag-e{background:#ecfdf5;color:#065f46;}
-.tag-f{background:#fff7ed;color:#9a3412;}
-.badge{font-size:10px;font-weight:700;padding:1px 8px;border-radius:20px;display:inline-block;}
-.badget{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;}
-.badgeo{background:#fffbeb;color:#92400e;border:1px solid #fde68a;}
-.badgec{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;}
-.school-row3{font-size:11px;color:#6b7280;}
-.empty-state{text-align:center;padding:30px 16px;color:#9ca3af;}
-.empty-state .icon{font-size:36px;margin-bottom:8px;}
-.empty-state p{font-size:13px;line-height:1.5;}
-.footer{text-align:center;padding:12px;font-size:11px;color:#9ca3af;line-height:1.5;}
-.disclaimer{background:#fff7ed;border-radius:8px;padding:10px;margin-top:10px;font-size:11px;color:#92400e;line-height:1.4;}
-.school-toggle{display:inline-block;background:#eef2ff;color:#4338ca;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;margin:0 2px;}
-.school-toggle:hover{background:#dde4ff;}
-.school-list{display:none;margin-top:8px;max-height:300px;overflow-y:auto;border:1px solid #e5e7eb;border-radius:8px;}
-.school-list.open{display:block;}
-.school-list table{width:100%;border-collapse:collapse;font-size:11px;}
-.school-list th{background:#1f3864;color:#fff;padding:6px 4px;text-align:left;font-size:10px;position:sticky;top:0;}
-.school-list td{padding:4px;border-bottom:1px solid #eee;}
-.school-list tr:hover{background:#f9fafb;}
-.school-list a{color:#2a5298;text-decoration:none;}
-.school-list a:hover{text-decoration:underline;}
-.summary-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;}
-.s-item{text-align:center;padding:10px;border-radius:8px;}
-.s-item .num{font-size:22px;font-weight:800;}
-.s-item .lbl{font-size:11px;}
-@media(max-width:480px){.form-row{grid-template-columns:1fr;}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;background:#f5f7fa;color:#1f2937;padding:0 0 40px}
+.hd{background:linear-gradient(135deg,#1f3864,#2a5298);color:#fff;padding:20px 16px;text-align:center}
+.hd h1{font-size:18px;font-weight:700}
+.hd p{font-size:12px;opacity:.85;margin-top:2px}
+.w{max-width:640px;margin:0 auto;padding:0 12px}
+.sec{background:#fff;border-radius:10px;padding:14px;margin-top:12px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.sec h2{font-size:14px;font-weight:700;color:#1f3864;margin-bottom:10px}
+.g{margin-bottom:10px}
+.g label{display:block;font-size:12px;font-weight:600;color:#374151;margin-bottom:2px}
+.g select,.g input{width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;background:#fff;outline:none}
+.g input:focus,.g select:focus{border-color:#2a5298;box-shadow:0 0 0 3px rgba(42,82,152,.1)}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.b{width:100%;padding:12px;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#1f3864,#2a5298)}
+.b:disabled{background:#9ca3af;cursor:not-allowed}
+.ds{background:#fff7ed;border-radius:6px;padding:8px;margin-top:10px;font-size:11px;color:#92400e;line-height:1.4}
+
+.rh{padding:10px 14px;background:#eef2ff;border-radius:10px 10px 0 0;display:flex;justify-content:space-between;align-items:center}
+.rh h3{font-size:13px;color:#1f3864}
+.sc{padding:10px 14px;border-bottom:1px solid #e5e7eb}
+.sc:last-child{border-bottom:none;border-radius:0 0 10px 10px}
+.s1{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.sn{font-size:13px;font-weight:700}
+.sv{font-size:13px;font-weight:800}
+.sg{color:#059669}
+.sm{color:#d97706}
+.sb{color:#dc2626}
+.s2{display:flex;flex-wrap:wrap;gap:2px 6px;margin-bottom:2px}
+.tg{font-size:10px;padding:1px 6px;border-radius:3px;background:#e5e7eb;color:#4b5563;display:inline-block}
+.s3{font-size:10px;color:#6b7280}
+.smt{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px}
+.si{text-align:center;padding:8px;border-radius:6px}
+.si .n{font-size:20px;font-weight:800}
+.si .l{font-size:10px}
+.ft{text-align:center;padding:12px;font-size:10px;color:#9ca3af;line-height:1.5}
+.em{text-align:center;padding:24px;color:#9ca3af;font-size:13px}
 </style>
 </head>
 <body>
-<div class="header">
-  <h1>🎓 职业本科择校评估</h1>
-  <p>三层评估模型 · 输入孩子信息 → 看哪些学校最匹配</p>
+<div class="hd">
+<h1>职业本科择校评估</h1>
+<p>输入孩子信息 &rarr; 看哪些学校最匹配</p>
 </div>
-<div class="container">
+<div class="w">
 
-<div class="section" style="padding:12px 16px;">
-  <h2 style="font-size:13px;margin-bottom:6px;">📚 学校数据库</h2>
-  <p style="font-size:11px;color:#6b7280;margin-bottom:6px;">
-    <span class="school-toggle" onclick="toggleList('publicList')">🗂️ 公办 63 所</span>
-    <span class="school-toggle" onclick="toggleList('newList')">🆕 新公示 22 所</span>
-    <span style="color:#9ca3af;">点击展开名单（学校名称可点击跳转百度查官网）</span>
-  </p>
-  <div id="publicList" class="school-list">
-    <table><thead><tr><th>#</th><th>学校名称</th><th>省份</th><th>优势方向1</th><th>优势方向2</th><th>分数参考</th><th>双高</th><th>就业率</th></tr></thead>
-    <tbody><tr><td>1</td><td><a href="https://www.baidu.com/s?wd=民政职业大学" target="_blank" rel="noopener">民政职业大学</a></td><td>北京</td><td>养老服务</td><td>社会工作</td><td>430-480</td><td>养老服务</td><td>600000.0%</td></tr>
-<tr><td>2</td><td><a href="https://www.baidu.com/s?wd=北京科技职业大学" target="_blank" rel="noopener">北京科技职业大学</a></td><td>北京</td><td>信息技术</td><td>智能制造</td><td>440-500</td><td>信息技术</td><td>600000.0%</td></tr>
-<tr><td>3</td><td><a href="https://www.baidu.com/s?wd=河北工业职业技术大学" target="_blank" rel="noopener">河北工业职业技术大学</a></td><td>河北</td><td>装备制造</td><td>钢铁冶金</td><td>420-470</td><td>装备制造</td><td>550000.0%</td></tr>
-<tr><td>4</td><td><a href="https://www.baidu.com/s?wd=河北科技工程职业技术大学" target="_blank" rel="noopener">河北科技工程职业技术大学</a></td><td>河北</td><td>汽车工程</td><td>信息技术</td><td>410-460</td><td>汽车工程</td><td>550000.0%</td></tr>
-<tr><td>5</td><td><a href="https://www.baidu.com/s?wd=河北石油职业技术大学" target="_blank" rel="noopener">河北石油职业技术大学</a></td><td>河北</td><td>石油化工</td><td>新能源</td><td>400-450</td><td>石油化工</td><td>550000.0%</td></tr>
-<tr><td>6</td><td><a href="https://www.baidu.com/s?wd=唐山工业职业技术大学" target="_blank" rel="noopener">唐山工业职业技术大学</a></td><td>河北</td><td>装备制造</td><td>陶瓷工艺</td><td>390-440</td><td>装备制造</td><td>550000.0%</td></tr>
-<tr><td>7</td><td><a href="https://www.baidu.com/s?wd=山西工程科技职业大学" target="_blank" rel="noopener">山西工程科技职业大学</a></td><td>山西</td><td>建筑工程</td><td>测绘技术</td><td>380-430</td><td>建筑工程</td><td>550000.0%</td></tr>
-<tr><td>8</td><td><a href="https://www.baidu.com/s?wd=山西文化旅游职业大学" target="_blank" rel="noopener">山西文化旅游职业大学</a></td><td>山西</td><td>文旅服务</td><td>酒店管理</td><td>370-420</td><td>文旅服务</td><td>550000.0%</td></tr>
-<tr><td>9</td><td><a href="https://www.baidu.com/s?wd=内蒙古建筑职业技术大学" target="_blank" rel="noopener">内蒙古建筑职业技术大学</a></td><td>内蒙古</td><td>建筑工程</td><td>道路桥梁</td><td>360-410</td><td>建筑工程</td><td>500000.0%</td></tr>
-<tr><td>10</td><td><a href="https://www.baidu.com/s?wd=兴安职业技术大学" target="_blank" rel="noopener">兴安职业技术大学</a></td><td>内蒙古</td><td>现代农业</td><td>畜牧兽医</td><td>340-390</td><td>现代农业</td><td>500000.0%</td></tr>
-<tr><td>11</td><td><a href="https://www.baidu.com/s?wd=呼和浩特职业技术大学" target="_blank" rel="noopener">呼和浩特职业技术大学</a></td><td>内蒙古</td><td>信息技术</td><td>现代服务</td><td>350-400</td><td>信息技术</td><td>500000.0%</td></tr>
-<tr><td>12</td><td><a href="https://www.baidu.com/s?wd=长春汽车职业技术大学" target="_blank" rel="noopener">长春汽车职业技术大学</a></td><td>吉林</td><td>汽车工程</td><td>新能源汽车</td><td>410-460</td><td>汽车工程</td><td>550000.0%</td></tr>
-<tr><td>13</td><td><a href="https://www.baidu.com/s?wd=长春职业技术大学" target="_blank" rel="noopener">长春职业技术大学</a></td><td>吉林</td><td>装备制造</td><td>信息技术</td><td>370-420</td><td>装备制造</td><td>500000.0%</td></tr>
-<tr><td>14</td><td><a href="https://www.baidu.com/s?wd=吉林铁道职业技术大学" target="_blank" rel="noopener">吉林铁道职业技术大学</a></td><td>吉林</td><td>轨道交通</td><td>铁道工程</td><td>390-440</td><td>轨道交通</td><td>550000.0%</td></tr>
-<tr><td>15</td><td><a href="https://www.baidu.com/s?wd=哈尔滨职业技术大学" target="_blank" rel="noopener">哈尔滨职业技术大学</a></td><td>黑龙江</td><td>装备制造</td><td>信息技术</td><td>360-420</td><td>装备制造</td><td>500000.0%</td></tr>
-<tr><td>16</td><td><a href="https://www.baidu.com/s?wd=南京工业职业技术大学" target="_blank" rel="noopener">南京工业职业技术大学</a></td><td>江苏</td><td>智能制造</td><td>信息技术</td><td>500-550</td><td>智能制造</td><td>600000.0%</td></tr>
-<tr><td>17</td><td><a href="https://www.baidu.com/s?wd=无锡职业技术大学" target="_blank" rel="noopener">无锡职业技术大学</a></td><td>江苏</td><td>物联网</td><td>智能制造</td><td>480-530</td><td>物联网</td><td>600000.0%</td></tr>
-<tr><td>18</td><td><a href="https://www.baidu.com/s?wd=苏州职业技术大学" target="_blank" rel="noopener">苏州职业技术大学</a></td><td>江苏</td><td>智能制造</td><td>信息技术</td><td>480-520</td><td>智能制造</td><td>600000.0%</td></tr>
-<tr><td>19</td><td><a href="https://www.baidu.com/s?wd=扬州职业技术大学" target="_blank" rel="noopener">扬州职业技术大学</a></td><td>江苏</td><td>建筑</td><td>旅游管理</td><td>450-500</td><td>建筑</td><td>550000.0%</td></tr>
-<tr><td>20</td><td><a href="https://www.baidu.com/s?wd=浙江药科职业大学" target="_blank" rel="noopener">浙江药科职业大学</a></td><td>浙江</td><td>药学</td><td>生物技术</td><td>510-550</td><td>药学</td><td>600000.0%</td></tr>
-<tr><td>21</td><td><a href="https://www.baidu.com/s?wd=金华职业技术大学" target="_blank" rel="noopener">金华职业技术大学</a></td><td>浙江</td><td>智能制造</td><td>学前教育</td><td>510-560</td><td>智能制造</td><td>600000.0%</td></tr>
-<tr><td>22</td><td><a href="https://www.baidu.com/s?wd=浙江机电职业技术大学" target="_blank" rel="noopener">浙江机电职业技术大学</a></td><td>浙江</td><td>机电工程</td><td>智能制造</td><td>510-560</td><td>机电工程</td><td>600000.0%</td></tr>
-<tr><td>23</td><td><a href="https://www.baidu.com/s?wd=宁波职业技术大学" target="_blank" rel="noopener">宁波职业技术大学</a></td><td>浙江</td><td>跨境电商</td><td>模具设计</td><td>490-540</td><td>跨境电商</td><td>600000.0%</td></tr>
-<tr><td>24</td><td><a href="https://www.baidu.com/s?wd=杭州职业技术大学" target="_blank" rel="noopener">杭州职业技术大学</a></td><td>浙江</td><td>信息技术</td><td>护理康养</td><td>500-550</td><td>信息技术</td><td>600000.0%</td></tr>
-<tr><td>25</td><td><a href="https://www.baidu.com/s?wd=安徽职业技术大学" target="_blank" rel="noopener">安徽职业技术大学</a></td><td>安徽</td><td>纺织服装</td><td>现代服务</td><td>390-450</td><td>纺织服装</td><td>550000.0%</td></tr>
-<tr><td>26</td><td><a href="https://www.baidu.com/s?wd=芜湖职业技术大学" target="_blank" rel="noopener">芜湖职业技术大学</a></td><td>安徽</td><td>汽车制造</td><td>智能制造</td><td>400-450</td><td>汽车制造</td><td>550000.0%</td></tr>
-<tr><td>27</td><td><a href="https://www.baidu.com/s?wd=黎明职业大学" target="_blank" rel="noopener">黎明职业大学</a></td><td>福建</td><td>服装设计</td><td>建筑工程</td><td>410-460</td><td>服装设计</td><td>550000.0%</td></tr>
-<tr><td>28</td><td><a href="https://www.baidu.com/s?wd=江西职业技术大学" target="_blank" rel="noopener">江西职业技术大学</a></td><td>江西</td><td>船舶工程</td><td>电子信息</td><td>420-480</td><td>船舶工程</td><td>550000.0%</td></tr>
-<tr><td>29</td><td><a href="https://www.baidu.com/s?wd=淄博职业技术大学" target="_blank" rel="noopener">淄博职业技术大学</a></td><td>山东</td><td>化工</td><td>制药</td><td>420-470</td><td>化工</td><td>550000.0%</td></tr>
-<tr><td>30</td><td><a href="https://www.baidu.com/s?wd=黄河水利职业技术大学" target="_blank" rel="noopener">黄河水利职业技术大学</a></td><td>河南</td><td>水利工程</td><td>测绘地理</td><td>420-480</td><td>水利工程</td><td>550000.0%</td></tr>
-<tr><td>31</td><td><a href="https://www.baidu.com/s?wd=武汉职业技术大学" target="_blank" rel="noopener">武汉职业技术大学</a></td><td>湖北</td><td>光电信息</td><td>智能制造</td><td>440-500</td><td>光电信息</td><td>600000.0%</td></tr>
-<tr><td>32</td><td><a href="https://www.baidu.com/s?wd=湖南汽车工程职业大学" target="_blank" rel="noopener">湖南汽车工程职业大学</a></td><td>湖南</td><td>汽车工程</td><td>新能源汽车</td><td>410-460</td><td>汽车工程</td><td>550000.0%</td></tr>
-<tr><td>33</td><td><a href="https://www.baidu.com/s?wd=深圳职业技术大学" target="_blank" rel="noopener">深圳职业技术大学</a></td><td>广东</td><td>电子信息</td><td>人工智能</td><td>530-580</td><td>电子信息</td><td>600000.0%</td></tr>
-<tr><td>34</td><td><a href="https://www.baidu.com/s?wd=广东轻工职业技术大学" target="_blank" rel="noopener">广东轻工职业技术大学</a></td><td>广东</td><td>轻工技术</td><td>食品工程</td><td>480-530</td><td>轻工技术</td><td>600000.0%</td></tr>
-<tr><td>35</td><td><a href="https://www.baidu.com/s?wd=顺德职业技术大学" target="_blank" rel="noopener">顺德职业技术大学</a></td><td>广东</td><td>智能制造</td><td>家电技术</td><td>460-510</td><td>智能制造</td><td>600000.0%</td></tr>
-<tr><td>36</td><td><a href="https://www.baidu.com/s?wd=广州职业技术大学" target="_blank" rel="noopener">广州职业技术大学</a></td><td>广东</td><td>信息技术</td><td>现代服务</td><td>440-500</td><td>信息技术</td><td>600000.0%</td></tr>
-<tr><td>37</td><td><a href="https://www.baidu.com/s?wd=深圳信息职业技术大学" target="_blank" rel="noopener">深圳信息职业技术大学</a></td><td>广东</td><td>信息技术</td><td>通信工程</td><td>510-560</td><td>信息技术</td><td>600000.0%</td></tr>
-<tr><td>38</td><td><a href="https://www.baidu.com/s?wd=广西农业职业技术大学" target="_blank" rel="noopener">广西农业职业技术大学</a></td><td>广西</td><td>现代农业</td><td>食品科学</td><td>360-420</td><td>现代农业</td><td>500000.0%</td></tr>
-<tr><td>39</td><td><a href="https://www.baidu.com/s?wd=南宁职业技术大学" target="_blank" rel="noopener">南宁职业技术大学</a></td><td>广西</td><td>建筑工程</td><td>旅游管理</td><td>370-430</td><td>建筑工程</td><td>500000.0%</td></tr>
-<tr><td>40</td><td><a href="https://www.baidu.com/s?wd=柳州职业技术大学" target="_blank" rel="noopener">柳州职业技术大学</a></td><td>广西</td><td>机械制造</td><td>汽车服务</td><td>370-420</td><td>机械制造</td><td>500000.0%</td></tr>
-<tr><td>41</td><td><a href="https://www.baidu.com/s?wd=重庆电子科技职业大学" target="_blank" rel="noopener">重庆电子科技职业大学</a></td><td>重庆</td><td>电子信息</td><td>人工智能</td><td>410-470</td><td>电子信息</td><td>550000.0%</td></tr>
-<tr><td>42</td><td><a href="https://www.baidu.com/s?wd=重庆工业职业技术大学" target="_blank" rel="noopener">重庆工业职业技术大学</a></td><td>重庆</td><td>装备制造</td><td>汽摩工程</td><td>400-460</td><td>装备制造</td><td>550000.0%</td></tr>
-<tr><td>43</td><td><a href="https://www.baidu.com/s?wd=四川工程职业技术大学" target="_blank" rel="noopener">四川工程职业技术大学</a></td><td>四川</td><td>装备制造</td><td>能源工程</td><td>390-450</td><td>装备制造</td><td>550000.0%</td></tr>
-<tr><td>44</td><td><a href="https://www.baidu.com/s?wd=成都航空职业技术大学" target="_blank" rel="noopener">成都航空职业技术大学</a></td><td>四川</td><td>航空工程</td><td>无人机</td><td>370-430</td><td>航空工程</td><td>550000.0%</td></tr>
-<tr><td>45</td><td><a href="https://www.baidu.com/s?wd=贵阳康养职业大学" target="_blank" rel="noopener">贵阳康养职业大学</a></td><td>贵州</td><td>康养护理</td><td>药学</td><td>360-410</td><td>康养护理</td><td>500000.0%</td></tr>
-<tr><td>46</td><td><a href="https://www.baidu.com/s?wd=贵州交通职业大学" target="_blank" rel="noopener">贵州交通职业大学</a></td><td>贵州</td><td>交通工程</td><td>汽车服务</td><td>370-420</td><td>交通工程</td><td>500000.0%</td></tr>
-<tr><td>47</td><td><a href="https://www.baidu.com/s?wd=铜仁职业技术大学" target="_blank" rel="noopener">铜仁职业技术大学</a></td><td>贵州</td><td>农林</td><td>旅游</td><td>340-390</td><td>农林</td><td>500000.0%</td></tr>
-<tr><td>48</td><td><a href="https://www.baidu.com/s?wd=贵州轻工职业大学" target="_blank" rel="noopener">贵州轻工职业大学</a></td><td>贵州</td><td>食品加工</td><td>包装印刷</td><td>350-400</td><td>食品加工</td><td>500000.0%</td></tr>
-<tr><td>49</td><td><a href="https://www.baidu.com/s?wd=陕西农林职业技术大学" target="_blank" rel="noopener">陕西农林职业技术大学</a></td><td>陕西</td><td>农林</td><td>园艺</td><td>360-410</td><td>农林</td><td>500000.0%</td></tr>
-<tr><td>50</td><td><a href="https://www.baidu.com/s?wd=陕西工业职业技术大学" target="_blank" rel="noopener">陕西工业职业技术大学</a></td><td>陕西</td><td>装备制造</td><td>材料工程</td><td>380-440</td><td>装备制造</td><td>550000.0%</td></tr>
-<tr><td>51</td><td><a href="https://www.baidu.com/s?wd=兰州石化职业技术大学" target="_blank" rel="noopener">兰州石化职业技术大学</a></td><td>甘肃</td><td>石油化工</td><td>应用化学</td><td>370-430</td><td>石油化工</td><td>500000.0%</td></tr>
-<tr><td>52</td><td><a href="https://www.baidu.com/s?wd=兰州资源环境职业技术大学" target="_blank" rel="noopener">兰州资源环境职业技术大学</a></td><td>甘肃</td><td>资源勘探</td><td>环境工程</td><td>360-420</td><td>资源勘探</td><td>500000.0%</td></tr>
-<tr><td>53</td><td><a href="https://www.baidu.com/s?wd=甘肃林业职业技术大学" target="_blank" rel="noopener">甘肃林业职业技术大学</a></td><td>甘肃</td><td>林业</td><td>园林景观</td><td>340-390</td><td>林业</td><td>500000.0%</td></tr>
-<tr><td>54</td><td><a href="https://www.baidu.com/s?wd=酒泉职业技术大学" target="_blank" rel="noopener">酒泉职业技术大学</a></td><td>甘肃</td><td>新能源</td><td>现代农业</td><td>330-380</td><td>新能源</td><td>500000.0%</td></tr>
-<tr><td>55</td><td><a href="https://www.baidu.com/s?wd=甘肃工业职业技术大学" target="_blank" rel="noopener">甘肃工业职业技术大学</a></td><td>甘肃</td><td>工业制造</td><td>矿业</td><td>350-400</td><td>工业制造</td><td>500000.0%</td></tr>
-<tr><td>56</td><td><a href="https://www.baidu.com/s?wd=武威职业技术大学" target="_blank" rel="noopener">武威职业技术大学</a></td><td>甘肃</td><td>畜牧兽医</td><td>食品加工</td><td>320-370</td><td>畜牧兽医</td><td>500000.0%</td></tr>
-<tr><td>57</td><td><a href="https://www.baidu.com/s?wd=青海职业技术大学" target="_blank" rel="noopener">青海职业技术大学</a></td><td>青海</td><td>交通物流</td><td>新能源</td><td>330-380</td><td>交通物流</td><td>450000.0%</td></tr>
-<tr><td>58</td><td><a href="https://www.baidu.com/s?wd=宁夏职业技术大学" target="_blank" rel="noopener">宁夏职业技术大学</a></td><td>宁夏</td><td>现代农业</td><td>畜牧</td><td>350-400</td><td>现代农业</td><td>450000.0%</td></tr>
-<tr><td>59</td><td><a href="https://www.baidu.com/s?wd=宁夏工商职业技术大学" target="_blank" rel="noopener">宁夏工商职业技术大学</a></td><td>宁夏</td><td>工商管理</td><td>旅游</td><td>345-395</td><td>工商管理</td><td>450000.0%</td></tr>
-<tr><td>60</td><td><a href="https://www.baidu.com/s?wd=新疆农业职业技术大学" target="_blank" rel="noopener">新疆农业职业技术大学</a></td><td>新疆</td><td>农业</td><td>畜牧兽医</td><td>300-360</td><td>农业</td><td>450000.0%</td></tr>
-<tr><td>61</td><td><a href="https://www.baidu.com/s?wd=乌鲁木齐职业大学" target="_blank" rel="noopener">乌鲁木齐职业大学</a></td><td>新疆</td><td>现代服务</td><td>信息技术</td><td>310-370</td><td>现代服务</td><td>450000.0%</td></tr>
-<tr><td>62</td><td><a href="https://www.baidu.com/s?wd=新疆交通职业技术大学" target="_blank" rel="noopener">新疆交通职业技术大学</a></td><td>新疆</td><td>交通工程</td><td>物流</td><td>300-360</td><td>交通工程</td><td>450000.0%</td></tr>
-<tr><td>63</td><td><a href="https://www.baidu.com/s?wd=新疆理工职业大学" target="_blank" rel="noopener">新疆理工职业大学</a></td><td>新疆</td><td>能源</td><td>化工</td><td>305-365</td><td>能源</td><td>450000.0%</td></tr>
-</tbody></table>
-  </div>
-  <div id="newList" class="school-list">
-    <table><thead><tr><th>#</th><th>学校名称</th></tr></thead>
-    <tbody><tr><td>1</td><td><a href="https://www.baidu.com/s?wd=常州信息职业技术大学" target="_blank" rel="noopener">常州信息职业技术大学</a></td></tr>
-<tr><td>2</td><td><a href="https://www.baidu.com/s?wd=温州职业技术大学" target="_blank" rel="noopener">温州职业技术大学</a></td></tr>
-<tr><td>3</td><td><a href="https://www.baidu.com/s?wd=安徽应用技术职业大学" target="_blank" rel="noopener">安徽应用技术职业大学</a></td></tr>
-<tr><td>4</td><td><a href="https://www.baidu.com/s?wd=福州职业技术大学" target="_blank" rel="noopener">福州职业技术大学</a></td></tr>
-<tr><td>5</td><td><a href="https://www.baidu.com/s?wd=江西外语外贸职业大学" target="_blank" rel="noopener">江西外语外贸职业大学</a></td></tr>
-<tr><td>6</td><td><a href="https://www.baidu.com/s?wd=山东商业职业技术大学" target="_blank" rel="noopener">山东商业职业技术大学</a></td></tr>
-<tr><td>7</td><td><a href="https://www.baidu.com/s?wd=山东科技职业技术大学" target="_blank" rel="noopener">山东科技职业技术大学</a></td></tr>
-<tr><td>8</td><td><a href="https://www.baidu.com/s?wd=郑州铁路职业技术大学" target="_blank" rel="noopener">郑州铁路职业技术大学</a></td></tr>
-<tr><td>9</td><td><a href="https://www.baidu.com/s?wd=湖北三峡职业技术大学" target="_blank" rel="noopener">湖北三峡职业技术大学</a></td></tr>
-<tr><td>10</td><td><a href="https://www.baidu.com/s?wd=湖南工艺美术职业大学" target="_blank" rel="noopener">湖南工艺美术职业大学</a></td></tr>
-<tr><td>11</td><td><a href="https://www.baidu.com/s?wd=湖南化工职业技术大学" target="_blank" rel="noopener">湖南化工职业技术大学</a></td></tr>
-<tr><td>12</td><td><a href="https://www.baidu.com/s?wd=广西职业技术大学" target="_blank" rel="noopener">广西职业技术大学</a></td></tr>
-<tr><td>13</td><td><a href="https://www.baidu.com/s?wd=海南经贸职业大学" target="_blank" rel="noopener">海南经贸职业大学</a></td></tr>
-<tr><td>14</td><td><a href="https://www.baidu.com/s?wd=重庆城市管理职业大学" target="_blank" rel="noopener">重庆城市管理职业大学</a></td></tr>
-<tr><td>15</td><td><a href="https://www.baidu.com/s?wd=重庆工程职业技术大学" target="_blank" rel="noopener">重庆工程职业技术大学</a></td></tr>
-<tr><td>16</td><td><a href="https://www.baidu.com/s?wd=四川交通职业技术大学" target="_blank" rel="noopener">四川交通职业技术大学</a></td></tr>
-<tr><td>17</td><td><a href="https://www.baidu.com/s?wd=贵州工业职业技术大学" target="_blank" rel="noopener">贵州工业职业技术大学</a></td></tr>
-<tr><td>18</td><td><a href="https://www.baidu.com/s?wd=云南交通职业技术大学" target="_blank" rel="noopener">云南交通职业技术大学</a></td></tr>
-<tr><td>19</td><td><a href="https://www.baidu.com/s?wd=新疆工业职业技术大学" target="_blank" rel="noopener">新疆工业职业技术大学</a></td></tr>
-<tr><td>20</td><td><a href="https://www.baidu.com/s?wd=新疆能源铁道职业技术大学" target="_blank" rel="noopener">新疆能源铁道职业技术大学</a></td></tr>
-<tr><td>21</td><td><a href="https://www.baidu.com/s?wd=石河子职业技术大学" target="_blank" rel="noopener">石河子职业技术大学</a></td></tr>
-<tr><td>22</td><td><a href="https://www.baidu.com/s?wd=新疆工程职业大学" target="_blank" rel="noopener">新疆工程职业大学</a></td></tr>
-</tbody></table>
-  </div>
+<div class="sec">
+<h2>基本信息</h2>
+<div class="g">
+<label>高考分数 <span style="color:red">*</span></label>
+<input type="number" id="sc" placeholder="如 480" min="200" max="750">
+</div>
+<div class="r2">
+<div class="g"><label>目标省份</label><select id="pr">
+<option>不限</option><option>内蒙古</option><option>北京</option><option>吉林</option><option>四川</option><option>宁夏</option><option>安徽</option><option>山东</option><option>山西</option><option>广东</option><option>广西</option><option>新疆</option><option>江苏</option><option>江西</option><option>河北</option><option>河南</option><option>浙江</option><option>湖北</option><option>湖南</option><option>甘肃</option><option>福建</option><option>贵州</option><option>重庆</option><option>陕西</option><option>青海</option><option>黑龙江</option></select></div>
+<div class="g"><label>目标行业</label><select id="ind"><option>不限</option><option>信息技术</option><option>智能制造</option><option>新能源汽车</option><option>航空航天</option><option>现代服务</option><option>现代农业</option><option>建筑工程</option><option>健康护理</option><option>化工材料</option><option>文旅设计</option></select></div>
+</div>
+<div class="r2">
+<div class="g"><label>月薪目标</label><select id="inc"><option>不限</option><option>4000以下</option><option>4000-6000</option><option>6000-8000</option><option>8000-10000</option><option>10000以上</option></select></div>
+<div class="g"><label>实操意愿</label><select id="prac"><option>1-不想动手</option><option>2-不太喜欢</option><option>3-一般</option><option>4-愿意动手</option><option>5-特别喜欢</option></select></div>
+</div>
+<div class="r2">
+<div class="g"><label>考研意愿</label><select id="ex"><option>未定</option><option>一定要考研</option><option>本科毕业就工作</option></select></div>
+<div class="g"><label>家庭年收入</label><select id="fi"><option>不限</option><option>5万以下</option><option>5-10万</option><option>10-20万</option><option>20万以上</option></select></div>
+</div>
+<button class="b" id="btn" onclick="go()">开始评估</button>
+<div class="ds">基于63所公办职业本科数据。结果仅供参考，建议结合各省招生计划使用。</div>
 </div>
 
-<div class="section">
-  <h2>📋 输入信息</h2>
-
-  <p style="font-size:11px;color:#6b7280;margin-bottom:8px;">请至少填写高考分数，其他可选</p>
-
-  <div class="form-group">
-    <label>高考分数 <span style="color:#dc2626;">*</span></label>
-    <input type="number" id="score" placeholder="例如 480" min="200" max="750">
-  </div>
-
-  <div class="form-row">
-    <div class="form-group"><label>目标省份</label><select id="province"><option>不限</option><option>内蒙古</option><option>北京</option><option>吉林</option><option>四川</option><option>宁夏</option><option>安徽</option><option>山东</option><option>山西</option><option>广东</option><option>广西</option><option>新疆</option><option>江苏</option><option>江西</option><option>河北</option><option>河南</option><option>浙江</option><option>湖北</option><option>湖南</option><option>甘肃</option><option>福建</option><option>贵州</option><option>重庆</option><option>陕西</option><option>青海</option><option>黑龙江</option></select></div>
-    <div class="form-group"><label>目标行业方向</label><select id="industry"><option>不限</option><option>高端装备制造</option><option>新一代信息技术</option><option>新能源汽车</option><option>航空航天</option><option>现代服务业</option><option>现代农业/食品</option><option>建筑/交通工程</option><option>健康/康养/护理</option><option>化工/材料</option><option>文旅/设计</option></select></div>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group"><label>💰 最低收入目标（月薪）</label><select id="income"><option>不限</option><option>4000以下</option><option>4000-6000</option><option>6000-8000</option><option>8000-10000</option><option>10000以上</option></select></div>
-    <div class="form-group"><label>🔧 实操意愿度</label><select id="practice"><option>1-完全不想动手</option><option>2-不太喜欢实操</option><option>3-一般</option><option>4-愿意动手</option><option>5-特别喜欢动手操作</option></select></div>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group"><label>🎯 考研意愿</label><select id="exam"><option>是-一定要考研</option><option>否-本科毕业就工作</option><option>未定</option></select></div>
-    <div class="form-group"><label>🧠 兴趣方向</label><select id="interest"><option>不限</option><option>技术研发</option><option>动手制造</option><option>服务沟通</option><option>创意设计</option><option>管理运营</option></select></div>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group"><label>🧑 性格类型</label><select id="personality"><option>不限</option><option>坐得住+爱琢磨</option><option>坐不住+爱动手</option><option>坐得住+爱动手</option><option>坐不住+爱琢磨</option><option>喜欢独立</option><option>喜欢合作</option></select></div>
-    <div class="form-group"><label>📚 学科强项</label><select id="subject"><option>不限</option><option>数学/物理</option><option>语文/英语</option><option>无特别强项</option></select></div>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group"><label>🛠️ 实践强项</label><select id="practical"><option>不限</option><option>手工/维修</option><option>编程/IT</option><option>组织/管理</option><option>沟通/表达</option></select></div>
-    <div class="form-group"><label>🏠 家庭年收入</label><select id="familyIncome"><option>不限</option><option>5万以下</option><option>5-10万</option><option>10-20万</option><option>20万以上</option></select></div>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group"><label>💼 是否需要尽早工作</label><select id="earlyWork"><option>不限</option><option>是-需尽早经济独立</option><option>否-可支持深造</option></select></div>
-    <div class="form-group"><label>👤 性别（参考）</label><select id="gender"><option>不限</option><option>男</option><option>女</option></select></div>
-  </div>
-
-  <button class="btn btn-primary" id="calcBtn" onclick="calculate()">🔍 开始评估</button>
-  <div class="disclaimer">⚠️ 评估模型基于63所公办职业本科数据，22所2026年新公示学校暂无录取数据暂不参与评分。结果仅供参考，建议结合各省招生计划使用。</div>
+<div id="ra" style="display:none">
+<div class="sec" style="padding:0">
+<div class="rh"><h3>推荐排序</h3><span id="rc" style="font-size:11px;color:#6b7280"></span></div>
+<div id="rl"></div>
+</div>
+<div class="sec" id="ss" style="display:none"><h2>评估小结</h2><div id="scx"></div></div>
 </div>
 
-<div id="resultArea" style="display:none;">
-  <div class="section" style="padding:0;">
-    <div class="result-header">
-      <h3>📊 推荐排序</h3>
-      <span class="count" id="resultCount"></span>
-    </div>
-    <div id="resultList"></div>
-  </div>
-  <div class="section" id="summarySection" style="display:none;">
-    <h2>📈 评估小结</h2>
-    <div id="summaryContent"></div>
-  </div>
-</div>
-
-<div class="footer">
-  <p>「爸妈找北」高考志愿自媒体 · 信息差比分数差更可怕</p>
-  <p>数据：教育部官网 / 麦可思报告 / 智联招聘</p>
-</div>
+<div class="ft"><p>爸妈找北 &middot; 信息差比分数差更可怕</p></div>
 </div>
 
 <script>
-const SCHOOLS = [["民政职业大学", "北京", "华北", 430, 480, "无", "养老服务", "社会工作", 0.92, 6000, "1线", "首都"], ["北京科技职业大学", "北京", "华北", 440, 500, "无", "信息技术", "智能制造", 0.987, 6000, "1线", "首都"], ["河北工业职业技术大学", "河北", "华北", 420, 470, "B档", "装备制造", "钢铁冶金", 0.93, 5500, "3线", "省会"], ["河北科技工程职业技术大学", "河北", "华北", 410, 460, "A档", "汽车工程", "信息技术", 0.94, 5500, "3线", "地级市"], ["河北石油职业技术大学", "河北", "华北", 400, 450, "无", "石油化工", "新能源", 0.92, 5500, "3线", "地级市"], ["唐山工业职业技术大学", "河北", "华北", 390, 440, "无", "装备制造", "陶瓷工艺", 0.9, 5500, "3线", "地级市"], ["山西工程科技职业大学", "山西", "华北", 380, 430, "无", "建筑工程", "测绘技术", 0.88, 5500, "3线", "省会"], ["山西文化旅游职业大学", "山西", "华北", 370, 420, "无", "文旅服务", "酒店管理", 0.85, 5500, "3线", "省会"], ["内蒙古建筑职业技术大学", "内蒙古", "华北", 360, 410, "无", "建筑工程", "道路桥梁", 0.87, 5000, "3线", "省会"], ["兴安职业技术大学", "内蒙古", "华北", 340, 390, "无", "现代农业", "畜牧兽医", 0.85, 5000, "4线", "地级市"], ["呼和浩特职业技术大学", "内蒙古", "华北", 350, 400, "无", "信息技术", "现代服务", 0.86, 5000, "3线", "省会"], ["长春汽车职业技术大学", "吉林", "东北", 410, 460, "C档", "汽车工程", "新能源汽车", 0.95, 5500, "2线", "省会"], ["长春职业技术大学", "吉林", "东北", 370, 420, "无", "装备制造", "信息技术", 0.88, 5000, "2线", "省会"], ["吉林铁道职业技术大学", "吉林", "东北", 390, 440, "无", "轨道交通", "铁道工程", 0.94, 5500, "3线", "省会"], ["哈尔滨职业技术大学", "黑龙江", "东北", 360, 420, "无", "装备制造", "信息技术", 0.87, 5000, "2线", "省会"], ["南京工业职业技术大学", "江苏", "华东", 500, 550, "A档", "智能制造", "信息技术", 0.97, 6000, "1线", "省会"], ["无锡职业技术大学", "江苏", "华东", 480, 530, "A档", "物联网", "智能制造", 0.96, 6000, "1线", "地级市"], ["苏州职业技术大学", "江苏", "华东", 480, 520, "A档", "智能制造", "信息技术", 0.96, 6000, "1线", "地级市"], ["扬州职业技术大学", "江苏", "华东", 450, 500, "B档", "建筑", "旅游管理", 0.93, 5500, "2线", "地级市"], ["浙江药科职业大学", "浙江", "华东", 510, 550, "A档", "药学", "生物技术", 0.95, 6000, "1线", "省会"], ["金华职业技术大学", "浙江", "华东", 510, 560, "A档", "智能制造", "学前教育", 0.97, 6000, "2线", "地级市"], ["浙江机电职业技术大学", "浙江", "华东", 510, 560, "A档", "机电工程", "智能制造", 0.98, 6000, "1线", "省会"], ["宁波职业技术大学", "浙江", "华东", 490, 540, "A档", "跨境电商", "模具设计", 0.96, 6000, "1线", "计划单列"], ["杭州职业技术大学", "浙江", "华东", 500, 550, "A档", "信息技术", "护理康养", 0.95, 6000, "1线", "省会"], ["安徽职业技术大学", "安徽", "华东", 390, 450, "无", "纺织服装", "现代服务", 0.88, 5500, "3线", "省会"], ["芜湖职业技术大学", "安徽", "华东", 400, 450, "无", "汽车制造", "智能制造", 0.9, 5500, "3线", "地级市"], ["黎明职业大学", "福建", "华东", 410, 460, "无", "服装设计", "建筑工程", 0.91, 5500, "2线", "地级市"], ["江西职业技术大学", "江西", "华东", 420, 480, "B档", "船舶工程", "电子信息", 0.92, 5500, "3线", "省会"], ["淄博职业技术大学", "山东", "华东", 420, 470, "无", "化工", "制药", 0.9, 5500, "3线", "地级市"], ["黄河水利职业技术大学", "河南", "华东", 420, 480, "A档", "水利工程", "测绘地理", 0.94, 5500, "3线", "省会"], ["武汉职业技术大学", "湖北", "华中", 440, 500, "A档", "光电信息", "智能制造", 0.95, 6000, "1线", "省会"], ["湖南汽车工程职业大学", "湖南", "华中", 410, 460, "B档", "汽车工程", "新能源汽车", 0.94, 5500, "3线", "地级市"], ["深圳职业技术大学", "广东", "华南", 530, 580, "A档", "电子信息", "人工智能", 0.98, 6000, "1线", "经济特区"], ["广东轻工职业技术大学", "广东", "华南", 480, 530, "B档", "轻工技术", "食品工程", 0.95, 6000, "1线", "省会"], ["顺德职业技术大学", "广东", "华南", 460, 510, "A档", "智能制造", "家电技术", 0.96, 6000, "1线", "地级市"], ["广州职业技术大学", "广东", "华南", 440, 500, "无", "信息技术", "现代服务", 0.93, 6000, "1线", "省会"], ["深圳信息职业技术大学", "广东", "华南", 510, 560, "A档", "信息技术", "通信工程", 0.98, 6000, "1线", "经济特区"], ["广西农业职业技术大学", "广西", "华南", 360, 420, "无", "现代农业", "食品科学", 0.88, 5000, "3线", "省会"], ["南宁职业技术大学", "广西", "华南", 370, 430, "无", "建筑工程", "旅游管理", 0.87, 5000, "3线", "省会"], ["柳州职业技术大学", "广西", "华南", 370, 420, "无", "机械制造", "汽车服务", 0.88, 5000, "3线", "地级市"], ["重庆电子科技职业大学", "重庆", "西南", 410, 470, "A档", "电子信息", "人工智能", 0.94, 5500, "1线", "直辖市"], ["重庆工业职业技术大学", "重庆", "西南", 400, 460, "A档", "装备制造", "汽摩工程", 0.93, 5500, "1线", "直辖市"], ["四川工程职业技术大学", "四川", "西南", 390, 450, "B档", "装备制造", "能源工程", 0.91, 5500, "2线", "地级市"], ["成都航空职业技术大学", "四川", "西南", 370, 430, "A档", "航空工程", "无人机", 0.93, 5500, "1线", "省会"], ["贵阳康养职业大学", "贵州", "西南", 360, 410, "无", "康养护理", "药学", 0.88, 5000, "3线", "省会"], ["贵州交通职业大学", "贵州", "西南", 370, 420, "B档", "交通工程", "汽车服务", 0.9, 5000, "3线", "省会"], ["铜仁职业技术大学", "贵州", "西南", 340, 390, "无", "农林", "旅游", 0.85, 5000, "4线", "地级市"], ["贵州轻工职业大学", "贵州", "西南", 350, 400, "无", "食品加工", "包装印刷", 0.86, 5000, "3线", "省会"], ["陕西农林职业技术大学", "陕西", "西北", 360, 410, "无", "农林", "园艺", 0.86, 5000, "3线", "地级市"], ["陕西工业职业技术大学", "陕西", "西北", 380, 440, "A档", "装备制造", "材料工程", 0.92, 5500, "3线", "省会"], ["兰州石化职业技术大学", "甘肃", "西北", 370, 430, "A档", "石油化工", "应用化学", 0.92, 5000, "3线", "省会"], ["兰州资源环境职业技术大学", "甘肃", "西北", 360, 420, "C档", "资源勘探", "环境工程", 0.9, 5000, "3线", "省会"], ["甘肃林业职业技术大学", "甘肃", "西北", 340, 390, "A档", "林业", "园林景观", 0.88, 5000, "4线", "地级市"], ["酒泉职业技术大学", "甘肃", "西北", 330, 380, "无", "新能源", "现代农业", 0.85, 5000, "4线", "地级市"], ["甘肃工业职业技术大学", "甘肃", "西北", 350, 400, "无", "工业制造", "矿业", 0.86, 5000, "4线", "地级市"], ["武威职业技术大学", "甘肃", "西北", 320, 370, "无", "畜牧兽医", "食品加工", 0.84, 5000, "4线", "地级市"], ["青海职业技术大学", "青海", "西北", 330, 380, "无", "交通物流", "新能源", 0.83, 4500, "4线", "省会"], ["宁夏职业技术大学", "宁夏", "西北", 350, 400, "无", "现代农业", "畜牧", 0.85, 4500, "4线", "省会"], ["宁夏工商职业技术大学", "宁夏", "西北", 345, 395, "无", "工商管理", "旅游", 0.84, 4500, "4线", "省会"], ["新疆农业职业技术大学", "新疆", "西北", 300, 360, "C档", "农业", "畜牧兽医", 0.83, 4500, "4线", "地级市"], ["乌鲁木齐职业大学", "新疆", "西北", 310, 370, "无", "现代服务", "信息技术", 0.82, 4500, "3线", "省会"], ["新疆交通职业技术大学", "新疆", "西北", 300, 360, "B档", "交通工程", "物流", 0.84, 4500, "4线", "地级市"], ["新疆理工职业大学", "新疆", "西北", 305, 365, "无", "能源", "化工", 0.82, 4500, "4线", "地级市"]];
+var D=[["深圳职业技术大学", "广东", 530, 580, "A档", "电子信息", "人工智能", 0.98, 6000, "1线"], ["北京科技职业大学", "北京", 440, 500, "无", "信息技术", "智能制造", 0.987, 6000, "1线"], ["浙江机电职业技术大学", "浙江", 510, 560, "A档", "机电工程", "智能制造", 0.98, 6000, "1线"], ["深圳信息职业技术大学", "广东", 510, 560, "A档", "信息技术", "通信工程", 0.98, 6000, "1线"], ["南京工业职业技术大学", "江苏", 500, 550, "A档", "智能制造", "信息技术", 0.97, 6000, "1线"], ["杭州职业技术大学", "浙江", 500, 550, "A档", "信息技术", "护理康养", 0.95, 6000, "1线"], ["金华职业技术大学", "浙江", 510, 560, "A档", "智能制造", "学前教育", 0.97, 6000, "2线"], ["宁波职业技术大学", "浙江", 490, 540, "A档", "跨境电商", "模具设计", 0.96, 6000, "1线"], ["民政职业大学", "北京", 430, 480, "无", "养老服务", "社会工作", 0.92, 6000, "1线"], ["无锡职业技术大学", "江苏", 480, 530, "A档", "物联网", "智能制造", 0.96, 6000, "1线"], ["苏州职业技术大学", "江苏", 480, 520, "A档", "智能制造", "信息技术", 0.96, 6000, "1线"], ["武汉职业技术大学", "湖北", 440, 500, "A档", "光电信息", "智能制造", 0.95, 6000, "1线"], ["广东轻工职业技术大学", "广东", 480, 530, "B档", "轻工技术", "食品工程", 0.95, 6000, "1线"], ["顺德职业技术大学", "广东", 460, 510, "A档", "智能制造", "家电技术", 0.96, 6000, "1线"], ["浙江药科职业大学", "浙江", 510, 550, "A档", "药学", "生物技术", 0.95, 6000, "1线"], ["重庆电子科技职业大学", "重庆", 410, 470, "A档", "电子信息", "人工智能", 0.94, 6000, "1线"], ["重庆工业职业技术大学", "重庆", 400, 460, "A档", "装备制造", "汽摩工程", 0.93, 6000, "1线"], ["扬州职业技术大学", "江苏", 450, 500, "B档", "建筑", "旅游管理", 0.93, 5500, "2线"], ["广州职业技术大学", "广东", 440, 500, "无", "信息技术", "现代服务", 0.93, 6000, "1线"], ["成都航空职业技术大学", "四川", 370, 430, "A档", "航空工程", "无人机", 0.93, 5500, "1线"], ["河北科技工程职业技术大学", "河北", 410, 460, "A档", "汽车工程", "信息技术", 0.94, 5500, "3线"], ["河北工业职业技术大学", "河北", 420, 470, "B档", "装备制造", "钢铁冶金", 0.93, 5500, "3线"], ["黄河水利职业技术大学", "河南", 420, 480, "A档", "水利工程", "测绘地理", 0.94, 5500, "3线"], ["陕西工业职业技术大学", "陕西", 380, 440, "A档", "装备制造", "材料工程", 0.92, 5500, "3线"], ["湖南汽车工程职业大学", "湖南", 410, 460, "B档", "汽车工程", "新能源汽车", 0.94, 5500, "3线"], ["江西职业技术大学", "江西", 420, 480, "B档", "船舶工程", "电子信息", 0.92, 5500, "3线"], ["长春汽车职业技术大学", "吉林", 410, 460, "C档", "汽车工程", "新能源汽车", 0.95, 5500, "2线"], ["兰州石化职业技术大学", "甘肃", 370, 430, "A档", "石油化工", "应用化学", 0.92, 5000, "3线"], ["四川工程职业技术大学", "四川", 390, 450, "B档", "装备制造", "能源工程", 0.91, 5500, "2线"], ["兰州资源环境职业技术大学", "甘肃", 360, 420, "C档", "资源勘探", "环境工程", 0.9, 5000, "3线"], ["河北石油职业技术大学", "河北", 400, 450, "无", "石油化工", "新能源", 0.92, 5500, "3线"], ["安徽职业技术大学", "安徽", 390, 450, "无", "纺织服装", "现代服务", 0.88, 5500, "3线"], ["芜湖职业技术大学", "安徽", 400, 450, "无", "汽车制造", "智能制造", 0.9, 5500, "3线"], ["唐山工业职业技术大学", "河北", 390, 440, "无", "装备制造", "陶瓷工艺", 0.9, 5500, "3线"], ["黎明职业大学", "福建", 410, 460, "无", "服装设计", "建筑工程", 0.91, 5500, "2线"], ["山西工程科技职业大学", "山西", 380, 430, "无", "建筑工程", "测绘技术", 0.88, 5500, "3线"], ["哈尔滨职业技术大学", "黑龙江", 360, 420, "无", "装备制造", "信息技术", 0.87, 5000, "2线"], ["淄博职业技术大学", "山东", 420, 470, "无", "化工", "制药", 0.9, 5500, "3线"], ["广西农业职业技术大学", "广西", 360, 420, "无", "现代农业", "食品科学", 0.88, 5000, "3线"], ["南宁职业技术大学", "广西", 370, 430, "无", "建筑工程", "旅游管理", 0.87, 5000, "3线"], ["贵阳康养职业大学", "贵州", 360, 410, "无", "康养护理", "药学", 0.88, 5000, "3线"], ["贵州交通职业大学", "贵州", 370, 420, "B档", "交通工程", "汽车服务", 0.9, 5000, "3线"], ["柳州职业技术大学", "广西", 370, 420, "无", "机械制造", "汽车服务", 0.88, 5000, "3线"], ["长春职业技术大学", "吉林", 370, 420, "无", "装备制造", "信息技术", 0.88, 5000, "2线"], ["吉林铁道职业技术大学", "吉林", 390, 440, "无", "轨道交通", "铁道工程", 0.94, 5500, "3线"], ["贵州轻工职业大学", "贵州", 350, 400, "无", "食品加工", "包装印刷", 0.86, 5000, "3线"], ["山西文化旅游职业大学", "山西", 370, 420, "无", "文旅服务", "酒店管理", 0.85, 5500, "3线"], ["甘肃林业职业技术大学", "甘肃", 340, 390, "A档", "林业", "园林景观", 0.88, 5000, "4线"], ["铜仁职业技术大学", "贵州", 340, 390, "无", "农林", "旅游", 0.85, 5000, "4线"], ["陕西农林职业技术大学", "陕西", 360, 410, "无", "农林", "园艺", 0.86, 5000, "3线"], ["内蒙古建筑职业技术大学", "内蒙古", 360, 410, "无", "建筑工程", "道路桥梁", 0.87, 5000, "3线"], ["呼和浩特职业技术大学", "内蒙古", 350, 400, "无", "信息技术", "现代服务", 0.86, 5000, "3线"], ["酒泉职业技术大学", "甘肃", 330, 380, "无", "新能源", "现代农业", 0.85, 5000, "4线"], ["甘肃工业职业技术大学", "甘肃", 350, 400, "无", "工业制造", "矿业", 0.86, 5000, "4线"], ["兴安职业技术大学", "内蒙古", 340, 390, "无", "现代农业", "畜牧兽医", 0.85, 5000, "4线"], ["武威职业技术大学", "甘肃", 320, 370, "无", "畜牧兽医", "食品加工", 0.84, 5000, "4线"], ["青海职业技术大学", "青海", 330, 380, "无", "交通物流", "新能源", 0.83, 4500, "4线"], ["宁夏职业技术大学", "宁夏", 350, 400, "无", "现代农业", "畜牧", 0.85, 4500, "4线"], ["宁夏工商职业技术大学", "宁夏", 345, 395, "无", "工商管理", "旅游", 0.84, 4500, "4线"], ["新疆农业职业技术大学", "新疆", 300, 360, "C档", "农业", "畜牧兽医", 0.83, 4500, "4线"], ["新疆交通职业技术大学", "新疆", 300, 360, "B档", "交通工程", "物流", 0.84, 4500, "4线"], ["乌鲁木齐职业大学", "新疆", 310, 370, "无", "现代服务", "信息技术", 0.82, 4500, "3线"], ["新疆理工职业大学", "新疆", 305, 365, "无", "能源", "化工", 0.82, 4500, "4线"]];
 
-function toggleList(id) {
-  const el = document.getElementById(id);
-  el.classList.toggle('open');
-}
-
-function calcPartnership(level, city, emp) {
-  let b = {"A档":4,"B档":3.5,"C档":3,"无":2}[level]||2;
-  if(["1线","经济特区"].includes(city)) b+=0.5;
-  if(emp>=0.95) b+=0.5;
-  return Math.min(b,5);
-}
-
-function scoreSchool(s, inp) {
-  let t=0, d=[];
-
-  // L1: 分数 (30%)
-  const sc=inp.score;
-  if(sc>=inp.min&&sc<=inp.max){t+=30; d.push({n:'分数匹配',s:30,m:30,desc:'在区间内'});}
-  else if(sc<inp.min){let p=Math.max(0,10-(inp.min-sc)/10)*3; t+=p; d.push({n:'分数匹配',s:p,m:30,desc:'低'+(inp.min-sc).toFixed(0)+'分'});}
-  else{let p=Math.max(0,10-(sc-inp.max)/10)*3; t+=p; d.push({n:'分数匹配',s:p,m:30,desc:'高'+(sc-inp.max).toFixed(0)+'分'});}
-
-  // L1: 行业 (15%)
-  if(inp.industry==="不限"){t+=12; d.push({n:'行业匹配',s:12,m:15,desc:'不限'});}
-  else if(s[7]===inp.industry||s[8]===inp.industry){t+=15; d.push({n:'行业匹配',s:15,m:15,desc:'匹配'});}
-  else if(s[7].includes(inp.industry.slice(0,2))||s[8].includes(inp.industry.slice(0,2))){t+=10.5; d.push({n:'行业匹配',s:10.5,m:15,desc:'部分'});}
-  else{t+=4.5; d.push({n:'行业匹配',s:4.5,m:15,desc:'不同'});}
-
-  // L1: 省份 (5%)
-  if(inp.province==="不限"){t+=4; d.push({n:'省份匹配',s:4,m:5,desc:'不限'});}
-  else if(s[1]===inp.province){t+=5; d.push({n:'省份匹配',s:5,m:5,desc:'同省'});}
-  else if(["华北","东北","华东","华中","华南","西南","西北"].indexOf(s[2])===["华北","东北","华东","华中","华南","西南","西北"].indexOf(
-    {"北京":"华北","天津":"华北","河北":"华北","山西":"华北","内蒙古":"华北",
-     "辽宁":"东北","吉林":"东北","黑龙江":"东北",
-     "上海":"华东","江苏":"华东","浙江":"华东","安徽":"华东","福建":"华东","江西":"华东","山东":"华东",
-     "河南":"华中","湖北":"华中","湖南":"华中",
-     "广东":"华南","广西":"华南","海南":"华南",
-     "重庆":"西南","四川":"西南","贵州":"西南","云南":"西南","西藏":"西南",
-     "陕西":"西北","甘肃":"西北","青海":"西北","宁夏":"西北","新疆":"西北"}[inp.province]||"")){
-    t+=3; d.push({n:'省份匹配',s:3,m:5,desc:'同地区'});}
-  else{t+=1; d.push({n:'省份匹配',s:1,m:5,desc:'跨区'});}
-
-  // L2: 兴趣 (8%)
-  if(inp.interest==="不限"){t+=6.4; d.push({n:'兴趣方向',s:6.4,m:8,desc:'不限'});}
-  else if(s[7].includes(inp.interest.slice(0,2))||s[8].includes(inp.interest.slice(0,2))){t+=8; d.push({n:'兴趣方向',s:8,m:8,desc:'匹配'});}
-  else if(inp.interest==="技术研发"&&s[7].includes("信息")){t+=7; d.push({n:'兴趣方向',s:7,m:8,desc:'相关'});}
-  else{t+=3.2; d.push({n:'兴趣方向',s:3.2,m:8,desc:'不同'});}
-
-  // L2: 性格 (5%)
-  const isTop=["A档","B档"].includes(s[6]);
-  if(inp.personality==="不限"){t+=4; d.push({n:'性格匹配',s:4,m:5,desc:'不限'});}
-  else if((inp.personality.includes("动手")||inp.personality.includes("合作"))&&isTop){t+=5; d.push({n:'性格匹配',s:5,m:5,desc:'动手+双高'});}
-  else if(inp.personality.includes("动手")||inp.personality.includes("合作")){t+=3.5; d.push({n:'性格匹配',s:3.5,m:5,desc:'动手'});}
-  else if(inp.personality.includes("琢磨")&&s[6]==="A档"){t+=4.5; d.push({n:'性格匹配',s:4.5,m:5,desc:'琢磨+A档'});}
-  else{t+=3; d.push({n:'性格匹配',s:3,m:5,desc:'一般'});}
-
-  // L2: 学科 (5%)
-  if(inp.subject==="不限"){t+=4; d.push({n:'学科匹配',s:4,m:5,desc:'不限'});}
-  else if(inp.subject==="数学/物理"&&(s[7].includes("装备")||s[7].includes("信息")||s[7].includes("汽车")||s[7].includes("航空")||s[7].includes("化工"))){t+=5; d.push({n:'学科匹配',s:5,m:5,desc:'数理+工科'});}
-  else if(inp.subject==="语文/英语"&&(s[7].includes("服务")||s[7].includes("文旅")||s[7].includes("管理"))){t+=5; d.push({n:'学科匹配',s:5,m:5,desc:'文史+服务'});}
-  else{t+=3; d.push({n:'学科匹配',s:3,m:5,desc:'一般'});}
-
-  // L2: 实践 (5%)
-  if(inp.practical==="不限"){t+=4; d.push({n:'实践匹配',s:4,m:5,desc:'不限'});}
-  else if((inp.practical.includes("手工")||inp.practical.includes("编程"))&&isTop){t+=5; d.push({n:'实践匹配',s:5,m:5,desc:'技能+双高'});}
-  else if(inp.practical.includes("手工")||inp.practical.includes("编程")){t+=3.5; d.push({n:'实践匹配',s:3.5,m:5,desc:'技能'});}
-  else if(inp.practical.includes("组织")||inp.practical.includes("沟通")){t+=3; d.push({n:'实践匹配',s:3,m:5,desc:'软技能'});}
-  else{t+=2.5; d.push({n:'实践匹配',s:2.5,m:5,desc:'一般'});}
-
-  // L2: 收入 (5%)
-  if(inp.income==="不限"){t+=4; d.push({n:'收入匹配',s:4,m:5,desc:'不限'});}
-  else if((s[11]==="1线"||s[11]==="经济特区")&&inp.income>="8000-10000"){t+=5; d.push({n:'收入匹配',s:5,m:5,desc:'一线+高薪'});}
-  else if(["1线","经济特区","直辖市"].includes(s[11])){t+=4; d.push({n:'收入匹配',s:4,m:5,desc:s[11]});}
-  else{t+=2.5; d.push({n:'收入匹配',s:2.5,m:5,desc:'低线'});}
-
-  // L2: 考研 (5%)
-  if(inp.exam==="未定"){t+=3.5; d.push({n:'考研匹配',s:3.5,m:5,desc:'未定'});}
-  else if(inp.exam==="是-一定要考研"){let p=s[6]==="A档"?4:(s[6]==="B档"?3.5:2.5); t+=p; d.push({n:'考研匹配',s:p,m:5,desc:s[6]});}
-  else{let p=s[6]==="A档"?4.5:(s[6]==="B档"?4:3.5); t+=p; d.push({n:'考研匹配',s:p,m:5,desc:'就业导向'});}
-
-  // L2: 校企 (4%)
-  const pn=calcPartnership(s[6],s[11],s[9]);
-  const ps=pn>=4?10:(pn>=3?7:(pn>=2?5:3));
-  t+=ps*0.4; d.push({n:'校企合作',s:(ps*0.4).toFixed(1),m:4,desc:pn.toFixed(1)+'分'});
-
-  // L2: 就业去向 (3%)
-  const et=(s[9]>=0.95||s[6]==="A档")?"优质":(s[9]>=0.90||s[6]==="B档")?"良好":"一般";
-  const es=et==="优质"?10:(et==="良好"?8:6);
-  t+=es*0.3; d.push({n:'就业去向',s:(es*0.3).toFixed(1),m:3,desc:et});
-
-  // L2: 产业配套 (3%)
-  const cs=({"1线":4.5,"经济特区":5,"直辖市":4,"2线":3.5,"3线":2.5,"4线":2,"计划单列":4})[s[11]]||2;
-  t+=cs*2*0.3; d.push({n:'产业配套',s:(cs*2*0.3).toFixed(1),m:3,desc:cs.toFixed(1)+'分'});
-
-  // L3: 费用约束 (3%)
-  if(inp.familyInc==="不限"){t+=3; d.push({n:'费用约束',s:3,m:3,desc:'不限'});}
-  else if(inp.familyInc==="5万以下"&&s[10]<=5000){t+=3; d.push({n:'费用约束',s:3,m:3,desc:'低收+低保'});}
-  else if(inp.familyInc==="5万以下"){t+=2; d.push({n:'费用约束',s:2,m:3,desc:'需注意'});}
-  else if(inp.familyInc==="5-10万"){t+=2.7; d.push({n:'费用约束',s:2.7,m:3,desc:'适中'});}
-  else{t+=2.4; d.push({n:'费用约束',s:2.4,m:3,desc:'可负担'});}
-
-  // L3: 就业紧迫 (3%)
-  if(inp.earlyWork==="不限"){t+=3; d.push({n:'就业紧迫',s:3,m:3,desc:'不限'});}
-  else if(inp.earlyWork.includes("是")&&s[10]<=5500&&s[9]>=0.92){t+=3; d.push({n:'就业紧迫',s:3,m:3,desc:'急需+低保高就业'});}
-  else if(inp.earlyWork.includes("是")){t+=2; d.push({n:'就业紧迫',s:2,m:3,desc:'需注意学费'});}
-  else{t+=2.5; d.push({n:'就业紧迫',s:2.5,m:3,desc:'可深造'});}
-
-  t=Math.round(t*10)/10;
-  let grade,badge;
-  if(t>=80){grade="⭐强烈推荐";badge="badget";}
-  else if(t>=60){grade="✅可选";badge="badgeo";}
-  else{grade="⚠️需谨慎";badge="badgec";}
-  return {t,grade,badge,d:d};
-}
-
-function calculate() {
-  const score=parseInt(document.getElementById('score').value);
-  if(!score||score<200||score>750){alert('请填写有效高考分数(200-750)');return;}
-
-  const btn=document.getElementById('calcBtn');
-  btn.disabled=true; btn.textContent='⏳ 评估中...';
-
+function go(){
+  var s=parseInt(document.getElementById('sc').value);
+  if(!s||s<200||s>750){alert('请填有效分数(200-750)');return}
+  var btn=document.getElementById('btn');btn.disabled=true;btn.textContent='评估中...';
   setTimeout(function(){
-    const inp={
-      score,province:document.getElementById('province').value,
-      industry:document.getElementById('industry').value,
-      income:document.getElementById('income').value,
-      practice:document.getElementById('practice').value,
-      exam:document.getElementById('exam').value,
-      interest:document.getElementById('interest').value,
-      personality:document.getElementById('personality').value,
-      subject:document.getElementById('subject').value,
-      practical:document.getElementById('practical').value,
-      familyInc:document.getElementById('familyIncome').value,
-      earlyWork:document.getElementById('earlyWork').value,
-      gender:document.getElementById('gender').value
-    };
-
-    let results=[];
-    for(const s of SCHOOLS){
-      if(inp.province!=="不限"&&s[1]!==inp.province) continue;
-      const r=scoreSchool(s,{...inp,min:s[3],max:s[4]});
-      results.push({school:s,...r});
-    }
-    results.sort((a,b)=>b.t-a.t);
-
-    const topN=Math.min(results.length,30);
-    const display=results.slice(0,topN);
-    const area=document.getElementById('resultArea');
-    area.style.display='block';
-    document.getElementById('resultCount').textContent='共'+results.length+'所 | 显示前'+topN+'名';
-
-    const list=document.getElementById('resultList');
-    list.innerHTML='';
-    if(display.length===0){
-      list.innerHTML='<div class="empty-state"><div class="icon">📭</div><p>没有匹配学校<br>试试扩大省份或行业</p></div>';
-      document.getElementById('summarySection').style.display='none';
-      btn.disabled=false; btn.textContent='🔍 重新评估';
-      window.scrollTo({top:area.offsetTop-10,behavior:'smooth'});
-      return;
-    }
-
-    let tc=0,oc=0,lc=0;
-    for(const r of display){if(r.t>=80)tc++;else if(r.t>=60)oc++;else lc++;}
-
-    for(let i=0;i<display.length;i++){
-      const r=display[i],rank=i+1;
-      const cc=r.t>=80?'s-high':(r.t>=60?'s-mid':'s-low');
-      const fn=r.school[10]>6000?'⚠️高':(r.school[10]>=5500?'💰中':'✅低');
-      const card=document.createElement('div');card.className='school-card';
-      const nameUrl=`https://www.baidu.com/s?wd=${encodeURIComponent(r.school[0])}`;
-      card.innerHTML='<div class="school-row1"><span class="school-name">'+rank+'. <a href="'+nameUrl+'" target="_blank" rel="noopener" style="color:#1f2937;text-decoration:none;">'+r.school[0]+'</a></span><span class="school-score '+cc+'">'+r.t.toFixed(1)+'分</span></div><div class="school-row2"><span class="tag tag-p">'+r.school[1]+'</span>'+(r.school[6]&&r.school[6]!=="无"?'<span class="tag tag-a">'+r.school[6]+'</span>':'')+'<span class="tag tag-e">就业'+(r.school[9]*100).toFixed(1)+'%</span><span class="tag tag-f">'+fn+'</span><span class="badge '+r.badge+'">'+r.grade+'</span></div><div class="school-row3">'+r.school[7]+' / '+r.school[8]+' | 学费'+r.school[10]+'元/年 | '+r.school[11]+'城市</div>';
-      list.appendChild(card);
-    }
-
-    document.getElementById('summaryContent').innerHTML='<div class="summary-grid"><div class="s-item" style="background:#ecfdf5;"><div class="num" style="color:#065f46;">'+tc+'</div><div class="lbl" style="color:#065f46;">⭐强烈推荐</div></div><div class="s-item" style="background:#fffbeb;"><div class="num" style="color:#92400e;">'+oc+'</div><div class="lbl" style="color:#92400e;">✅可选</div></div><div class="s-item" style="background:#fef2f2;"><div class="num" style="color:#991b1b;">'+lc+'</div><div class="lbl" style="color:#991b1b;">⚠️需谨慎</div></div></div><p style="font-size:12px;color:#6b7280;">💡 综合得分≥80为强烈推荐，60-80为可选，低于60需谨慎。学校名称可点击跳转百度查官网。</p>';
-    document.getElementById('summarySection').style.display='block';
-    btn.disabled=false; btn.textContent='🔍 重新评估';
-    window.scrollTo({top:area.offsetTop-10,behavior:'smooth'});
-  },200);
+    try{
+      var pr=document.getElementById('pr').value;
+      var ind=document.getElementById('ind').value;
+      var inc=document.getElementById('inc').value;
+      var prac=document.getElementById('prac').value;
+      var ex=document.getElementById('ex').value;
+      var fi=document.getElementById('fi').value;
+      var res=[];
+      for(var i=0;i<D.length;i++){
+        var d=D[i];
+        if(pr!=='不限'&&d[1]!==pr)continue;
+        var t=0;
+        if(s>=d[2]&&s<=d[3]){t+=30}else if(s<d[2]){t+=Math.max(0,10-(d[2]-s)/10)*3}else{t+=Math.max(0,10-(s-d[3])/10)*3}
+        if(ind==='不限'){t+=12}else if(d[4]===ind||d[5]===ind||d[4].indexOf(ind.slice(0,2))>-1||d[5].indexOf(ind.slice(0,2))>-1){t+=15}else{t+=4}
+        if(inc==='不限'){t+=5}else if(d[9]==='1线'&&inc>='8000-10000'){t+=5}else if(['1线','经济特区'].indexOf(d[9])>-1){t+=3.5}else{t+=2}
+        if(prac==='5-特别喜欢'){t+=8}else if(prac==='4-愿意动手'){t+=6}else if(prac==='3-一般'){t+=4}else{t+=2}
+        if(ex==='未定'){t+=5}else if(ex==='一定要考研'){t+=d[7]==='A档'?8:6}else{t+=10}
+        if(fi==='不限'){t+=3}else if(fi==='5万以下'&&d[8]<=5000){t+=3}else{t+=2}
+        var g=t>=80?'强烈推荐':(t>=60?'可选':'需谨慎');
+        res.push({n:d[0],p:d[1],sc:t,gr:g,lo:d[9],tu:d[8],em:d[6],d1:d[4],d2:d[5],lv:d[7]});
+      }
+      res.sort(function(a,b){return b.sc-a.sc});
+      var top=res.slice(0,30);
+      document.getElementById('ra').style.display='block';
+      document.getElementById('rc').textContent='共'+res.length+'所';
+      var l=document.getElementById('rl');l.innerHTML='';
+      var tc=0,oc=0,lc=0;
+      for(var i=0;i<top.length;i++){
+        var r=top[i];if(r.sc>=80)tc++;else if(r.sc>=60)oc++;else lc++;
+        var cc=r.sc>=80?'sg':(r.sc>=60?'sm':'sb');
+        var fn=r.tu>6000?'学费较高':(r.tu>=5500?'学费适中':'学费较低');
+        l.innerHTML+='<div class="sc"><div class="s1"><span class="sn">'+(i+1)+'. '+r.n+'</span><span class="sv '+cc+'">'+r.sc.toFixed(1)+'分</span></div><div class="s2"><span class="tg">'+r.p+'</span><span class="tg">'+(r.lv||'')+'</span><span class="tg">就业'+r.em+'</span><span class="tg">'+fn+'</span><span class="tg">'+r.gr+'</span></div><div class="s3">'+r.d1+' / '+r.d2+' | '+r.tu+'元/年 | '+r.lo+'城市</div></div>';
+      }
+      document.getElementById('scx').innerHTML='<div class="smt"><div class="si" style="background:#ecfdf5"><div class="n" style="color:#065f46">'+tc+'</div><div class="l" style="color:#065f46">强烈推荐</div></div><div class="si" style="background:#fffbeb"><div class="n" style="color:#92400e">'+oc+'</div><div class="l" style="color:#92400e">可选</div></div><div class="si" style="background:#fef2f2"><div class="n" style="color:#991b1b">'+lc+'</div><div class="l" style="color:#991b1b">需谨慎</div></div></div>';
+      document.getElementById('ss').style.display='block';
+    }catch(e){alert('计算异常:'+e.message)}
+    btn.disabled=false;btn.textContent='重新评估';
+    window.scrollTo(0,document.getElementById('ra').offsetTop-5);
+  },100);
 }
 </script>
 </body>
