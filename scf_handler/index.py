@@ -515,10 +515,12 @@ def main_handler(event, context):
             fmt = qs.get("format", "")
             # Browser visit (no pwd) → return the full H5 page
             if not pwd:
-                return {"statusCode": 200,
-                        "headers": {"Content-Type": "text/html; charset=utf-8",
-                                    "Access-Control-Allow-Origin": "*"},
-                        "body": HTML_PAGE}
+                return {
+                    "statusCode": 200,
+                    "isBase64Encoded": False,
+                    "headers": {"content-type": "text/html; charset=utf-8"},
+                    "body": HTML_PAGE
+                }
             # Wrong password → summary
             if pwd != ADMIN_PWD:
                 return {"statusCode": 200, "headers": headers,
