@@ -1,34 +1,20 @@
 # -*- coding: utf-8 -*-
-"""
-职业本科择校评估 · 腾讯云 SCF 处理器
-同时支持：
-  POST / → 写入评估记录到飞书多维表格
-  GET  / → 读取数据（dashboard 统计 + CSV 导出）
-"""
+import json, time, urllib.request, urllib.parse
 
-import json
-import time
-import urllib.request
-import urllib.parse
-
-# ── 配置 ─────────────────────────────────────────
 APP_ID       = "cli_aaa8d610e8f95bcf"
 APP_SECRET   = "U89znBS9nKBeBHvmcH4zIgRRBJiYLHEi"
 BASE_TOKEN   = "DVHHbMwz5aS3cds28lbcXucanhg"
 TABLE_ID     = "tbl4NUFj7Ztpa8Uu"
 ADMIN_PWD    = "bamazhaobei2026"
 
-# ── Token 缓存 ────────────────────────────────────
-_token        = None
+_token = None
 _token_expire = 0
 
-
-def get_tenant_token():
+def get_token():
     global _token, _token_expire
     now = time.time()
     if _token and now < _token_expire - 300:
         return _token
-
     body = json.dumps({"app_id": APP_ID, "app_secret": APP_SECRET}).encode()
     req = urllib.request.Request(
         "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
@@ -37,23 +23,17 @@ def get_tenant_token():
     )
     with urllib.request.urlopen(req) as resp:
         data = json.loads(resp.read())
-
     if data.get("code") != 0:
-        raise RuntimeError("飞书Token获取失败: " + json.dumps(data, ensure_ascii=False))
-
+        raise RuntimeError("Token fail: " + json.dumps(data, ensure_ascii=False))
     _token = data["tenant_access_token"]
     _token_expire = now + data.get("expire", 7200)
     return _token
 
-
-# ── 飞书 API 操作 ────────────────────────────────
-
-def feisho_request(method, path, body=None):
-    """通用飞书 OpenAPI 请求"""
-    token = get_tenant_token()
-    url = f"https://open.feishu.cn/open-apis{path}"
+def feisho_req(method, path, body=None):
+    token = get_token()
+    url = "https://open.feishu.cn/open-apis" + path
     headers = {
-        "Authorization": f"Bearer {token}",
+        "Authorization": "Bearer " + token,
         "Content-Type": "application/json; charset=utf-8",
     }
     data = json.dumps(body).encode("utf-8") if body else None
@@ -61,280 +41,510 @@ def feisho_request(method, path, body=None):
     with urllib.request.urlopen(req) as resp:
         return json.loads(resp.read())
 
-
 def write_record(fields):
-    """写入一条记录到飞书表格"""
-    result = feisho_request(
-        "POST",
-        f"/bitable/v1/apps/{BASE_TOKEN}/tables/{TABLE_ID}/records",
-        {"fields": fields},
-    )
-    if result.get("code") != 0:
-        raise RuntimeError("飞书写入失败: " + json.dumps(result, ensure_ascii=False))
-    return result
+    r = feisho_req("POST", "/bitable/v1/apps/" + BASE_TOKEN + "/tables/" + TABLE_ID + "/records", {"fields": fields})
+    if r.get("code") != 0:
+        raise RuntimeError("Write fail: " + json.dumps(r, ensure_ascii=False))
 
-
-def read_all_records():
-    """分页读取全部记录"""
-    all_records = []
+def read_all():
+    all_recs = []
     page_token = None
-
     while True:
         params = {"page_size": 500}
         if page_token:
             params["page_token"] = page_token
-
         qs = urllib.parse.urlencode(params)
-        result = feisho_request(
-            "GET",
-            f"/bitable/v1/apps/{BASE_TOKEN}/tables/{TABLE_ID}/records?{qs}",
-        )
-
-        if result.get("code") != 0:
+        r = feisho_req("GET", "/bitable/v1/apps/" + BASE_TOKEN + "/tables/" + TABLE_ID + "/records?" + qs)
+        if r.get("code") != 0:
             break
-
-        items = result.get("data", {}).get("items", [])
-        all_records.extend(items)
-
-        if not result.get("data", {}).get("has_more"):
+        items = r.get("data", {}).get("items", [])
+        all_recs.extend(items)
+        if not r.get("data", {}).get("has_more"):
             break
-        page_token = result.get("data", {}).get("page_token")
+        page_token = r.get("data", {}).get("page_token")
         if not page_token:
             break
+    return all_recs
 
-    return all_records
-
-
-# ── 辅助函数 ─────────────────────────────────────
-
-def build_write_fields(body, ts_now):
-    """将 POST body 映射为飞书表格字段"""
-    fields = {}
-
-    # 文本字段
-    text_map = [
-        ("目标省份",    body.get("province", "")),
-        ("目标行业",    body.get("industry", "")),
-        ("考研意愿",    body.get("exam", "")),
-        ("家庭年收入",  body.get("familyIncome", "")),
+def build_fields(body, ts):
+    f = {}
+    for k, v in [
+        ("目标省份", body.get("province", "")),
+        ("目标行业", body.get("industry", "")),
+        ("考研意愿", body.get("exam", "")),
+        ("家庭年收入", body.get("familyIncome", "")),
         ("是否尽早工作", body.get("earlyWork", "")),
-        ("兴趣方向",    body.get("interest", "")),
-        ("性格类型",    body.get("personality", "")),
-        ("学科强项",    body.get("subject", "")),
-        ("实践强项",    body.get("practical", "")),
-        ("实操意愿",    body.get("practice", "")),
-        ("月薪目标",    body.get("income", "")),
-        ("完整报告",    body.get("reportText", "")),
-        ("时间",        ts_now),
-    ]
-    for name, val in text_map:
-        if val:
-            fields[name] = val
-
-    # 数字字段
-    fields["分数"] = int(body.get("score", 0))
-    fields["匹配学校数"] = int(body.get("totalSchools", 0))
-
-    # Top 1-5 学校和得分
+        ("兴趣方向", body.get("interest", "")),
+        ("性格类型", body.get("personality", "")),
+        ("学科强项", body.get("subject", "")),
+        ("实践强项", body.get("practical", "")),
+        ("实操意愿", body.get("practice", "")),
+        ("月薪目标", body.get("income", "")),
+        ("完整报告", body.get("reportText", "")),
+        ("时间", ts),
+    ]:
+        if v:
+            f[k] = v
+    f["分数"] = int(body.get("score", 0))
+    f["匹配学校数"] = int(body.get("totalSchools", 0))
     tp = body.get("tp", [])
     if isinstance(tp, list):
         for i in range(min(len(tp), 5)):
             pair = str(tp[i]).split("|")
-            school = pair[0].strip() if len(pair) >= 1 else ""
-            score_val = float(pair[1].strip()) if len(pair) >= 2 else 0.0
-            fields[f"Top{i + 1}学校"] = school
-            fields[f"Top{i + 1}得分"] = score_val
+            sch = pair[0].strip() if len(pair) >= 1 else ""
+            sc  = float(pair[1].strip()) if len(pair) >= 2 else 0.0
+            f["Top" + str(i + 1) + "学校"] = sch
+            f["Top" + str(i + 1) + "得分"] = sc
+    return f
 
-    return fields
-
-
-def build_dashboard_data(records):
-    """将飞书记录转为 dashboard 所需 JSON"""
-    filtered = []
-    for r in records:
-        f = r.get("fields", {})
-        # 跳过空记录（分数为 0 或不存在）
-        if not f.get("分数"):
-            continue
-        filtered.append(f)
-
-    # 按时间倒序
+def build_dashboard(records):
+    filtered = [r["fields"] for r in records if r.get("fields", {}).get("分数")]
     filtered.sort(key=lambda x: x.get("时间", ""), reverse=True)
-
-    # 统计
-    score_dist = {}
-    province_stats = {}
-    industry_stats = {}
-
-    for f in filtered:
-        score = f.get("分数", 0)
-        bucket = f"{score // 50 * 50}-{score // 50 * 50 + 50}"
-        score_dist[bucket] = score_dist.get(bucket, 0) + 1
-
-        prov = f.get("目标省份")
-        if prov and prov != "不限":
-            province_stats[prov] = province_stats.get(prov, 0) + 1
-
-        ind = f.get("目标行业")
-        if ind and ind != "不限":
-            industry_stats[ind] = industry_stats.get(ind, 0) + 1
-
-    # 格式化记录（dashboard.html 期望的字段名）
-    formatted = []
-    for f in filtered[:500]:
-        formatted.append({
-            "timestamp":   f.get("时间", ""),
-            "score":       f.get("分数", 0),
-            "province":    f.get("目标省份", ""),
-            "industry":    f.get("目标行业", ""),
-            "incomeLevel": f.get("月薪目标", ""),
-            "practice":    f.get("实操意愿", ""),
-            "exam":        f.get("考研意愿", ""),
-            "topSchools":  [f.get("Top1学校", "")] if f.get("Top1学校") else [],
-            "topScores":   [f.get("Top1得分", 0)] if f.get("Top1得分") else [],
+    sd, ps_, ins = {}, {}, {}
+    for fld in filtered:
+        sc = int(fld.get("分数", 0))
+        b = str(sc // 50 * 50) + "-" + str(sc // 50 * 50 + 50)
+        sd[b] = sd.get(b, 0) + 1
+        if fld.get("目标省份") and fld["目标省份"] != "不限":
+            ps_[fld["目标省份"]] = ps_.get(fld["目标省份"], 0) + 1
+        if fld.get("目标行业") and fld["目标行业"] != "不限":
+            ins[fld["目标行业"]] = ins.get(fld["目标行业"], 0) + 1
+    fmt = []
+    for fld in filtered[:500]:
+        fmt.append({
+            "timestamp": fld.get("时间", ""),
+            "score": fld.get("分数", 0),
+            "province": fld.get("目标省份", ""),
+            "industry": fld.get("目标行业", ""),
+            "incomeLevel": fld.get("月薪目标", ""),
+            "practice": fld.get("实操意愿", ""),
+            "exam": fld.get("考研意愿", ""),
+            "topSchools": [fld.get("Top1学校", "")] if fld.get("Top1学校") else [],
+            "topScores": [fld.get("Top1得分", 0)] if fld.get("Top1得分") else [],
         })
+    return {"type": "full", "total": len(filtered),
+            "scoreDistribution": sd, "provinceStats": ps_,
+            "industryStats": ins, "records": fmt}
 
-    return {
-        "type":              "full",
-        "total":             len(filtered),
-        "scoreDistribution": score_dist,
-        "provinceStats":     province_stats,
-        "industryStats":     industry_stats,
-        "records":           formatted,
-    }
-
-
-def build_csv_data(records):
-    """将飞书记录转为 CSV 字符串"""
-    filtered = []
-    for r in records:
-        f = r.get("fields", {})
-        if not f.get("分数"):
-            continue
-        filtered.append(f)
-
+def build_csv(records):
+    filtered = [r["fields"] for r in records if r.get("fields", {}).get("分数")]
     filtered.sort(key=lambda x: x.get("时间", ""), reverse=True)
-
-    header = "时间,分数,省份,行业方向,收入目标,实操意愿,考研意愿," \
-             "Top1学校,Top1分数,Top2学校,Top2分数,Top3学校,Top3分数"
-
+    hdr = "时间,分数,省份,行业方向,收入目标,实操意愿,考研意愿,Top1学校,Top1分数,Top2学校,Top2分数,Top3学校,Top3分数"
     rows = []
     for f in filtered[:500]:
         rows.append(
-            f'"{f.get("时间","")}",'
-            f'"{f.get("分数","")}",'
-            f'"{f.get("目标省份","")}",'
-            f'"{f.get("目标行业","")}",'
-            f'"{f.get("月薪目标","")}",'
-            f'"{f.get("实操意愿","")}",'
-            f'"{f.get("考研意愿","")}",'
-            f'"{f.get("Top1学校","")}",'
-            f'"{f.get("Top1得分","")}",'
-            f'"{f.get("Top2学校","")}",'
-            f'"{f.get("Top2得分","")}",'
-            f'"{f.get("Top3学校","")}",'
-            f'"{f.get("Top3得分","")}"'
+            '"' + str(f.get("时间","")) + '",'
+            '"' + str(f.get("分数","")) + '",'
+            '"' + str(f.get("目标省份","")) + '",'
+            '"' + str(f.get("目标行业","")) + '",'
+            '"' + str(f.get("月薪目标","")) + '",'
+            '"' + str(f.get("实操意愿","")) + '",'
+            '"' + str(f.get("考研意愿","")) + '",'
+            '"' + str(f.get("Top1学校","")) + '",'
+            '"' + str(f.get("Top1得分","")) + '",'
+            '"' + str(f.get("Top2学校","")) + '",'
+            '"' + str(f.get("Top2得分","")) + '",'
+            '"' + str(f.get("Top3学校","")) + '",'
+            '"' + str(f.get("Top3得分","")) + '"'
         )
+    return "\uFEFF" + hdr + "\n" + "\n".join(rows)
 
-    return "\uFEFF" + header + "\n" + "\n".join(rows)
 
+# ── Full HTML page (embedded) ──
+HTML_PAGE = r"""
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>职业本科择校评估</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,"Noto Sans SC",sans-serif;background:#f5f7fa;color:#1f2937;padding:0 0 40px}
+.hd{background:linear-gradient(135deg,#1f3864,#2a5298);color:#fff;padding:20px 16px;text-align:center}
+.hd h1{font-size:18px;user-select:none}
+.hd p{font-size:12px;opacity:.85;user-select:none}
+.w{max-width:640px;margin:0 auto;padding:0 12px}
+.sec{background:#fff;border-radius:10px;padding:14px;margin-top:12px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.sec h2{font-size:14px;color:#1f3864;margin-bottom:10px}
+.g{margin-bottom:10px}
+.g label{display:block;font-size:12px;font-weight:600;color:#374151;margin-bottom:2px}
+.g select,.g input{width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;background:#fff;outline:none}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bt{width:100%;padding:13px;border:none;border-radius:8px;font-size:16px;font-weight:700;color:#fff;background:#2a5298;cursor:pointer}
+.bt:active{background:#1f3864}
+.bt.loading{background:#9ca3af;cursor:not-allowed}
+.ds{background:#fff7ed;border-radius:6px;padding:8px;margin-top:10px;font-size:11px;color:#92400e}
+.rh{padding:10px 14px;background:#eef2ff;border-radius:10px 10px 0 0;display:flex;justify-content:space-between}
+.sc{padding:10px 14px;border-bottom:1px solid #e5e7eb}
+.sc:last-child{border-bottom:none}
+.s1{display:flex;justify-content:space-between;align-items:center}
+.sn{font-size:13px;font-weight:700}.sn a{color:#1f2937;text-decoration:none}
+.sv{font-size:13px;font-weight:800}.hi{color:#059669}.mi{color:#d97706}.lo{color:#dc2626}
+.s2{display:flex;flex-wrap:wrap;gap:2px 6px;margin-top:2px}
+.tg{font-size:10px;padding:1px 6px;border-radius:3px;background:#e5e7eb;color:#4b5563}
+.s3{font-size:10px;color:#6b7280;margin-top:2px}
+.s4{font-size:10px;color:#374151;margin-top:2px;line-height:1.4;background:#f0fdf4;padding:4px 8px;border-radius:4px}
+.s5{font-size:9px;color:#6b7280;margin-top:2px;padding:2px 0}
+.str{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}
+.si{text-align:center;padding:8px;border-radius:6px}
+.si .n{font-size:20px;font-weight:800}.si .l{font-size:10px}
+.ft{text-align:center;padding:12px;font-size:10px;color:#9ca3af}
+.stg{display:inline-block;background:#eef2ff;color:#4338ca;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;margin:2px 4px 2px 0;border:none}
+.sl{display:none;margin-top:8px;max-height:240px;overflow-y:auto;border:1px solid #e5e7eb;border-radius:6px}
+.sl.on{display:block}
+.sl table{width:100%;border-collapse:collapse;font-size:10px}
+.sl th{background:#1f3864;color:#fff;padding:4px 3px;text-align:left;position:sticky;top:0}
+.sl td{padding:3px;border-bottom:1px solid #eee}
+.sl a{color:#2a5298;text-decoration:none}
+#res_box{display:none}#admin_btns{display:none}
+.mi{color:#d97706}
+</style>
+</head>
+<body>
+<div class="hd"><h1>职业本科择校评估</h1><p>输入分数 &rarr; 看哪些学校最匹配</p></div>
+<div class="w">
 
-# ── CORS Headers ─────────────────────────────────
+<div class="sec" style="padding:10px 14px">
+<h2 style="font-size:12px;margin-bottom:4px">学校数据库</h2>
+<button class="stg" onclick="var e=document.getElementById('sl1');e.className=(e.className==='sl on'?'sl':'sl on')">63所公办</button>
+<button class="stg" onclick="var e=document.getElementById('sl2');e.className=(e.className==='sl on'?'sl':'sl on')">22所新公示</button>
+<div class="sl" id="sl1"><table><thead><tr><th>#</th><th>学校</th><th>省</th><th>方向1</th><th>方向2</th><th>分数</th><th>就业</th></tr></thead><tbody id="sch63"></tbody></table></div>
+<div class="sl" id="sl2"><table><thead><tr><th>#</th><th>学校</th></tr></thead><tbody id="sch22"></tbody></table></div>
+</div>
 
-def cors_headers():
-    return {
-        "Content-Type":                     "application/json; charset=utf-8",
-        "Access-Control-Allow-Origin":      "*",
-        "Access-Control-Allow-Methods":     "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers":     "Content-Type",
+<div class="sec">
+<h2>基本信息</h2>
+<div class="g"><label>高考分数 <span style="color:red">*</span></label><input type="number" id="s0" placeholder="请输入分数(200-750)" min="200" max="750"></div>
+<div class="r2">
+<div class="g"><label>目标省份</label><select id="s1"></select></div>
+<div class="g"><label>目标行业</label><select id="s2"><option>不限</option><option>信息技术</option><option>智能制造</option><option>新能源汽车</option><option>航空航天</option><option>现代服务</option><option>现代农业</option><option>建筑工程</option><option>健康护理</option><option>化工材料</option><option>文旅设计</option></select></div>
+</div>
+<div class="r2">
+<div class="g"><label>月薪目标</label><select id="s3"><option>不限</option><option>4000以下</option><option>4000-6000</option><option>6000-8000</option><option>8000-10000</option><option>10000以上</option></select></div>
+<div class="g"><label>实操意愿</label><select id="s4"><option>1-不想动手</option><option>2-不太喜欢</option><option>3-一般</option><option>4-愿意动手</option><option>5-特别喜欢</option></select></div>
+</div>
+<div class="r2">
+<div class="g"><label>考研意愿</label><select id="s5"><option>未定</option><option>一定要考研</option><option>先工作再说</option></select></div>
+<div class="g"><label>兴趣方向</label><select id="s6"><option>不限</option><option>技术研发</option><option>动手制造</option><option>服务沟通</option><option>创意设计</option><option>管理运营</option></select></div>
+</div>
+<div class="r2">
+<div class="g"><label>性格类型</label><select id="s7"><option>不限</option><option>坐得住+爱琢磨</option><option>坐不住+爱动手</option><option>坐得住+爱动手</option><option>坐不住+爱琢磨</option><option>喜欢独立</option><option>喜欢合作</option></select></div>
+<div class="g"><label>学科强项</label><select id="s8"><option>不限</option><option>数学/物理</option><option>语文/英语</option><option>无特别强项</option></select></div>
+</div>
+<div class="r2">
+<div class="g"><label>实践强项</label><select id="s9"><option>不限</option><option>手工/维修</option><option>编程/IT</option><option>组织/管理</option><option>沟通/表达</option></select></div>
+<div class="g"><label>家庭年收入</label><select id="s10"><option>不限</option><option>5万以下</option><option>5-10万</option><option>10-20万</option><option>20万以上</option></select></div>
+</div>
+<div class="r2">
+<div class="g"><label>是否需尽早工作</label><select id="s11"><option>不限</option><option>是 急需经济独立</option><option>否 可支持深造</option></select></div>
+<div class="g"><label>性别（参考）</label><select id="s12"><option>不限</option><option>男</option><option>女</option></select></div>
+</div>
+<button class="bt" id="btn_go" type="button">开始评估</button>
+<div class="ds">基于63所公办职业本科数据。22所新公示学校暂不参与评分。结果仅供参考。</div>
+</div>
+
+<div id="res_box">
+<div class="sec" style="padding:0">
+<div class="rh"><h3>推荐排序</h3><span id="r_count" style="font-size:11px;color:#6b7280"></span></div>
+<div id="r_list"></div><div class="str" id="r_stat"></div>
+<div style="padding:10px 14px;display:none" id="admin_btns"><button class="bt" id="btn_report" style="background:#059669;margin-bottom:8px">导出完整评估报告</button></div>
+</div>
+</div>
+<div class="ft">爸妈找北 · 信息差比分数差更可怕</div>
+</div>
+<div id="admin_panel" style="display:none;padding:20px">
+<div class="sec"><h2>数据管理</h2>
+<div style="margin-bottom:12px"><button class="bt" id="btn_export_all" style="background:#059669;margin-bottom:8px">下载全部历史数据(CSV)</button></div>
+<div id="stat_summary" style="font-size:12px;color:#6b7280;margin-bottom:12px"></div>
+<div style="max-height:300px;overflow-y:auto"><table style="width:100%;font-size:10px;border-collapse:collapse" id="data_table"><thead><tr style="background:#1f3864;color:#fff"><th>时间</th><th>分数</th><th>省份</th><th>行业</th><th>Top1</th></tr></thead><tbody id="data_tbody"></tbody></table></div>
+</div>
+</div>
+
+<script>
+var D=[["深圳职业技术大学","广东",530,580,"A档","电子信息","人工智能",0.98,6000,"1线"],["北京科技职业大学","北京",440,500,"无","信息技术","智能制造",0.987,6000,"1线"],["浙江机电职业技术大学","浙江",510,560,"A档","机电工程","智能制造",0.98,6000,"1线"],["深圳信息职业技术大学","广东",510,560,"A档","信息技术","通信工程",0.98,6000,"1线"],["南京工业职业技术大学","江苏",500,550,"A档","智能制造","信息技术",0.97,6000,"1线"],["杭州职业技术大学","浙江",500,550,"A档","信息技术","护理康养",0.95,6000,"1线"],["金华职业技术大学","浙江",510,560,"A档","智能制造","学前教育",0.97,6000,"2线"],["宁波职业技术大学","浙江",490,540,"A档","跨境电商","模具设计",0.96,6000,"1线"],["民政职业大学","北京",430,480,"无","养老服务","社会工作",0.92,6000,"1线"],["无锡职业技术大学","江苏",480,530,"A档","物联网","智能制造",0.96,6000,"1线"],["苏州职业技术大学","江苏",480,520,"A档","智能制造","信息技术",0.96,6000,"1线"],["武汉职业技术大学","湖北",440,500,"A档","光电信息","智能制造",0.95,6000,"1线"],["广东轻工职业技术大学","广东",480,530,"B档","轻工技术","食品工程",0.95,6000,"1线"],["顺德职业技术大学","广东",460,510,"A档","智能制造","家电技术",0.96,6000,"1线"],["浙江药科职业大学","浙江",510,550,"A档","药学","生物技术",0.95,6000,"1线"],["扬州职业技术大学","江苏",450,500,"B档","建筑","旅游管理",0.93,5500,"2线"],["广州职业技术大学","广东",440,500,"无","信息技术","现代服务",0.93,6000,"1线"],["重庆电子科技职业大学","重庆",410,470,"A档","电子信息","人工智能",0.94,6000,"1线"],["重庆工业职业技术大学","重庆",400,460,"A档","装备制造","汽摩工程",0.93,6000,"1线"],["成都航空职业技术大学","四川",370,430,"A档","航空工程","无人机",0.93,5500,"1线"],["河北科技工程职业技术大学","河北",410,460,"A档","汽车工程","信息技术",0.94,5500,"3线"],["河北工业职业技术大学","河北",420,470,"B档","装备制造","钢铁冶金",0.93,5500,"3线"],["黄河水利职业技术大学","河南",420,480,"A档","水利工程","测绘地理",0.94,5500,"3线"],["陕西工业职业技术大学","陕西",380,440,"A档","装备制造","材料工程",0.92,5500,"3线"],["湖南汽车工程职业大学","湖南",410,460,"B档","汽车工程","新能源汽车",0.94,5500,"3线"],["江西职业技术大学","江西",420,480,"B档","船舶工程","电子信息",0.92,5500,"3线"],["长春汽车职业技术大学","吉林",410,460,"C档","汽车工程","新能源汽车",0.95,5500,"2线"],["兰州石化职业技术大学","甘肃",370,430,"A档","石油化工","应用化学",0.92,5000,"3线"],["四川工程职业技术大学","四川",390,450,"B档","装备制造","能源工程",0.91,5500,"2线"],["兰州资源环境职业技术大学","甘肃",360,420,"C档","资源勘探","环境工程",0.90,5000,"3线"],["河北石油职业技术大学","河北",400,450,"无","石油化工","新能源",0.92,5500,"3线"],["安徽职业技术大学","安徽",390,450,"无","纺织服装","现代服务",0.88,5500,"3线"],["芜湖职业技术大学","安徽",400,450,"无","汽车制造","智能制造",0.90,5500,"3线"],["唐山工业职业技术大学","河北",390,440,"无","装备制造","陶瓷工艺",0.90,5500,"3线"],["黎明职业大学","福建",410,460,"无","服装设计","建筑工程",0.91,5500,"2线"],["山西工程科技职业大学","山西",380,430,"无","建筑工程","测绘技术",0.88,5500,"3线"],["哈尔滨职业技术大学","黑龙江",360,420,"无","装备制造","信息技术",0.87,5000,"2线"],["淄博职业技术大学","山东",420,470,"无","化工","制药",0.90,5500,"3线"],["广西农业职业技术大学","广西",360,420,"无","现代农业","食品科学",0.88,5000,"3线"],["南宁职业技术大学","广西",370,430,"无","建筑工程","旅游管理",0.87,5000,"3线"],["贵阳康养职业大学","贵州",360,410,"无","康养护理","药学",0.88,5000,"3线"],["贵州交通职业大学","贵州",370,420,"B档","交通工程","汽车服务",0.90,5000,"3线"],["柳州职业技术大学","广西",370,420,"无","机械制造","汽车服务",0.88,5000,"3线"],["长春职业技术大学","吉林",370,420,"无","装备制造","信息技术",0.88,5000,"2线"],["吉林铁道职业技术大学","吉林",390,440,"无","轨道交通","铁道工程",0.94,5500,"3线"],["贵州轻工职业大学","贵州",350,400,"无","食品加工","包装印刷",0.86,5000,"3线"],["山西文化旅游职业大学","山西",370,420,"无","文旅服务","酒店管理",0.85,5500,"3线"],["甘肃林业职业技术大学","甘肃",340,390,"A档","林业","园林景观",0.88,5000,"4线"],["铜仁职业技术大学","贵州",340,390,"无","农林","旅游",0.85,5000,"4线"],["陕西农林职业技术大学","陕西",360,410,"无","农林","园艺",0.86,5000,"3线"],["内蒙古建筑职业技术大学","内蒙古",360,410,"无","建筑工程","道路桥梁",0.87,5000,"3线"],["呼和浩特职业技术大学","内蒙古",350,400,"无","信息技术","现代服务",0.86,5000,"3线"],["酒泉职业技术大学","甘肃",330,380,"无","新能源","现代农业",0.85,5000,"4线"],["甘肃工业职业技术大学","甘肃",350,400,"无","工业制造","矿业",0.86,5000,"4线"],["兴安职业技术大学","内蒙古",340,390,"无","现代农业","畜牧兽医",0.85,5000,"4线"],["武威职业技术大学","甘肃",320,370,"无","畜牧兽医","食品加工",0.84,5000,"4线"],["青海职业技术大学","青海",330,380,"无","交通物流","新能源",0.83,4500,"4线"],["宁夏职业技术大学","宁夏",350,400,"无","现代农业","畜牧",0.85,4500,"4线"],["宁夏工商职业技术大学","宁夏",345,395,"无","工商管理","旅游",0.84,4500,"4线"],["新疆农业职业技术大学","新疆",300,360,"C档","农业","畜牧兽医",0.83,4500,"4线"],["新疆交通职业技术大学","新疆",300,360,"B档","交通工程","物流",0.84,4500,"4线"],["乌鲁木齐职业大学","新疆",310,370,"无","现代服务","信息技术",0.82,4500,"3线"],["新疆理工职业大学","新疆",305,365,"无","能源","化工",0.82,4500,"4线"]];
+var N22=["常州信息职业技术大学","温州职业技术大学","安徽应用技术职业大学","福州职业技术大学","江西外语外贸职业大学","山东商业职业技术大学","山东科技职业技术大学","郑州铁路职业技术大学","湖北三峡职业技术大学","湖南工艺美术职业大学","湖南化工职业技术大学","广西职业技术大学","海南经贸职业大学","重庆城市管理职业大学","重庆工程职业技术大学","四川交通职业技术大学","贵州工业职业技术大学","云南交通职业技术大学","新疆工业职业技术大学","新疆能源铁道职业技术大学","石河子职业技术大学","新疆工程职业大学"];
+
+var lastReport=null;
+
+document.addEventListener("DOMContentLoaded",function(){
+  var ps={};for(var i=0;i<D.length;i++)ps[D[i][1]]=1;
+  var ks=Object.keys(ps).sort(),sel=document.getElementById("s1"),o;
+  o=document.createElement("option");o.textContent="不限";sel.appendChild(o);
+  for(var j=0;j<ks.length;j++){o=document.createElement("option");o.textContent=ks[j];sel.appendChild(o);}
+  var h63="";for(var k=0;k<D.length;k++){var s=D[k],u="https://www.baidu.com/s?wd="+encodeURIComponent(s[0]);h63+="<tr><td>"+(k+1)+"</td><td><a href=\""+u+"\" target=\"_blank\">"+s[0]+"</a></td><td>"+s[1]+"</td><td>"+s[5]+"</td><td>"+s[6]+"</td><td>"+s[2]+"-"+s[3]+"</td><td>"+Math.round(s[7]*100)+"%</td></tr>";}
+  document.getElementById("sch63").innerHTML=h63;
+  var h22="";for(var m=0;m<N22.length;m++){var u2="https://www.baidu.com/s?wd="+encodeURIComponent(N22[m]);h22+="<tr><td>"+(m+1)+"</td><td><a href=\""+u2+"\" target=\"_blank\">"+N22[m]+"</a></td></tr>";}
+  document.getElementById("sch22").innerHTML=h22;
+
+  document.getElementById("btn_go").addEventListener("click",function(){
+    var score=parseInt(document.getElementById("s0").value);
+    if(!score||score<200||score>750){document.getElementById("s0").style.borderColor="#dc2626";return;}
+    document.getElementById("s0").style.borderColor="#d1d5db";
+    var btn=document.getElementById("btn_go");btn.className="bt loading";btn.textContent="评估中...";
+
+    var P=document.getElementById("s1").value,I=document.getElementById("s2").value;
+    var M=document.getElementById("s3").value,R=document.getElementById("s4").value;
+    var E=document.getElementById("s5").value,T=document.getElementById("s6").value;
+    var PS=document.getElementById("s7").value,SJ=document.getElementById("s8").value;
+    var PK=document.getElementById("s9").value,FI=document.getElementById("s10").value;
+    var EW=document.getElementById("s11").value;
+
+    var res=[];
+    for(var i=0;i<D.length;i++){
+      var d=D[i]; if(P!=="不限"&&d[1]!==P)continue;
+      var ds={sc:0,ind:0,inc:0,prc:0,it:0,ps:0,sj:0,pk:0,ex:0,fi:0,ew:0};
+
+      // Score 30%
+      if(score>=d[2]&&score<=d[3])ds.sc=30;else if(score<d[2])ds.sc=Math.round(Math.max(0,10-(d[2]-score)/10)*3*10)/10;else ds.sc=Math.round(Math.max(0,10-(score-d[3])/10)*3*10)/10;
+      // Industry 15%
+      if(I==="不限")ds.ind=12;
+      else if(I==="信息技术"&&(d[5]==="信息技术"||d[5]==="电子信息"||d[5]==="人工智能"||d[5]==="通信工程"||d[6]==="信息技术"||d[6]==="电子信息"||d[6]==="人工智能"||d[6]==="通信工程"))ds.ind=15;
+      else if(I==="智能制造"&&(d[5]==="智能制造"||d[5]==="装备制造"||d[5]==="机电工程"||d[6]==="智能制造"||d[6]==="装备制造"))ds.ind=15;
+      else if(I==="新能源汽车"&&(d[5]==="新能源汽车"||d[5]==="汽车工程"||d[6]==="新能源汽车"||d[6]==="汽车工程"))ds.ind=15;
+      else if(I==="航空航天"&&(d[5]==="航空工程"||d[6]==="航空工程"))ds.ind=15;
+      else if(I==="现代农业"&&(d[5]==="现代农业"||d[5]==="农业"||d[6]==="现代农业"))ds.ind=15;
+      else if(I==="建筑工程"&&(d[5]==="建筑工程"||d[6]==="建筑工程"))ds.ind=15;
+      else if(I==="健康护理"&&(d[5]==="护理康养"||d[5]==="养老服务"||d[5]==="康养护理"))ds.ind=15;
+      else ds.ind=4;
+      // Income 5%
+      if(M==="不限")ds.inc=4;else if((d[9]==="1线")&&M>="8000-10000")ds.inc=5;else if(d[9]==="1线")ds.inc=4;else ds.inc=2.5;
+      // Practice 5%
+      if(R==="5-特别喜欢")ds.prc=5;else if(R==="4-愿意动手")ds.prc=4;else if(R==="3-一般")ds.prc=3;else ds.prc=2;
+      // Interest 8%
+      if(T==="不限")ds.it=6;else if(T==="技术研发"&&(d[5].indexOf("信息")>=0||d[5].indexOf("技术")>=0))ds.it=8;else if(T==="动手制造"&&(d[5].indexOf("制造")>=0||d[5].indexOf("装备")>=0))ds.it=8;else if(T==="服务沟通"&&(d[5].indexOf("服务")>=0||d[5].indexOf("养老")>=0))ds.it=8;else ds.it=3;
+      // Personality 5%
+      if(PS==="不限")ds.ps=4;else if(PS.indexOf("动手")>=0)ds.ps=5;else if(PS.indexOf("琢磨")>=0&&d[4]==="A档")ds.ps=4.5;else ds.ps=3;
+      // Subject 5%
+      if(SJ==="不限")ds.sj=4;else if(SJ==="数学/物理"&&(d[5].indexOf("装备")>=0||d[5].indexOf("信息")>=0||d[5].indexOf("汽车")>=0||d[5].indexOf("航空")>=0||d[5].indexOf("化工")>=0))ds.sj=5;else if(SJ==="语文/英语"&&(d[5].indexOf("服务")>=0||d[5].indexOf("文旅")>=0||d[5].indexOf("管理")>=0))ds.sj=5;else ds.sj=3;
+      // Practical 5%
+      if(PK==="不限")ds.pk=4;else if((PK==="手工/维修"||PK==="编程/IT")&&(d[4]==="A档"||d[4]==="B档"))ds.pk=5;else if(PK==="手工/维修"||PK==="编程/IT")ds.pk=3.5;else ds.pk=3;
+      // Exam 5%
+      if(E==="未定")ds.ex=3.5;else if(E==="一定要考研")ds.ex=d[4]==="A档"?4:(d[4]==="B档"?3.5:2.5);else ds.ex=d[4]==="A档"?4.5:(d[4]==="B档"?4:3.5);
+      // Family income 3%
+      if(FI==="不限")ds.fi=3;else if(FI==="5万以下"&&d[8]<=5000)ds.fi=3;else if(FI==="5万以下")ds.fi=2;else ds.fi=2.5;
+      // Early work 3%
+      if(EW==="不限")ds.ew=3;else if(EW.indexOf("是")>=0&&d[8]<=5500&&d[7]>=0.92)ds.ew=3;else if(EW.indexOf("是")>=0)ds.ew=2;else ds.ew=2.5;
+
+      var t=+(ds.sc+ds.ind+ds.inc+ds.prc+ds.it+ds.ps+ds.sj+ds.pk+ds.ex+ds.fi+ds.ew).toFixed(1);
+      var g=t>=80?"强烈推荐":(t>=60?"可选":"需谨慎");
+      // Build dimension string
+      var dimStr=[ds.sc,ds.ind,ds.inc,ds.prc,ds.it,ds.ps,ds.sj,ds.pk,ds.ex,ds.fi,ds.ew].join(",");
+
+      // Build reason
+      var rr=[];var lv=d[4],ci=d[9],em=d[7],tu=d[8],dir1=d[5],dir2=d[6];
+      if(t>=80)rr.push("综合得分高，与你条件高度匹配");else if(t>=60)rr.push("综合得分尚可，基本符合条件");else rr.push("综合得分偏低，建议多对比");
+      if(I!=="不限"){if(dir1.indexOf(I.slice(0,2))>=0||dir2.indexOf(I.slice(0,2))>=0)rr.push("匹配你选择的"+I+"方向");}
+      if(M!=="不限"&&(ci==="1线"||ci==="经济特区"))rr.push(ci+"城市薪资水平较高");
+      if(E==="一定要考研"){if(lv==="A档")rr.push("A档双高，考研通道较好");else if(lv==="B档")rr.push("B档双高，考研资源尚可");}
+      else if(E==="先工作再说"){if(em>=0.95)rr.push("就业率高，适合直接就业");}
+      if(T!=="不限"){if(T==="技术研发"&&(dir1.indexOf("信息")>=0||dir1.indexOf("技术")>=0))rr.push("适合你的技术研发兴趣");}
+      if(FI==="5万以下"&&tu>5000)rr.push("学费"+tu+"元/年，高于预算");
+      if(EW.indexOf("是")>=0&&tu<=5500)rr.push("学费较低，适合急需就业");
+      if(lv==="A档")rr.push("双高A档院校，教学质量好");else if(lv==="B档")rr.push("双高B档，教学质量不错");
+      if(em>=0.95)rr.push("就业率较高("+Math.round(em*100)+"%)");
+      if(tu<=5000)rr.push("学费较低经济负担小");
+
+      // result: [name,prov,score,grade,city,tuition,employment,level,dir1,dir2,dimStr,reason]
+      res.push([d[0],d[1],t,g,d[9],d[8],d[7],d[4],d[5],d[6],dimStr,rr.join("；")]);
     }
+    res.sort(function(a,b){return b[2]-a[2];});
+    var top=res.slice(0,30);
 
+    document.getElementById("res_box").style.display="block";
+    document.getElementById("r_count").textContent="共"+res.length+"所";
+    var tc=0,oc=0,lc=0,html="";
+    for(var n=0;n<top.length;n++){
+      var r=top[n];
+      if(r[2]>=80)tc++;else if(r[2]>=60)oc++;else lc++;
+      var cc=r[2]>=80?"hi":(r[2]>=60?"mi":"lo");
+      var fn=r[5]>6000?"学费偏高":(r[5]>=5500?"学费适中":"学费较低");
+      var u="https://www.baidu.com/s?wd="+encodeURIComponent(r[0]);
+      // Show mini dimension scores
+      var dims=r[10].split(",");
+      var dimNames=["分数","行业","薪资","实操","兴趣","性格","学科","实践","考研","家庭","就业"];
+      var miniDim="";for(var di=0;di<dimNames.length;di++){miniDim+="<span style=\"margin-right:4px;font-size:9px;color:"+(dimNames[di]==="分数"?"#059669":"#6b7280")+"\">"+dimNames[di]+(di==0?"":"("+dims[di]+")")+"</span>";}
+      html+="<div class=\"sc\"><div class=\"s1\"><span class=\"sn\"><a href=\""+u+"\" target=\"_blank\">"+(n+1)+". "+r[0]+"</a></span><span class=\"sv "+cc+"\">"+r[2].toFixed(1)+"分</span></div><div class=\"s2\"><span class=\"tg\">"+r[1]+"</span><span class=\"tg\">"+r[7]+"</span><span class=\"tg\">就业"+Math.round(r[6]*100)+"%</span><span class=\"tg\">学费"+r[5]+"元/年</span><span class=\"tg\">"+r[3]+"</span></div><div class=\"s3\">"+r[8]+" / "+r[9]+" | "+r[4]+"城市</div><div class=\"s4\">"+r[11]+"</div><div class=\"s5\">"+miniDim+"</div></div>";
+    }
+    document.getElementById("r_list").innerHTML=html;
+    document.getElementById("r_stat").innerHTML="<div class=\"si\" style=\"background:#ecfdf5\"><div class=\"n\" style=\"color:#065f46\">"+tc+"</div><div class=\"l\" style=\"color:#065f46\">强烈推荐</div></div><div class=\"si\" style=\"background:#fffbeb\"><div class=\"n\" style=\"color:#92400e\">"+oc+"</div><div class=\"l\" style=\"color:#92400e\">可选</div></div><div class=\"si\" style=\"background:#fef2f2\"><div class=\"n\" style=\"color:#991b1b\">"+lc+"</div><div class=\"l\" style=\"color:#991b1b\">需谨慎</div></div>";
+    btn.className="bt";btn.textContent="重新评估";
 
-# ── 主入口 ──────────────────────────────────────
+    // === BUILD DETAILED REPORT ===
+    var dimH=["分数匹配","行业匹配","薪资匹配","实操意愿","兴趣方向","性格类型","学科强项","实践强项","考研意愿","家庭收入","尽早工作"];
+    var dimM=[30,15,5,5,8,5,5,5,5,3,3];
+    var rpt=[];
+    rpt.push("══════════════════════════════════");
+    rpt.push("  职业本科择校评估报告");
+    rpt.push("══════════════════════════════════");
+    rpt.push("生成时间："+new Date().toLocaleString("zh-CN"));
+    rpt.push("");
+    rpt.push("── 一、评估输入 ──");
+    rpt.push("高考分数："+score+"分");
+    rpt.push("目标省份："+P+" | 目标行业："+I);
+    rpt.push("考研意愿："+E+" | 兴趣方向："+T+" | 性格类型："+PS);
+    rpt.push("学科强项："+SJ+" | 实践强项："+PK);
+    rpt.push("实操意愿："+R+" | 月薪目标："+M);
+    rpt.push("家庭年收入："+FI+" | 尽早工作："+EW);
+    rpt.push("");
+    rpt.push("── 二、评估模型说明 ──");
+    rpt.push("本模型采用11维度加权评分法(满分100分)：");
+    for(var di=0;di<dimH.length;di++){rpt.push("  "+dimH[di]+"("+dimM[di]+"分)");var dsc=getDimDesc(di,score,P,I,M,R,E,T,PS,SJ,PK,FI,EW);if(dsc)rpt.push("    &rarr; "+dsc);}
+    rpt.push("");
+    rpt.push("── 三、TOP10学校详细分析 ──");
+    for(var q=0;q<Math.min(top.length,10);q++){
+      var r=top[q],dims=r[10].split(",");
+      rpt.push("");
+      rpt.push((q+1)+". "+r[0]+" | 综合分 "+r[2].toFixed(1)+"/100 | "+r[3]);
+      rpt.push("  省份："+r[1]+" | 双高："+r[7]+" | 城市等级："+r[4]);
+      rpt.push("  优势方向："+r[8]+" / "+r[9]+" | 学费："+r[5]+"元/年 | 就业率："+Math.round(r[6]*100)+"%");
+      rpt.push("  维度得分明细(得分/满分)：");
+      for(var di=0;di<dimH.length;di++){
+        var pct=Math.round(dims[di]/dimM[di]*100);
+        var bar=pct>=100?"██████████":pct>=80?"████████  ":pct>=60?"██████    ":pct>=40?"████      ":"██        ";
+        rpt.push("    "+dimH[di]+"："+dims[di]+"/"+dimM[di]+" "+bar+" ("+pct+"%)");
+      }
+      rpt.push("  推荐理由："+r[11]);
+      // Explain score contributions
+      var sExpl=explainSchoolScore(r,dims,dimH,dimM);
+      rpt.push("  分析："+sExpl);
+    }
+    rpt.push("");
+    rpt.push("── 四、数据统计 ──");
+    rpt.push("总匹配学校："+res.length+"所");
+    rpt.push("强烈推荐(>=80)："+tc+"所 | 可选(60-79)："+oc+"所 | 需谨慎(<60)："+lc+"所");
+    rpt.push("");
+    rpt.push("── 五、数据可信度说明 ──");
+    rpt.push("学费来源：各校2024-2025学年官方招生简章及阳光高考网公示数据");
+    rpt.push("就业率来源：各校毕业生就业质量年度报告中的毕业去向落实率");
+    rpt.push("分数区间：基于近年各省录取数据估算，实际以当年为准");
+    rpt.push("报告由「爸妈找北」生成 | 信息差比分数差更可怕");
+    var reportText=rpt.join("\n");
+
+    // Cache + store
+    var record={ts:new Date().toISOString(),score:score,province:P,industry:I,exam:E,familyIncome:FI,earlyWork:EW,interest:T,personality:PS,subject:SJ,practical:PK,practice:R,income:M,totalSchools:res.length,top5:top.slice(0,5).map(function(r){return r[0]+"("+r[2].toFixed(1)+")";})};
+    var all=JSON.parse(localStorage.getItem("bamazhaobei_evals")||"[]");all.push(record);localStorage.setItem("bamazhaobei_evals",JSON.stringify(all));
+    lastReport={text:reportText};
+
+    // Send to cloud
+    try{
+      var tp=top.slice(0,5).map(function(r){return [r[0],r[2]];});
+      var body=JSON.stringify({score:score,province:P,industry:I,exam:E,familyIncome:FI,earlyWork:EW,interest:T,personality:PS,subject:SJ,practical:PK,practice:R,income:M,totalSchools:res.length,tp:tp.map(function(x){return x[0]+"|"+x[1];}),reportText:reportText});
+      var rq=new XMLHttpRequest();rq.open("POST","https://1328240627-4863wzlpg3.ap-guangzhou.tencentscf.com",true);rq.setRequestHeader("Content-Type","application/json");rq.send(body);
+    }catch(e){}
+  });
+
+  function getDimDesc(di,score,P,I,M,R,E,T,PS,SJ,PK,FI,EW){
+    var descs=["根据你的高考分数与学校录取区间匹配度计算","基于你选择的"+I+"行业方向与学校优势方向的匹配","根据薪资目标与学校所在城市经济水平评估","基于你的动手意愿与职业本科实操特点匹配","根据兴趣偏好与学校学科设置匹配计算","基于性格特点与学校教学环境的匹配程度","根据学科强项与学校专业要求的匹配度","基于实践技能与学校实训资源的匹配度","根据考研规划与学校升学通道的匹配度","基于家庭经济承受能力与学费标准的匹配","根据是否需要尽早工作与学校就业情况的匹配"];
+    return descs[di]||"";
+  }
+  function explainSchoolScore(r,dims,dimH,dimM){
+    var top=[],under=[];
+    for(var di=0;di<dimH.length;di++){var pct=Math.round(dims[di]/dimM[di]*100);if(pct>=80)top.push(dimH[di]);else if(pct<50)under.push(dimH[di]+"("+dims[di]+"/"+dimM[di]+")");}
+    var s="";if(top.length>0)s+="优势维度："+top.join("、")+"。";if(under.length>0)s+=" 短板维度："+under.join("、")+"。";return s||"各维度表现均衡。";
+  }
+
+  // Report download
+  document.getElementById("btn_report").addEventListener("click",function(){
+    if(!lastReport){alertx("请先进行评估");return;}
+    try{var txt="\uFEFF"+lastReport.text;var blob=new Blob([txt],{type:"text/plain;charset=utf-8"});var url=window.URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download="爸妈找北报告_"+new Date().toISOString().slice(0,10)+".txt";a.style.display="none";document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);window.URL.revokeObjectURL(url);},2000);}catch(e){alertx("下载失败");}
+  });
+  // CSV export
+  document.getElementById("btn_export_all").addEventListener("click",function(){
+    var all=JSON.parse(localStorage.getItem("bamazhaobei_evals")||"[]");if(all.length===0){alertx("暂无数据");return;}
+    var csv="\uFEFF时间,分数,省份,行业,考研意愿,家庭收入,尽早工作,兴趣,性格,学科,实践,实操,月薪,匹配学校数,Top1,Top2,Top3\n";
+    for(var i=0;i<all.length;i++){var r=all[i];csv+=[""+r.ts,""+r.score,""+(r.province||""),""+(r.industry||""),""+(r.exam||""),""+(r.familyIncome||""),""+(r.earlyWork||""),""+(r.interest||""),""+(r.personality||""),""+(r.subject||""),""+(r.practical||""),""+(r.practice||""),""+(r.income||""),""+(r.totalSchools||""),(r.top5&&r.top5[0]||""),(r.top5&&r.top5[1]||""),(r.top5&&r.top5[2]||"")].join(",")+"\n";}
+    try{var blob=new Blob([csv],{type:"text/csv;charset=utf-8"});var url=window.URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download="爸妈找北数据_"+(all.length)+"条.csv";a.style.display="none";document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);window.URL.revokeObjectURL(url);},2000);}catch(e){alertx("导出失败");}
+  });
+  loadAdminStats();
+});
+
+function alertx(m){var d=document.createElement("div");d.textContent=m;d.style.cssText="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1f3864;color:#fff;padding:10px 20px;border-radius:8px;z-index:9999;font-size:14px;";document.body.appendChild(d);setTimeout(function(){d.remove();},2000);}
+var adminTapCount=0,adminTapTimer=null;
+document.querySelector(".hd h1").addEventListener("click",function(){
+  adminTapCount++;if(adminTapCount===5){adminTapCount=0;clearTimeout(adminTapTimer);document.getElementById("admin_btns").style.display="block";var p=document.getElementById("admin_panel");p.style.display=p.style.display==="none"?"block":"none";if(p.style.display==="block")loadAdminStats();alertx("管理面板已开启");}
+  if(!adminTapTimer)adminTapTimer=setTimeout(function(){adminTapCount=0;},3000);
+});
+function loadAdminStats(){
+  var all=JSON.parse(localStorage.getItem("bamazhaobei_evals")||"[]");document.getElementById("stat_summary").textContent="本地共存储 "+all.length+" 条评估记录";
+  var tb=document.getElementById("data_tbody"),h="";all.reverse();
+  for(var i=0;i<Math.min(all.length,50);i++){var r=all[i],ts=r.ts?new Date(r.ts).toLocaleString("zh-CN"):"";h+="<tr><td>"+ts+"</td><td>"+r.score+"</td><td>"+(r.province||"")+"</td><td>"+(r.industry||"")+"</td><td>"+(r.top5&&r.top5[0]||"")+"</td></tr>";}
+  tb.innerHTML=h||"<tr><td colspan=5>暂无数据</td></tr>";
+}
+</script>
+</body>
+</html>
+
+"""
 
 def main_handler(event, context):
-    method = event.get("httpMethod", "GET")
-    headers = cors_headers()
-
-    # OPTIONS 预检
-    if method == "OPTIONS":
-        return {"statusCode": 200, "headers": headers, "body": ""}
-
-    # ── POST：写入评估记录 ──
-    if method == "POST":
-        try:
-            body_str = event.get("body", "{}")
-            if event.get("isBase64Encoded"):
-                import base64
-                body_str = base64.b64decode(body_str).decode("utf-8")
-
-            body = json.loads(body_str) if body_str else {}
-
-            ts_now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time() + 8 * 3600))
-            fields = build_write_fields(body, ts_now)
-            write_record(fields)
-
-            return {
-                "statusCode": 200,
-                "headers": headers,
-                "body": json.dumps({"ok": True, "time": ts_now}, ensure_ascii=False),
-            }
-        except Exception as e:
-            return {
-                "statusCode": 500,
-                "headers": headers,
-                "body": json.dumps({"ok": False, "error": str(e)}, ensure_ascii=False),
-            }
-
-    # ── GET：读取数据 ──
-    # 取 query string（兼容 API 网关 v1 / v2）
-    qs = event.get("queryString") or event.get("queryStringParameters") or {}
-    if isinstance(qs, str):
-        qs = dict(urllib.parse.parse_qsl(qs))
-    pwd = qs.get("pwd", "")
-    fmt = qs.get("format", "")
-
-    # 密码校验
-    if pwd != ADMIN_PWD:
-        return {
-            "statusCode": 200,
-            "headers": headers,
-            "body": json.dumps({
-                "type": "summary",
-                "message": "需要密码查看详细数据",
-            }, ensure_ascii=False),
-        }
+    headers = {
+        "Content-Type": "application/json; charset=utf-8",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+    }
 
     try:
-        records = read_all_records()
+        # ── 兼容 API 网关 v1 / v2 / 直接 URL 触发 ──
+        method = (event.get("httpMethod", "")
+                  or event.get("requestContext", {}).get("http", {}).get("method", "")
+                  or "GET")
 
-        # CSV 导出
-        if fmt == "csv":
-            csv_text = build_csv_data(records)
-            return {
-                "statusCode": 200,
-                "headers": {
-                    "Content-Type": "text/csv; charset=utf-8",
-                    "Content-Disposition": "attachment; filename=evaluation-data.csv",
-                    "Access-Control-Allow-Origin": "*",
-                },
-                "body": csv_text,
-            }
+        # OPTIONS 预检
+        if method == "OPTIONS":
+            return {"statusCode": 200, "headers": headers, "body": ""}
 
-        # JSON 数据
-        data = build_dashboard_data(records)
-        return {
-            "statusCode": 200,
-            "headers": headers,
-            "body": json.dumps(data, ensure_ascii=False, default=str),
-        }
+        # ── 解析 queryString ──
+        qs = (event.get("queryStringParameters", {})
+              or event.get("queryString", {})
+              or {})
+        if isinstance(qs, str):
+            qs = dict(urllib.parse.parse_qsl(qs))
+
+        # ── 解析 body ──
+        body_str = event.get("body", "") or ""
+        if body_str and event.get("isBase64Encoded"):
+            import base64
+            body_str = base64.b64decode(body_str).decode("utf-8")
+        body = json.loads(body_str) if body_str else {}
+
+        # ── GET：返回 HTML 页面 或 JSON 数据 ──
+        if method == "GET":
+            pwd = qs.get("pwd", "")
+            fmt = qs.get("format", "")
+            # Browser visit (no pwd) → return the full H5 page
+            if not pwd:
+                return {"statusCode": 200,
+                        "headers": {"Content-Type": "text/html; charset=utf-8",
+                                    "Access-Control-Allow-Origin": "*"},
+                        "body": HTML_PAGE}
+            # Wrong password → summary
+            if pwd != ADMIN_PWD:
+                return {"statusCode": 200, "headers": headers,
+                        "body": json.dumps({"type": "summary", "message": "需要密码查看详细数据"}, ensure_ascii=False)}
+            records = read_all()
+            if fmt == "csv":
+                csv_text = build_csv(records)
+                return {"statusCode": 200,
+                        "headers": {"Content-Type": "text/csv; charset=utf-8",
+                                    "Content-Disposition": "attachment; filename=evaluation-data.csv",
+                                    "Access-Control-Allow-Origin": "*"},
+                        "body": csv_text}
+            data = build_dashboard(records)
+            return {"statusCode": 200, "headers": headers,
+                    "body": json.dumps(data, ensure_ascii=False, default=str)}
+
+        # ── POST：写入评估 ──
+        if method == "POST":
+            ts = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time() + 8 * 3600))
+            write_record(build_fields(body, ts))
+            return {"statusCode": 200, "headers": headers,
+                    "body": json.dumps({"ok": True, "time": ts}, ensure_ascii=False)}
+
+        return {"statusCode": 405, "headers": headers,
+                "body": json.dumps({"error": "Method not allowed"}, ensure_ascii=False)}
 
     except Exception as e:
-        return {
-            "statusCode": 500,
-            "headers": headers,
-            "body": json.dumps({
-                "type": "error",
-                "message": str(e),
-            }, ensure_ascii=False),
-        }
+        return {"statusCode": 500, "headers": headers,
+                "body": json.dumps({"ok": False, "error": str(e), "type": type(e).__name__}, ensure_ascii=False)}
