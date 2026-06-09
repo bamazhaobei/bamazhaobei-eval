@@ -360,15 +360,19 @@ function buildShortReport(sc,top,P,I,E,T,PS,SJ,PK,R,M,FI,EW,dimH,dimM,tc,oc,lc){
 
 // === GLOBAL: Download Button Handler ===
 function doDownload(){
-  if(!window._lastReport||!window._lastEval){alertx("请先进行评估，完成后才能下载报告");return;}
+  alert("步骤1: 函数进入");
+  if(!window._lastEval){alert("步骤2: 无评估数据");return;}
+  alert("步骤3: 有数据,score="+window._lastEval.score);
   var e=window._lastEval;
+  alert("步骤4: 准备构建短报告");
   var shortRpt=buildShortReport(e.score,e.top,e.P,e.I,e.E,e.T,e.PS,e.SJ,e.PK,e.R,e.M,e.FI,e.EW,e.dimH,e.dimM,e.tc,e.oc,e.lc);
+  alert("步骤5: 报告已构建,长度="+shortRpt.length);
   var txt="\uFEFF"+shortRpt;
-  // Primary: data URI (works in all browsers)
   var dataUri="data:text/plain;charset=utf-8,"+encodeURIComponent(txt);
+  alert("步骤6: 准备打开新窗口");
   var w=window.open(dataUri,"_blank");
-  if(!w){alertx("请允许弹出窗口后重试");return;}
-  alertx("报告已在新窗口打开，可复制或保存");
+  if(!w){alert("步骤7: 窗口被拦截");return;}
+  alert("步骤8: 窗口已打开");
 
   // Track download
   try{
