@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
   // === DOWNLOAD + TRACK ===
   document.getElementById("btn_download").addEventListener("click",function(){
-    if(!lastReport||!window._lastEval){alertx("\u8BF7\u5148\u8FDB\u884C\u8BC4\u4F30");return;}
+    if(!lastReport||!window._lastEval){alertx("请先进行评估");return;}
     var e=window._lastEval;
     var shortRpt=buildShortReport(e.score,e.top,e.P,e.I,e.E,e.T,e.PS,e.SJ,e.PK,e.R,e.M,e.FI,e.EW,e.dimH,e.dimM,e.tc,e.oc,e.lc);
     try{
@@ -343,12 +343,21 @@ document.addEventListener("DOMContentLoaded",function(){
       var blob=new Blob([txt],{type:"text/plain;charset=utf-8"});
       var url=window.URL.createObjectURL(blob);
       var a=document.createElement("a");a.href=url;
-      a.download="\u7238\u5988\u627E\u5317\u62A5\u544A_"+new Date().toISOString().slice(0,10)+".txt";a.style.display="none";
+      a.download="爸妈找北报告_"+new Date().toISOString().slice(0,10)+".txt";
       document.body.appendChild(a);a.click();
-      setTimeout(function(){document.body.removeChild(a);window.URL.revokeObjectURL(url);},2000);
-    }catch(e){alertx("\u4E0B\u8F7D\u5931\u8D25");}
+      document.body.removeChild(a);
+      setTimeout(function(){window.URL.revokeObjectURL(url);},5000);
+      alertx("报告下载中，请查看浏览器下载列表");
+    }catch(ex){
+      // Fallback for WeChat/mobile: show text in new window
+      try{
+        var w=window.open("","_blank");
+        if(w){w.document.write("<pre>"+txt.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</pre>");w.document.close();}
+        else{alertx("请长按此处文字复制报告内容");}
+      }catch(ex2){alertx("下载失败，请截图保存");}
+    }
 
-    // Track download: send full report + recordId to SCF
+    // Track download
     try{
       var rid=window._lastRecordId||"";
       var trk=JSON.stringify({action:"download",recordId:rid,fullReport:lastReport.text});
