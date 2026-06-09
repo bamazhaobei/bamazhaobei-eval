@@ -94,7 +94,7 @@ body{font-family:Arial,"Noto Sans SC",sans-serif;background:#f5f7fa;color:#1f293
 <div class="sec" style="padding:0">
 <div class="rh"><h3>推荐排序</h3><span id="r_count" style="font-size:11px;color:#6b7280"></span></div>
 <div id="r_list"></div><div class="str" id="r_stat"></div>
-<div style="padding:10px 14px" id="dl_box"><button class="bt" id="btn_download" style="background:#059669" disabled>&#128196; 下载评估报告</button><div id="dl_tip" style="text-align:center;font-size:11px;color:#9ca3af;margin-top:6px;display:none">报告中包含 TOP10 学校详细维度分析</div></div>
+<div style="padding:10px 14px" id="dl_box"><button class="bt" id="btn_download" style="background:#059669" disabled onclick="doDownload()">&#128196; 下载评估报告</button><div id="dl_tip" style="text-align:center;font-size:11px;color:#9ca3af;margin-top:6px;display:none">报告中包含 TOP10 学校详细维度分析</div></div>
 <div style="padding:10px 14px;display:none" id="admin_btns"><button class="bt" id="btn_report" style="background:#059669;margin-bottom:8px">导出完整评估报告</button></div>
 </div>
 </div>
@@ -275,6 +275,7 @@ document.addEventListener("DOMContentLoaded",function(){
     var record={ts:new Date().toISOString(),score:score,province:P,industry:I,exam:E,familyIncome:FI,earlyWork:EW,interest:T,personality:PS,subject:SJ,practical:PK,practice:R,income:M,totalSchools:res.length,top5:top.slice(0,5).map(function(r){return r[0]+"("+r[2].toFixed(1)+")";})};
     var all=JSON.parse(localStorage.getItem("bamazhaobei_evals")||"[]");all.push(record);localStorage.setItem("bamazhaobei_evals",JSON.stringify(all));
     lastReport={text:reportText};
+    window._lastReport=lastReport;
 
     // Enable download button
     var dlBtn=document.getElementById("btn_download");dlBtn.disabled=false;dlBtn.textContent="\uD83D\uDCC4 下载评估报告";
@@ -292,77 +293,6 @@ document.addEventListener("DOMContentLoaded",function(){
         }catch(e){}
       };
       rq.send(body);
-    }catch(e){}
-  });
-  // === BUILD SHORT REPORT ===
-  function buildShortReport(sc,top,P,I,E,T,PS,SJ,PK,R,M,FI,EW,dimH,dimM,tc,oc,lc){
-    var sr=[];
-    sr.push("\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550");
-    sr.push("  \u7238\u5988\u627E\u5317 \u00B7 \u804C\u4E1A\u672C\u79D1\u62E9\u6821\u8BC4\u4F30\u62A5\u544A");
-    sr.push("\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550");
-    sr.push("\u751F\u6210\u65F6\u95F4\uFF1A"+new Date().toLocaleString("zh-CN"));
-    sr.push("");
-    sr.push("\u2500\u2500 \u4F60\u7684\u6761\u4EF6 \u2500\u2500");
-    sr.push("\u9AD8\u8003 "+sc+"\u5206 \u00B7 \u76EE\u6807"+(P!=="\u4E0D\u9650"?P:"\u5168\u56FD") + " \u00B7 "+(I!=="\u4E0D\u9650"?I:"\u5168\u884C\u4E1A"));
-    var extra=[];if(E!=="\u672A\u5B9A")extra.push("\u8003\u7814\uFF1A"+E);if(T!=="\u4E0D\u9650")extra.push("\u5174\u8DA3\uFF1A"+T);if(M!=="\u4E0D\u9650")extra.push("\u85AA\u8D44\uFF1A"+M);if(extra.length>0)sr.push(extra.join(" \u00B7 "));
-    sr.push("");
-    sr.push("\u2500\u2500 TOP10 \u63A8\u8350\u5B66\u6821 \u2500\u2500");
-    for(var q=0;q<Math.min(top.length,10);q++){
-      var r=top[q],dims=r[10].split(",");var gr=r[2]>=80?"\u2605\u5F3A\u70C8\u63A8\u8350":(r[2]>=60?"\u25C7\u53EF\u9009":"\u25B3\u9700\u8C28\u614E");
-      sr.push("");
-      sr.push((q+1)+". "+r[0]+" | "+r[2].toFixed(1)+"\u5206 | "+gr);
-      sr.push("   \u7701\u4EFD\uFF1A"+r[1]+" | \u53CC\u9AD8\uFF1A"+r[7]+" | \u57CE\u5E02\uFF1A"+r[4]);
-      sr.push("   \u65B9\u5411\uFF1A"+r[8]+" / "+r[9]+" | \u5B66\u8D39\uFF1A"+r[5]+"\u5143/\u5E74 | \u5C31\u4E1A\u7387\uFF1A"+Math.round(r[6]*100)+"%");
-      // Show top 3 high-score dimensions and bottom 2 low-score ones
-      var highs=[],lows=[];
-      for(var di=0;di<dimH.length;di++){
-        var pct=Math.round(dims[di]/dimM[di]*100);
-        if(pct>=80)highs.push(dimH[di]+"("+dims[di]+"/"+dimM[di]+")");
-        else if(pct<50)lows.push(dimH[di]+"("+dims[di]+"/"+dimM[di]+")");
-      }
-      if(highs.length>0)sr.push("   \u4EAE\u70B9\u7EF4\u5EA6\uFF1A"+highs.slice(0,3).join(" \u3001"));
-      if(lows.length>0)sr.push("   \u8584\u5F31\u7EF4\u5EA6\uFF1A"+lows.join(" \u3001"));
-    }
-    sr.push("");
-    sr.push("\u2500\u2500 \u6570\u636E\u6982\u89C8 \u2500\u2500");
-    sr.push("\u603B\u5339\u914D "+top.length+"\u6240\u5B66\u6821 | \u5F3A\u70C8\u63A8\u8350 "+tc+"\u6240 | \u53EF\u9009 "+oc+"\u6240 | \u9700\u8C28\u614E "+lc+"\u6240");
-    sr.push("");
-    sr.push("\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500");
-    sr.push("\u4EE5\u4E0A\u4E3A\u8BC4\u4F30\u6A21\u578B\u57FA\u4E8E 11 \u4E2A\u7EF4\u5EA6\u7684\u521D\u6B65\u5206\u6790\u3002\u5982\u679C\u62A5\u544A\u5185\u5BB9\u6709\u672A\u80FD\u89E3\u7B54\u7684\u7591\u95EE\uFF0C\u6B22\u8FCE\u79C1\u4FE1\u8054\u7CFB\u6211\uFF0C\u6211\u4F1A\u5C3D\u53EF\u80FD\u6839\u636E\u5B8C\u6574\u6570\u636E\u5E2E\u4F60\u5206\u6790\u8BF4\u660E\u3002");
-    sr.push("\u7238\u5988\u627E\u5317 \u00B7 \u4FE1\u606F\u5DEE\u6BD4\u5206\u6570\u5DEE\u66F4\u53EF\u6015");
-    return sr.join("\n");
-  }
-
-  // === DOWNLOAD + TRACK ===
-  document.getElementById("btn_download").addEventListener("click",function(){
-    if(!lastReport||!window._lastEval){alertx("请先进行评估");return;}
-    var e=window._lastEval;
-    var shortRpt=buildShortReport(e.score,e.top,e.P,e.I,e.E,e.T,e.PS,e.SJ,e.PK,e.R,e.M,e.FI,e.EW,e.dimH,e.dimM,e.tc,e.oc,e.lc);
-    try{
-      var txt="\uFEFF"+shortRpt;
-      var blob=new Blob([txt],{type:"text/plain;charset=utf-8"});
-      var url=window.URL.createObjectURL(blob);
-      var a=document.createElement("a");a.href=url;
-      a.download="爸妈找北报告_"+new Date().toISOString().slice(0,10)+".txt";
-      document.body.appendChild(a);a.click();
-      document.body.removeChild(a);
-      setTimeout(function(){window.URL.revokeObjectURL(url);},5000);
-      alertx("报告下载中，请查看浏览器下载列表");
-    }catch(ex){
-      // Fallback for WeChat/mobile: show text in new window
-      try{
-        var w=window.open("","_blank");
-        if(w){w.document.write("<pre>"+txt.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</pre>");w.document.close();}
-        else{alertx("请长按此处文字复制报告内容");}
-      }catch(ex2){alertx("下载失败，请截图保存");}
-    }
-
-    // Track download
-    try{
-      var rid=window._lastRecordId||"";
-      var trk=JSON.stringify({action:"download",recordId:rid,fullReport:lastReport.text});
-      var trq=new XMLHttpRequest();trq.open("POST","https://1328240627-4863wzlpg3.ap-guangzhou.tencentscf.com",true);
-      trq.setRequestHeader("Content-Type","application/json");trq.send(trk);
     }catch(e){}
   });
 
@@ -390,6 +320,70 @@ document.addEventListener("DOMContentLoaded",function(){
   });
   loadAdminStats();
 });
+
+// === GLOBAL: Short Report Builder ===
+function buildShortReport(sc,top,P,I,E,T,PS,SJ,PK,R,M,FI,EW,dimH,dimM,tc,oc,lc){
+  var sr=[];
+  sr.push("\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550");
+  sr.push("  \u7238\u5988\u627E\u5317 \u00B7 \u804C\u4E1A\u672C\u79D1\u62E9\u6821\u8BC4\u4F30\u62A5\u544A");
+  sr.push("\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550");
+  sr.push("\u751F\u6210\u65F6\u95F4\uFF1A"+new Date().toLocaleString("zh-CN"));
+  sr.push("");
+  sr.push("\u2500\u2500 \u4F60\u7684\u6761\u4EF6 \u2500\u2500");
+  sr.push("\u9AD8\u8003 "+sc+"\u5206 \u00B7 \u76EE\u6807"+(P!=="\u4E0D\u9650"?P:"\u5168\u56FD") + " \u00B7 "+(I!=="\u4E0D\u9650"?I:"\u5168\u884C\u4E1A"));
+  var extra=[];if(E!=="\u672A\u5B9A")extra.push("\u8003\u7814\uFF1A"+E);if(T!=="\u4E0D\u9650")extra.push("\u5174\u8DA3\uFF1A"+T);if(M!=="\u4E0D\u9650")extra.push("\u85AA\u8D44\uFF1A"+M);if(extra.length>0)sr.push(extra.join(" \u00B7 "));
+  sr.push("");
+  sr.push("\u2500\u2500 TOP10 \u63A8\u8350\u5B66\u6821 \u2500\u2500");
+  for(var q=0;q<Math.min(top.length,10);q++){
+    var r=top[q],dims=r[10].split(",");var gr=r[2]>=80?"\u2605\u5F3A\u70C8\u63A8\u8350":(r[2]>=60?"\u25C7\u53EF\u9009":"\u25B3\u9700\u8C28\u614E");
+    sr.push("");
+    sr.push((q+1)+". "+r[0]+" | "+r[2].toFixed(1)+"\u5206 | "+gr);
+    sr.push("   \u7701\u4EFD\uFF1A"+r[1]+" | \u53CC\u9AD8\uFF1A"+r[7]+" | \u57CE\u5E02\uFF1A"+r[4]);
+    sr.push("   \u65B9\u5411\uFF1A"+r[8]+" / "+r[9]+" | \u5B66\u8D39\uFF1A"+r[5]+"\u5143/\u5E74 | \u5C31\u4E1A\u7387\uFF1A"+Math.round(r[6]*100)+"%");
+    var highs=[],lows=[];
+    for(var di=0;di<dimH.length;di++){
+      var pct=Math.round(dims[di]/dimM[di]*100);
+      if(pct>=80)highs.push(dimH[di]+"("+dims[di]+"/"+dimM[di]+")");
+      else if(pct<50)lows.push(dimH[di]+"("+dims[di]+"/"+dimM[di]+")");
+    }
+    if(highs.length>0)sr.push("   \u4EAE\u70B9\u7EF4\u5EA6\uFF1A"+highs.slice(0,3).join(" \u3001"));
+    if(lows.length>0)sr.push("   \u8584\u5F31\u7EF4\u5EA6\uFF1A"+lows.join(" \u3001"));
+  }
+  sr.push("");
+  sr.push("\u2500\u2500 \u6570\u636E\u6982\u89C8 \u2500\u2500");
+  sr.push("\u603B\u5339\u914D "+top.length+"\u6240\u5B66\u6821 | \u5F3A\u70C8\u63A8\u8350 "+tc+"\u6240 | \u53EF\u9009 "+oc+"\u6240 | \u9700\u8C28\u614E "+lc+"\u6240");
+  sr.push("");
+  sr.push("\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500");
+  sr.push("\u4EE5\u4E0A\u4E3A\u8BC4\u4F30\u6A21\u578B\u57FA\u4E8E 11 \u4E2A\u7EF4\u5EA6\u7684\u521D\u6B65\u5206\u6790\u3002\u5982\u679C\u62A5\u544A\u5185\u5BB9\u6709\u672A\u80FD\u89E3\u7B54\u7684\u7591\u95EE\uFF0C\u6B22\u8FCE\u79C1\u4FE1\u8054\u7CFB\u6211\uFF0C\u6211\u4F1A\u5C3D\u53EF\u80FD\u6839\u636E\u5B8C\u6574\u6570\u636E\u5E2E\u4F60\u5206\u6790\u8BF4\u660E\u3002");
+  sr.push("\u7238\u5988\u627E\u5317 \u00B7 \u4FE1\u606F\u5DEE\u6BD4\u5206\u6570\u5DEE\u66F4\u53EF\u6015");
+  return sr.join("\n");
+}
+
+// === GLOBAL: Download Button Handler ===
+function doDownload(){
+  if(!window._lastReport||!window._lastEval){alertx("\u8BF7\u5148\u8FDB\u884C\u8BC4\u4F30");return;}
+  var e=window._lastEval;
+  var shortRpt=buildShortReport(e.score,e.top,e.P,e.I,e.E,e.T,e.PS,e.SJ,e.PK,e.R,e.M,e.FI,e.EW,e.dimH,e.dimM,e.tc,e.oc,e.lc);
+  try{
+    var txt="\uFEFF"+shortRpt;
+    var blob=new Blob([txt],{type:"text/plain;charset=utf-8"});
+    var url=window.URL.createObjectURL(blob);
+    var a=document.createElement("a");a.href=url;
+    a.download="\u7238\u5988\u627E\u5317\u62A5\u544A_"+new Date().toISOString().slice(0,10)+".txt";
+    document.body.appendChild(a);a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){window.URL.revokeObjectURL(url);},5000);
+    alertx("\u62A5\u544A\u4E0B\u8F7D\u4E2D\uFF0C\u8BF7\u67E5\u770B\u6D4F\u89C8\u5668\u4E0B\u8F7D\u5217\u8868");
+  }catch(ex){
+    try{var w=window.open("","_blank");if(w){w.document.write("<pre>"+txt.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</pre>");w.document.close();}else{alertx("\u8BF7\u957F\u6309\u590D\u5236\u62A5\u544A");}}catch(ex2){alertx("\u4E0B\u8F7D\u5931\u8D25\uFF0C\u8BF7\u622A\u56FE\u4FDD\u5B58");}
+  }
+  try{
+    var rid=window._lastRecordId||"";
+    var trk=JSON.stringify({action:"download",recordId:rid,fullReport:window._lastReport.text});
+    var trq=new XMLHttpRequest();trq.open("POST","https://1328240627-4863wzlpg3.ap-guangzhou.tencentscf.com",true);
+    trq.setRequestHeader("Content-Type","application/json");trq.send(trk);
+  }catch(e){}
+}
 
 function alertx(m){var d=document.createElement("div");d.textContent=m;d.style.cssText="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1f3864;color:#fff;padding:10px 20px;border-radius:8px;z-index:9999;font-size:14px;";document.body.appendChild(d);setTimeout(function(){d.remove();},2000);}
 var adminTapCount=0,adminTapTimer=null;
