@@ -364,21 +364,11 @@ function buildShortReport(sc,top,P,I,E,T,PS,SJ,PK,R,M,FI,EW,tc,oc,lc){
 
 // === GLOBAL: Download Button Handler ===
 function doDownload(){
-  if(!window._lastEval){alertx("请先进行评估，完成后才能下载报告");return;}
-  var e=window._lastEval;
-  var shortRpt=buildShortReport(e.score,e.top,e.P,e.I,e.E,e.T,e.PS,e.SJ,e.PK,e.R,e.M,e.FI,e.EW,e.tc,e.oc,e.lc);
-  var txt="\uFEFF"+shortRpt;
-  var dataUri="data:text/plain;charset=utf-8,"+encodeURIComponent(txt);
-  var w=window.open(dataUri,"_blank");
-  if(!w){alertx("请允许弹出窗口后重试");return;}
-  alertx("报告已在新窗口打开，可复制或保存");
-
-  try{
-    var rid=window._lastRecordId||"";
-    var trk=JSON.stringify({action:"download",recordId:rid,fullReport:(window._lastReport||{}).text||""});
-    var trq=new XMLHttpRequest();trq.open("POST","https://1328240627-4863wzlpg3.ap-guangzhou.tencentscf.com",true);
-    trq.setRequestHeader("Content-Type","application/json");trq.send(trk);
-  }catch(e){}
+  var w=window.open("","rep","width=600,height=400");
+  setTimeout(function(){
+    w.document.write("<pre>TEST\n\u7238\u5988\u627E\u5317 \u00B7 \u62A5\u544A\nLine 3</pre>");
+    w.document.close();
+  },500);
 }
 
 function alertx(m){var d=document.createElement("div");d.textContent=m;d.style.cssText="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1f3864;color:#fff;padding:10px 20px;border-radius:8px;z-index:9999;font-size:14px;";document.body.appendChild(d);setTimeout(function(){d.remove();},2000);}
