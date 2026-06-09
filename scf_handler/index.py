@@ -326,26 +326,12 @@ def main_handler(event, context):
                     return {"statusCode": 400, "headers": headers,
                             "body": json.dumps({"ok": False, "error": "missing recordId"}, ensure_ascii=False)}
 
+                # 标记下载追踪
                 ts = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time() + 8 * 3600))
-
-                # 标记是否下载 + 下载时间
-                for fname, fval in [("是否下载", "已下载"), ("下载时间", ts)]:
-                    try:
-                        update_record(record_id, {fname: fval})
-                    except Exception:
-                        pass
-
-                # 上传完整报告为附件
-                if full_report:
-                    try:
-                        file_token = upload_attachment(
-                            "爸妈找北_完整报告_" + ts[:10].replace("-", "") + ".txt",
-                            full_report.encode("utf-8")
-                        )
-                        if file_token:
-                            update_record(record_id, {"附件": [{"file_token": file_token}]})
-                    except Exception:
-                        pass
+                try:
+                    update_record(record_id, {"是否下载": "已下载", "下载时间": ts})
+                except Exception:
+                    pass
 
                 return {"statusCode": 200, "headers": headers,
                         "body": json.dumps({"ok": True, "time": ts}, ensure_ascii=False)}
