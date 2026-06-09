@@ -17,8 +17,9 @@ ADMIN_PWD    = "bamazhaobei2026"
 
 # 需要确保存在的字段 key → (name, type)
 REQUIRED_FIELDS = {
-    "是否下载": "checkbox",
-    "下载时间": "text",
+    "是否下载": ("checkbox", False),
+    "下载时间": ("text", ""),
+    "附件": ("attachment", []),
 }
 
 # ── Token 缓存 ────────────────────────────────────
@@ -70,11 +71,11 @@ def ensure_fields():
     if r.get("code") != 0:
         return
     existing = {f["name"]: f["type"] for f in r.get("data", {}).get("fields", [])}
-    for name, ftype in REQUIRED_FIELDS.items():
+    for name, (ftype, defval) in REQUIRED_FIELDS.items():
         if name not in existing:
             body = {"type": ftype, "name": name}
             if ftype == "checkbox":
-                body["defaultValue"] = False
+                body["property"] = {"defaultChecked": defval}
             feisho_req("POST", "/bitable/v1/apps/" + BASE_TOKEN + "/tables/" + TABLE_ID + "/fields", body)
     _fields_checked = True
 
@@ -250,9 +251,6 @@ def main_handler(event, context):
     }
 
     try:
-        # (ensure_fields disabled - will add manually later)
-        # ensure_fields()
-
         # 兼容 API 网关 v1 / v2
         method = (event.get("httpMethod", "")
                   or event.get("requestContext", {}).get("http", {}).get("method", "")
@@ -322,8 +320,8 @@ def main_handler(event, context):
 
                 ts = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time() + 8 * 3600))
 
-                # 标记是否下载 + 下载时间（字段可能不存在，容错）
-                for fname, fval in [("是否下载", True), ("下载时间", ts)]:
+                # 标记是否下载 + 下载时间
+                for fname, fval in [("是否下载", "已下载"), ("下载时间", ts)]:
                     try:
                         update_record(record_id, {fname: fval})
                     except Exception:
