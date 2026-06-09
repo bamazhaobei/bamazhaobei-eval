@@ -367,9 +367,14 @@ function doDownload(){
   if(!window._lastEval){alertx("请先进行评估，完成后才能下载报告");return;}
   var e=window._lastEval;
   var shortRpt=buildShortReport(e.score,e.top,e.P,e.I,e.E,e.T,e.PS,e.SJ,e.PK,e.R,e.M,e.FI,e.EW,e.tc,e.oc,e.lc);
+  var escRpt=shortRpt.replace(/&/g,"&amp;").replace(/</g,"&lt;");
   var w=window.open("","rep","width=600,height=400");
   setTimeout(function(){
-    w.document.write("<html><head><meta charset='UTF-8'><title>爸妈找北评估报告</title></head><body><pre style='white-space:pre-wrap;font-family:Consolas,monospace;font-size:13px;padding:12px;'>"+shortRpt.replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</pre></body></html>");
+    var h="<!DOCTYPE html><html><head><meta charset='UTF-8'><title>爸妈找北评估报告</title></head><body>";
+    h+="<div style='padding:10px 12px;background:#1f3864;color:#fff;font-size:13px'>爸妈找北 · 评估报告 ";
+    h+="<a href='#' onclick='var t=document.getElementById(\"rpt\").textContent;var b=new Blob([t],{type:\"text/plain;charset=utf-8\"});var a=document.createElement(\"a\");a.href=URL.createObjectURL(b);a.download=\"爸妈找北报告.txt\";a.click();return false' style='float:right;color:#fff;font-weight:bold;text-decoration:underline'>💾 保存为 .txt</a>";
+    h+="</div><pre id='rpt' style='white-space:pre-wrap;font-family:Consolas,monospace;font-size:13px;padding:12px;margin:0;line-height:1.5'>"+escRpt+"</pre></body></html>";
+    w.document.write(h);
     w.document.close();
   },500);
   alertx("报告已在新窗口打开");
