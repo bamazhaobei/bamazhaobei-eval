@@ -217,12 +217,14 @@ document.addEventListener("DOMContentLoaded",function(){
     document.getElementById("r_stat").innerHTML="<div class=\"si\" style=\"background:#ecfdf5\"><div class=\"n\" style=\"color:#065f46\">"+tc+"</div><div class=\"l\" style=\"color:#065f46\">强烈推荐</div></div><div class=\"si\" style=\"background:#fffbeb\"><div class=\"n\" style=\"color:#92400e\">"+oc+"</div><div class=\"l\" style=\"color:#92400e\">可选</div></div><div class=\"si\" style=\"background:#fef2f2\"><div class=\"n\" style=\"color:#991b1b\">"+lc+"</div><div class=\"l\" style=\"color:#991b1b\">需谨慎</div></div>";
     btn.className="bt";btn.textContent="重新评估";
 
+    // Define dimension arrays before capturing to global
+    var dimH=["分数匹配","行业匹配","薪资匹配","实操意愿","兴趣方向","性格类型","学科强项","实践强项","考研意愿","家庭收入","尽早工作"];
+    var dimM=[30,15,5,5,8,5,5,5,5,3,3];
+
     // Save all eval results to global scope for download button
     window._lastEval={score:score,top:top,P:P,I:I,E:E,T:T,PS:PS,SJ:SJ,PK:PK,R:R,M:M,FI:FI,EW:EW,dimH:dimH,dimM:dimM,tc:tc,oc:oc,lc:lc};
 
     // === BUILD DETAILED REPORT ===
-    var dimH=["分数匹配","行业匹配","薪资匹配","实操意愿","兴趣方向","性格类型","学科强项","实践强项","考研意愿","家庭收入","尽早工作"];
-    var dimM=[30,15,5,5,8,5,5,5,5,3,3];
     var rpt=[];
     rpt.push("══════════════════════════════════");
     rpt.push("  职业本科择校评估报告");
@@ -360,24 +362,18 @@ function buildShortReport(sc,top,P,I,E,T,PS,SJ,PK,R,M,FI,EW,dimH,dimM,tc,oc,lc){
 
 // === GLOBAL: Download Button Handler ===
 function doDownload(){
-  alert("步骤1: 函数进入");
-  if(!window._lastEval){alert("步骤2: 无评估数据");return;}
-  alert("步骤3: 有数据,score="+window._lastEval.score);
+  if(!window._lastEval){alertx("请先进行评估，完成后才能下载报告");return;}
   var e=window._lastEval;
-  alert("步骤4: 准备构建短报告");
   var shortRpt=buildShortReport(e.score,e.top,e.P,e.I,e.E,e.T,e.PS,e.SJ,e.PK,e.R,e.M,e.FI,e.EW,e.dimH,e.dimM,e.tc,e.oc,e.lc);
-  alert("步骤5: 报告已构建,长度="+shortRpt.length);
   var txt="\uFEFF"+shortRpt;
   var dataUri="data:text/plain;charset=utf-8,"+encodeURIComponent(txt);
-  alert("步骤6: 准备打开新窗口");
   var w=window.open(dataUri,"_blank");
-  if(!w){alert("步骤7: 窗口被拦截");return;}
-  alert("步骤8: 窗口已打开");
+  if(!w){alertx("请允许弹出窗口后重试");return;}
+  alertx("报告已在新窗口打开，可复制或保存");
 
-  // Track download
   try{
     var rid=window._lastRecordId||"";
-    var trk=JSON.stringify({action:"download",recordId:rid,fullReport:window._lastReport.text});
+    var trk=JSON.stringify({action:"download",recordId:rid,fullReport:(window._lastReport||{}).text||""});
     var trq=new XMLHttpRequest();trq.open("POST","https://1328240627-4863wzlpg3.ap-guangzhou.tencentscf.com",true);
     trq.setRequestHeader("Content-Type","application/json");trq.send(trk);
   }catch(e){}
