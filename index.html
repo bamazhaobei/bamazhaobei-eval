@@ -217,6 +217,9 @@ document.addEventListener("DOMContentLoaded",function(){
     document.getElementById("r_stat").innerHTML="<div class=\"si\" style=\"background:#ecfdf5\"><div class=\"n\" style=\"color:#065f46\">"+tc+"</div><div class=\"l\" style=\"color:#065f46\">强烈推荐</div></div><div class=\"si\" style=\"background:#fffbeb\"><div class=\"n\" style=\"color:#92400e\">"+oc+"</div><div class=\"l\" style=\"color:#92400e\">可选</div></div><div class=\"si\" style=\"background:#fef2f2\"><div class=\"n\" style=\"color:#991b1b\">"+lc+"</div><div class=\"l\" style=\"color:#991b1b\">需谨慎</div></div>";
     btn.className="bt";btn.textContent="重新评估";
 
+    // Save all eval results to global scope for download button
+    window._lastEval={score:score,top:top,P:P,I:I,E:E,T:T,PS:PS,SJ:SJ,PK:PK,R:R,M:M,FI:FI,EW:EW,dimH:dimH,dimM:dimM,tc:tc,oc:oc,lc:lc};
+
     // === BUILD DETAILED REPORT ===
     var dimH=["分数匹配","行业匹配","薪资匹配","实操意愿","兴趣方向","性格类型","学科强项","实践强项","考研意愿","家庭收入","尽早工作"];
     var dimM=[30,15,5,5,8,5,5,5,5,3,3];
@@ -332,8 +335,9 @@ document.addEventListener("DOMContentLoaded",function(){
 
   // === DOWNLOAD + TRACK ===
   document.getElementById("btn_download").addEventListener("click",function(){
-    if(!lastReport){alertx("\u8BF7\u5148\u8FDB\u884C\u8BC4\u4F30");return;}
-    var shortRpt=buildShortReport(score,top,P,I,E,T,PS,SJ,PK,R,M,FI,EW,dimH,dimM,tc,oc,lc);
+    if(!lastReport||!window._lastEval){alertx("\u8BF7\u5148\u8FDB\u884C\u8BC4\u4F30");return;}
+    var e=window._lastEval;
+    var shortRpt=buildShortReport(e.score,e.top,e.P,e.I,e.E,e.T,e.PS,e.SJ,e.PK,e.R,e.M,e.FI,e.EW,e.dimH,e.dimM,e.tc,e.oc,e.lc);
     try{
       var txt="\uFEFF"+shortRpt;
       var blob=new Blob([txt],{type:"text/plain;charset=utf-8"});
