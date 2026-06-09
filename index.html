@@ -94,7 +94,7 @@ body{font-family:Arial,"Noto Sans SC",sans-serif;background:#f5f7fa;color:#1f293
 <div class="sec" style="padding:0">
 <div class="rh"><h3>推荐排序</h3><span id="r_count" style="font-size:11px;color:#6b7280"></span></div>
 <div id="r_list"></div><div class="str" id="r_stat"></div>
-<div style="padding:10px 14px" id="dl_box"><button class="bt" id="btn_download" style="background:#059669" disabled onclick="doDownload()">&#128196; 下载评估报告</button><div id="dl_tip" style="text-align:center;font-size:11px;color:#9ca3af;margin-top:6px;display:none">报告中包含 TOP10 学校详细维度分析</div></div>
+<div style="padding:10px 14px" id="dl_box"><button class="bt" id="btn_download" style="background:#059669" onclick="doDownload()">&#128196; 下载评估报告</button><div id="dl_tip" style="text-align:center;font-size:11px;color:#9ca3af;margin-top:6px;display:none">报告中包含 TOP10 学校详细维度分析</div></div>
 <div style="padding:10px 14px;display:none" id="admin_btns"><button class="bt" id="btn_report" style="background:#059669;margin-bottom:8px">导出完整评估报告</button></div>
 </div>
 </div>
@@ -277,8 +277,7 @@ document.addEventListener("DOMContentLoaded",function(){
     lastReport={text:reportText};
     window._lastReport=lastReport;
 
-    // Enable download button
-    var dlBtn=document.getElementById("btn_download");dlBtn.disabled=false;dlBtn.textContent="\uD83D\uDCC4 下载评估报告";
+    // Show download tip
     document.getElementById("dl_tip").style.display="block";
 
     // Send full report to cloud + get recordId
@@ -361,22 +360,17 @@ function buildShortReport(sc,top,P,I,E,T,PS,SJ,PK,R,M,FI,EW,dimH,dimM,tc,oc,lc){
 
 // === GLOBAL: Download Button Handler ===
 function doDownload(){
-  if(!window._lastReport||!window._lastEval){alertx("\u8BF7\u5148\u8FDB\u884C\u8BC4\u4F30");return;}
+  if(!window._lastReport||!window._lastEval){alertx("请先进行评估，完成后才能下载报告");return;}
   var e=window._lastEval;
   var shortRpt=buildShortReport(e.score,e.top,e.P,e.I,e.E,e.T,e.PS,e.SJ,e.PK,e.R,e.M,e.FI,e.EW,e.dimH,e.dimM,e.tc,e.oc,e.lc);
-  try{
-    var txt="\uFEFF"+shortRpt;
-    var blob=new Blob([txt],{type:"text/plain;charset=utf-8"});
-    var url=window.URL.createObjectURL(blob);
-    var a=document.createElement("a");a.href=url;
-    a.download="\u7238\u5988\u627E\u5317\u62A5\u544A_"+new Date().toISOString().slice(0,10)+".txt";
-    document.body.appendChild(a);a.click();
-    document.body.removeChild(a);
-    setTimeout(function(){window.URL.revokeObjectURL(url);},5000);
-    alertx("\u62A5\u544A\u4E0B\u8F7D\u4E2D\uFF0C\u8BF7\u67E5\u770B\u6D4F\u89C8\u5668\u4E0B\u8F7D\u5217\u8868");
-  }catch(ex){
-    try{var w=window.open("","_blank");if(w){w.document.write("<pre>"+txt.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</pre>");w.document.close();}else{alertx("\u8BF7\u957F\u6309\u590D\u5236\u62A5\u544A");}}catch(ex2){alertx("\u4E0B\u8F7D\u5931\u8D25\uFF0C\u8BF7\u622A\u56FE\u4FDD\u5B58");}
-  }
+  var txt="\uFEFF"+shortRpt;
+  // Primary: data URI (works in all browsers)
+  var dataUri="data:text/plain;charset=utf-8,"+encodeURIComponent(txt);
+  var w=window.open(dataUri,"_blank");
+  if(!w){alertx("请允许弹出窗口后重试");return;}
+  alertx("报告已在新窗口打开，可复制或保存");
+
+  // Track download
   try{
     var rid=window._lastRecordId||"";
     var trk=JSON.stringify({action:"download",recordId:rid,fullReport:window._lastReport.text});
