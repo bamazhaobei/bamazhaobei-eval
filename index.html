@@ -374,7 +374,7 @@ function doDownload(){
     h+="<div style='padding:10px 12px;background:#1f3864;color:#fff;font-size:13px'>爸妈找北 · 评估报告 ";
     h+="<button id='saveBtn' style='float:right;background:#059669;color:#fff;border:none;padding:4px 12px;border-radius:4px;font-size:12px;cursor:pointer'>💾 下载 .txt</button>";
     h+="</div><pre id='rpt' style='white-space:pre-wrap;font-family:Consolas,monospace;font-size:13px;padding:12px;margin:0;line-height:1.5'>"+escRpt+"</pre>";
-    h+="<script>document.getElementById('saveBtn').onclick=function(){var t=document.getElementById('rpt').textContent;var b=new Blob(['\uFEFF'+t],{type:'text/plain;charset=utf-8'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='\u7238\u5988\u627E\u5317\u62A5\u544A.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(u)},5000)};</script>";
+    h+="<script>document.getElementById('saveBtn').onclick=function(){var t=document.getElementById('rpt').textContent;var b=new Blob(['\uFEFF'+t],{type:'text/plain;charset=utf-8'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='爸妈找北报告.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(u)},5000)};<"+"/script>";
     h+="</body></html>";
     w.document.write(h);
     w.document.close();
