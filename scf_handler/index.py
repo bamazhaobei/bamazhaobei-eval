@@ -83,28 +83,36 @@ def ensure_fields():
 # ── 附件上传 ────────────────────────────────────
 
 def upload_attachment(file_name, content_bytes):
-    """上传文件到飞书，返回 file_token"""
+    """上传文件到飞书，返回 file_token，失败返回 None"""
     boundary = "----FormBoundary" + uuid.uuid4().hex[:16]
     body_parts = [
         ("--" + boundary + "\r\n").encode(),
-        ('Content-Disposition: form-data; name="file_name"; filename="' + file_name + '"\r\n').encode(),
+        ('Content-Disposition: form-data; name="file"; filename="' + file_name + '"\r\n').encode(),
         ("Content-Type: text/plain\r\n\r\n").encode(),
         content_bytes,
         ("\r\n--" + boundary + "--\r\n").encode(),
     ]
     body = b"".join(body_parts)
+    token = get_token()
 
-    r = feisho_req(
-        "POST",
-        "/drive/v1/medias/upload_all?file_name=" + urllib.parse.quote(file_name)
-        + "&parent_type=bitable_file&parent_node=" + BASE_TOKEN
-        + "&size=" + str(len(body)),
-        body=body,
-        extra_headers={"Content-Type": "multipart/form-data; boundary=" + boundary},
-    )
-    if r.get("code") != 0:
-        raise RuntimeError("Upload fail: " + json.dumps(r, ensure_ascii=False))
-    return r.get("data", {}).get("file_token", "")
+    url = ("https://open.feishu.cn/open-apis/drive/v1/files/upload_all"
+           + "?file_name=" + urllib.parse.quote(file_name)
+           + "&parent_type=bitable_file"
+           + "&parent_node=" + BASE_TOKEN
+           + "&size=" + str(len(content_bytes)))
+    h = {
+        "Authorization": "Bearer " + token,
+        "Content-Type": "multipart/form-data; boundary=" + boundary,
+    }
+    req = urllib.request.Request(url, data=body, headers=h, method="POST")
+    try:
+        with urllib.request.urlopen(req) as resp:
+            r = json.loads(resp.read())
+        if r.get("code") == 0:
+            return r.get("data", {}).get("file_token", "")
+        return None
+    except Exception:
+        return None
 
 
 # ── 记录 CRUD ──────────────────────────────────
