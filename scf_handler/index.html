@@ -94,7 +94,7 @@ body{font-family:Arial,"Noto Sans SC",sans-serif;background:#f5f7fa;color:#1f293
 <div class="sec" style="padding:0">
 <div class="rh"><h3>推荐排序</h3><span id="r_count" style="font-size:11px;color:#6b7280"></span></div>
 <div id="r_list"></div><div class="str" id="r_stat"></div>
-<div style="padding:10px 14px" id="dl_box"><button class="bt" id="btn_download" style="background:#059669" disabled>&#128196; 下载评估报告</button><div id="dl_tip" style="text-align:center;font-size:11px;color:#9ca3af;margin-top:6px;display:none">报告中包含 TOP10 学校详细维度分析</div></div>
+<div style="padding:10px 14px" id="dl_box"><button class="bt" id="btn_download" style="background:#059669" onclick="doDownload()">&#128196; 下载评估报告</button><div id="dl_tip" style="text-align:center;font-size:11px;color:#9ca3af;margin-top:6px;display:none">报告中包含 TOP10 学校详细维度分析</div></div>
 <div style="padding:10px 14px;display:none" id="admin_btns"><button class="bt" id="btn_report" style="background:#059669;margin-bottom:8px">导出完整评估报告</button></div>
 </div>
 </div>
@@ -111,6 +111,8 @@ body{font-family:Arial,"Noto Sans SC",sans-serif;background:#f5f7fa;color:#1f293
 <script>
 var D=[["深圳职业技术大学","广东",530,580,"A档","电子信息","人工智能",0.98,6000,"1线"],["北京科技职业大学","北京",440,500,"无","信息技术","智能制造",0.987,6000,"1线"],["浙江机电职业技术大学","浙江",510,560,"A档","机电工程","智能制造",0.98,6000,"1线"],["深圳信息职业技术大学","广东",510,560,"A档","信息技术","通信工程",0.98,6000,"1线"],["南京工业职业技术大学","江苏",500,550,"A档","智能制造","信息技术",0.97,6000,"1线"],["杭州职业技术大学","浙江",500,550,"A档","信息技术","护理康养",0.95,6000,"1线"],["金华职业技术大学","浙江",510,560,"A档","智能制造","学前教育",0.97,6000,"2线"],["宁波职业技术大学","浙江",490,540,"A档","跨境电商","模具设计",0.96,6000,"1线"],["民政职业大学","北京",430,480,"无","养老服务","社会工作",0.92,6000,"1线"],["无锡职业技术大学","江苏",480,530,"A档","物联网","智能制造",0.96,6000,"1线"],["苏州职业技术大学","江苏",480,520,"A档","智能制造","信息技术",0.96,6000,"1线"],["武汉职业技术大学","湖北",440,500,"A档","光电信息","智能制造",0.95,6000,"1线"],["广东轻工职业技术大学","广东",480,530,"B档","轻工技术","食品工程",0.95,6000,"1线"],["顺德职业技术大学","广东",460,510,"A档","智能制造","家电技术",0.96,6000,"1线"],["浙江药科职业大学","浙江",510,550,"A档","药学","生物技术",0.95,6000,"1线"],["扬州职业技术大学","江苏",450,500,"B档","建筑","旅游管理",0.93,5500,"2线"],["广州职业技术大学","广东",440,500,"无","信息技术","现代服务",0.93,6000,"1线"],["重庆电子科技职业大学","重庆",410,470,"A档","电子信息","人工智能",0.94,6000,"1线"],["重庆工业职业技术大学","重庆",400,460,"A档","装备制造","汽摩工程",0.93,6000,"1线"],["成都航空职业技术大学","四川",370,430,"A档","航空工程","无人机",0.93,5500,"1线"],["河北科技工程职业技术大学","河北",410,460,"A档","汽车工程","信息技术",0.94,5500,"3线"],["河北工业职业技术大学","河北",420,470,"B档","装备制造","钢铁冶金",0.93,5500,"3线"],["黄河水利职业技术大学","河南",420,480,"A档","水利工程","测绘地理",0.94,5500,"3线"],["陕西工业职业技术大学","陕西",380,440,"A档","装备制造","材料工程",0.92,5500,"3线"],["湖南汽车工程职业大学","湖南",410,460,"B档","汽车工程","新能源汽车",0.94,5500,"3线"],["江西职业技术大学","江西",420,480,"B档","船舶工程","电子信息",0.92,5500,"3线"],["长春汽车职业技术大学","吉林",410,460,"C档","汽车工程","新能源汽车",0.95,5500,"2线"],["兰州石化职业技术大学","甘肃",370,430,"A档","石油化工","应用化学",0.92,5000,"3线"],["四川工程职业技术大学","四川",390,450,"B档","装备制造","能源工程",0.91,5500,"2线"],["兰州资源环境职业技术大学","甘肃",360,420,"C档","资源勘探","环境工程",0.90,5000,"3线"],["河北石油职业技术大学","河北",400,450,"无","石油化工","新能源",0.92,5500,"3线"],["安徽职业技术大学","安徽",390,450,"无","纺织服装","现代服务",0.88,5500,"3线"],["芜湖职业技术大学","安徽",400,450,"无","汽车制造","智能制造",0.90,5500,"3线"],["唐山工业职业技术大学","河北",390,440,"无","装备制造","陶瓷工艺",0.90,5500,"3线"],["黎明职业大学","福建",410,460,"无","服装设计","建筑工程",0.91,5500,"2线"],["山西工程科技职业大学","山西",380,430,"无","建筑工程","测绘技术",0.88,5500,"3线"],["哈尔滨职业技术大学","黑龙江",360,420,"无","装备制造","信息技术",0.87,5000,"2线"],["淄博职业技术大学","山东",420,470,"无","化工","制药",0.90,5500,"3线"],["广西农业职业技术大学","广西",360,420,"无","现代农业","食品科学",0.88,5000,"3线"],["南宁职业技术大学","广西",370,430,"无","建筑工程","旅游管理",0.87,5000,"3线"],["贵阳康养职业大学","贵州",360,410,"无","康养护理","药学",0.88,5000,"3线"],["贵州交通职业大学","贵州",370,420,"B档","交通工程","汽车服务",0.90,5000,"3线"],["柳州职业技术大学","广西",370,420,"无","机械制造","汽车服务",0.88,5000,"3线"],["长春职业技术大学","吉林",370,420,"无","装备制造","信息技术",0.88,5000,"2线"],["吉林铁道职业技术大学","吉林",390,440,"无","轨道交通","铁道工程",0.94,5500,"3线"],["贵州轻工职业大学","贵州",350,400,"无","食品加工","包装印刷",0.86,5000,"3线"],["山西文化旅游职业大学","山西",370,420,"无","文旅服务","酒店管理",0.85,5500,"3线"],["甘肃林业职业技术大学","甘肃",340,390,"A档","林业","园林景观",0.88,5000,"4线"],["铜仁职业技术大学","贵州",340,390,"无","农林","旅游",0.85,5000,"4线"],["陕西农林职业技术大学","陕西",360,410,"无","农林","园艺",0.86,5000,"3线"],["内蒙古建筑职业技术大学","内蒙古",360,410,"无","建筑工程","道路桥梁",0.87,5000,"3线"],["呼和浩特职业技术大学","内蒙古",350,400,"无","信息技术","现代服务",0.86,5000,"3线"],["酒泉职业技术大学","甘肃",330,380,"无","新能源","现代农业",0.85,5000,"4线"],["甘肃工业职业技术大学","甘肃",350,400,"无","工业制造","矿业",0.86,5000,"4线"],["兴安职业技术大学","内蒙古",340,390,"无","现代农业","畜牧兽医",0.85,5000,"4线"],["武威职业技术大学","甘肃",320,370,"无","畜牧兽医","食品加工",0.84,5000,"4线"],["青海职业技术大学","青海",330,380,"无","交通物流","新能源",0.83,4500,"4线"],["宁夏职业技术大学","宁夏",350,400,"无","现代农业","畜牧",0.85,4500,"4线"],["宁夏工商职业技术大学","宁夏",345,395,"无","工商管理","旅游",0.84,4500,"4线"],["新疆农业职业技术大学","新疆",300,360,"C档","农业","畜牧兽医",0.83,4500,"4线"],["新疆交通职业技术大学","新疆",300,360,"B档","交通工程","物流",0.84,4500,"4线"],["乌鲁木齐职业大学","新疆",310,370,"无","现代服务","信息技术",0.82,4500,"3线"],["新疆理工职业大学","新疆",305,365,"无","能源","化工",0.82,4500,"4线"]];
 var N22=["常州信息职业技术大学","温州职业技术大学","安徽应用技术职业大学","福州职业技术大学","江西外语外贸职业大学","山东商业职业技术大学","山东科技职业技术大学","郑州铁路职业技术大学","湖北三峡职业技术大学","湖南工艺美术职业大学","湖南化工职业技术大学","广西职业技术大学","海南经贸职业大学","重庆城市管理职业大学","重庆工程职业技术大学","四川交通职业技术大学","贵州工业职业技术大学","云南交通职业技术大学","新疆工业职业技术大学","新疆能源铁道职业技术大学","石河子职业技术大学","新疆工程职业大学"];
+var DIM_H=["分数匹配","行业匹配","薪资匹配","实操意愿","兴趣方向","性格类型","学科强项","实践强项","考研意愿","家庭收入","尽早工作"];
+var DIM_M=[30,15,5,5,8,5,5,5,5,3,3];
 
 var lastReport=null;
 
@@ -217,9 +219,13 @@ document.addEventListener("DOMContentLoaded",function(){
     document.getElementById("r_stat").innerHTML="<div class=\"si\" style=\"background:#ecfdf5\"><div class=\"n\" style=\"color:#065f46\">"+tc+"</div><div class=\"l\" style=\"color:#065f46\">强烈推荐</div></div><div class=\"si\" style=\"background:#fffbeb\"><div class=\"n\" style=\"color:#92400e\">"+oc+"</div><div class=\"l\" style=\"color:#92400e\">可选</div></div><div class=\"si\" style=\"background:#fef2f2\"><div class=\"n\" style=\"color:#991b1b\">"+lc+"</div><div class=\"l\" style=\"color:#991b1b\">需谨慎</div></div>";
     btn.className="bt";btn.textContent="重新评估";
 
+    // Alias global dimension arrays
+    var dimH=DIM_H,dimM=DIM_M;
+
+    // Save all eval results to global scope for download button
+    window._lastEval={score:score,top:top,P:P,I:I,E:E,T:T,PS:PS,SJ:SJ,PK:PK,R:R,M:M,FI:FI,EW:EW,tc:tc,oc:oc,lc:lc};
+
     // === BUILD DETAILED REPORT ===
-    var dimH=["分数匹配","行业匹配","薪资匹配","实操意愿","兴趣方向","性格类型","学科强项","实践强项","考研意愿","家庭收入","尽早工作"];
-    var dimM=[30,15,5,5,8,5,5,5,5,3,3];
     var rpt=[];
     rpt.push("══════════════════════════════════");
     rpt.push("  职业本科择校评估报告");
@@ -272,9 +278,9 @@ document.addEventListener("DOMContentLoaded",function(){
     var record={ts:new Date().toISOString(),score:score,province:P,industry:I,exam:E,familyIncome:FI,earlyWork:EW,interest:T,personality:PS,subject:SJ,practical:PK,practice:R,income:M,totalSchools:res.length,top5:top.slice(0,5).map(function(r){return r[0]+"("+r[2].toFixed(1)+")";})};
     var all=JSON.parse(localStorage.getItem("bamazhaobei_evals")||"[]");all.push(record);localStorage.setItem("bamazhaobei_evals",JSON.stringify(all));
     lastReport={text:reportText};
+    window._lastReport=lastReport;
 
-    // Enable download button
-    var dlBtn=document.getElementById("btn_download");dlBtn.disabled=false;dlBtn.textContent="\uD83D\uDCC4 下载评估报告";
+    // Show download tip
     document.getElementById("dl_tip").style.display="block";
 
     // Send full report to cloud + get recordId
@@ -289,67 +295,6 @@ document.addEventListener("DOMContentLoaded",function(){
         }catch(e){}
       };
       rq.send(body);
-    }catch(e){}
-  });
-  // === BUILD SHORT REPORT ===
-  function buildShortReport(sc,top,P,I,E,T,PS,SJ,PK,R,M,FI,EW,dimH,dimM,tc,oc,lc){
-    var sr=[];
-    sr.push("\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550");
-    sr.push("  \u7238\u5988\u627E\u5317 \u00B7 \u804C\u4E1A\u672C\u79D1\u62E9\u6821\u8BC4\u4F30\u62A5\u544A");
-    sr.push("\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550");
-    sr.push("\u751F\u6210\u65F6\u95F4\uFF1A"+new Date().toLocaleString("zh-CN"));
-    sr.push("");
-    sr.push("\u2500\u2500 \u4F60\u7684\u6761\u4EF6 \u2500\u2500");
-    sr.push("\u9AD8\u8003 "+sc+"\u5206 \u00B7 \u76EE\u6807"+(P!=="\u4E0D\u9650"?P:"\u5168\u56FD") + " \u00B7 "+(I!=="\u4E0D\u9650"?I:"\u5168\u884C\u4E1A"));
-    var extra=[];if(E!=="\u672A\u5B9A")extra.push("\u8003\u7814\uFF1A"+E);if(T!=="\u4E0D\u9650")extra.push("\u5174\u8DA3\uFF1A"+T);if(M!=="\u4E0D\u9650")extra.push("\u85AA\u8D44\uFF1A"+M);if(extra.length>0)sr.push(extra.join(" \u00B7 "));
-    sr.push("");
-    sr.push("\u2500\u2500 TOP10 \u63A8\u8350\u5B66\u6821 \u2500\u2500");
-    for(var q=0;q<Math.min(top.length,10);q++){
-      var r=top[q],dims=r[10].split(",");var gr=r[2]>=80?"\u2605\u5F3A\u70C8\u63A8\u8350":(r[2]>=60?"\u25C7\u53EF\u9009":"\u25B3\u9700\u8C28\u614E");
-      sr.push("");
-      sr.push((q+1)+". "+r[0]+" | "+r[2].toFixed(1)+"\u5206 | "+gr);
-      sr.push("   \u7701\u4EFD\uFF1A"+r[1]+" | \u53CC\u9AD8\uFF1A"+r[7]+" | \u57CE\u5E02\uFF1A"+r[4]);
-      sr.push("   \u65B9\u5411\uFF1A"+r[8]+" / "+r[9]+" | \u5B66\u8D39\uFF1A"+r[5]+"\u5143/\u5E74 | \u5C31\u4E1A\u7387\uFF1A"+Math.round(r[6]*100)+"%");
-      // Show top 3 high-score dimensions and bottom 2 low-score ones
-      var highs=[],lows=[];
-      for(var di=0;di<dimH.length;di++){
-        var pct=Math.round(dims[di]/dimM[di]*100);
-        if(pct>=80)highs.push(dimH[di]+"("+dims[di]+"/"+dimM[di]+")");
-        else if(pct<50)lows.push(dimH[di]+"("+dims[di]+"/"+dimM[di]+")");
-      }
-      if(highs.length>0)sr.push("   \u4EAE\u70B9\u7EF4\u5EA6\uFF1A"+highs.slice(0,3).join(" \u3001"));
-      if(lows.length>0)sr.push("   \u8584\u5F31\u7EF4\u5EA6\uFF1A"+lows.join(" \u3001"));
-    }
-    sr.push("");
-    sr.push("\u2500\u2500 \u6570\u636E\u6982\u89C8 \u2500\u2500");
-    sr.push("\u603B\u5339\u914D "+top.length+"\u6240\u5B66\u6821 | \u5F3A\u70C8\u63A8\u8350 "+tc+"\u6240 | \u53EF\u9009 "+oc+"\u6240 | \u9700\u8C28\u614E "+lc+"\u6240");
-    sr.push("");
-    sr.push("\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500");
-    sr.push("\u4EE5\u4E0A\u4E3A\u8BC4\u4F30\u6A21\u578B\u57FA\u4E8E 11 \u4E2A\u7EF4\u5EA6\u7684\u521D\u6B65\u5206\u6790\u3002\u5982\u679C\u62A5\u544A\u5185\u5BB9\u6709\u672A\u80FD\u89E3\u7B54\u7684\u7591\u95EE\uFF0C\u6B22\u8FCE\u79C1\u4FE1\u8054\u7CFB\u6211\uFF0C\u6211\u4F1A\u5C3D\u53EF\u80FD\u6839\u636E\u5B8C\u6574\u6570\u636E\u5E2E\u4F60\u5206\u6790\u8BF4\u660E\u3002");
-    sr.push("\u7238\u5988\u627E\u5317 \u00B7 \u4FE1\u606F\u5DEE\u6BD4\u5206\u6570\u5DEE\u66F4\u53EF\u6015");
-    return sr.join("\n");
-  }
-
-  // === DOWNLOAD + TRACK ===
-  document.getElementById("btn_download").addEventListener("click",function(){
-    if(!lastReport){alertx("\u8BF7\u5148\u8FDB\u884C\u8BC4\u4F30");return;}
-    var shortRpt=buildShortReport(score,top,P,I,E,T,PS,SJ,PK,R,M,FI,EW,dimH,dimM,tc,oc,lc);
-    try{
-      var txt="\uFEFF"+shortRpt;
-      var blob=new Blob([txt],{type:"text/plain;charset=utf-8"});
-      var url=window.URL.createObjectURL(blob);
-      var a=document.createElement("a");a.href=url;
-      a.download="\u7238\u5988\u627E\u5317\u62A5\u544A_"+new Date().toISOString().slice(0,10)+".txt";a.style.display="none";
-      document.body.appendChild(a);a.click();
-      setTimeout(function(){document.body.removeChild(a);window.URL.revokeObjectURL(url);},2000);
-    }catch(e){alertx("\u4E0B\u8F7D\u5931\u8D25");}
-
-    // Track download: send full report + recordId to SCF
-    try{
-      var rid=window._lastRecordId||"";
-      var trk=JSON.stringify({action:"download",recordId:rid,fullReport:lastReport.text});
-      var trq=new XMLHttpRequest();trq.open("POST","https://1328240627-4863wzlpg3.ap-guangzhou.tencentscf.com",true);
-      trq.setRequestHeader("Content-Type","application/json");trq.send(trk);
     }catch(e){}
   });
 
@@ -377,6 +322,70 @@ document.addEventListener("DOMContentLoaded",function(){
   });
   loadAdminStats();
 });
+
+// === GLOBAL: Short Report Builder ===
+function buildShortReport(sc,top,P,I,E,T,PS,SJ,PK,R,M,FI,EW,tc,oc,lc){
+  var dimH=DIM_H,dimM=DIM_M;
+  var sr=[];
+  sr.push("\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550");
+  sr.push("  \u7238\u5988\u627E\u5317 \u00B7 \u804C\u4E1A\u672C\u79D1\u62E9\u6821\u8BC4\u4F30\u62A5\u544A");
+  sr.push("\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550");
+  sr.push("\u751F\u6210\u65F6\u95F4\uFF1A"+new Date().toLocaleString("zh-CN"));
+  sr.push("");
+  sr.push("\u2500\u2500 \u4F60\u7684\u6761\u4EF6 \u2500\u2500");
+  sr.push("\u9AD8\u8003 "+sc+"\u5206 \u00B7 \u76EE\u6807"+(P!=="\u4E0D\u9650"?P:"\u5168\u56FD") + " \u00B7 "+(I!=="\u4E0D\u9650"?I:"\u5168\u884C\u4E1A"));
+  var extra=[];if(E!=="\u672A\u5B9A")extra.push("\u8003\u7814\uFF1A"+E);if(T!=="\u4E0D\u9650")extra.push("\u5174\u8DA3\uFF1A"+T);if(M!=="\u4E0D\u9650")extra.push("\u85AA\u8D44\uFF1A"+M);if(extra.length>0)sr.push(extra.join(" \u00B7 "));
+  sr.push("");
+  sr.push("\u2500\u2500 TOP10 \u63A8\u8350\u5B66\u6821 \u2500\u2500");
+  for(var q=0;q<Math.min(top.length,10);q++){
+    var r=top[q],dims=r[10].split(",");var gr=r[2]>=80?"\u2605\u5F3A\u70C8\u63A8\u8350":(r[2]>=60?"\u25C7\u53EF\u9009":"\u25B3\u9700\u8C28\u614E");
+    sr.push("");
+    sr.push((q+1)+". "+r[0]+" | "+r[2].toFixed(1)+"\u5206 | "+gr);
+    sr.push("   \u7701\u4EFD\uFF1A"+r[1]+" | \u53CC\u9AD8\uFF1A"+r[7]+" | \u57CE\u5E02\uFF1A"+r[4]);
+    sr.push("   \u65B9\u5411\uFF1A"+r[8]+" / "+r[9]+" | \u5B66\u8D39\uFF1A"+r[5]+"\u5143/\u5E74 | \u5C31\u4E1A\u7387\uFF1A"+Math.round(r[6]*100)+"%");
+    var highs=[],lows=[];
+    for(var di=0;di<dimH.length;di++){
+      var pct=Math.round(dims[di]/dimM[di]*100);
+      if(pct>=80)highs.push(dimH[di]+"("+dims[di]+"/"+dimM[di]+")");
+      else if(pct<50)lows.push(dimH[di]+"("+dims[di]+"/"+dimM[di]+")");
+    }
+    if(highs.length>0)sr.push("   \u4EAE\u70B9\u7EF4\u5EA6\uFF1A"+highs.slice(0,3).join(" \u3001"));
+    if(lows.length>0)sr.push("   \u8584\u5F31\u7EF4\u5EA6\uFF1A"+lows.join(" \u3001"));
+  }
+  sr.push("");
+  sr.push("\u2500\u2500 \u6570\u636E\u6982\u89C8 \u2500\u2500");
+  sr.push("\u603B\u5339\u914D "+top.length+"\u6240\u5B66\u6821 | \u5F3A\u70C8\u63A8\u8350 "+tc+"\u6240 | \u53EF\u9009 "+oc+"\u6240 | \u9700\u8C28\u614E "+lc+"\u6240");
+  sr.push("");
+  sr.push("\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500");
+  sr.push("\u4EE5\u4E0A\u4E3A\u8BC4\u4F30\u6A21\u578B\u57FA\u4E8E 11 \u4E2A\u7EF4\u5EA6\u7684\u521D\u6B65\u5206\u6790\u3002\u5982\u679C\u62A5\u544A\u5185\u5BB9\u6709\u672A\u80FD\u89E3\u7B54\u7684\u7591\u95EE\uFF0C\u6B22\u8FCE\u79C1\u4FE1\u8054\u7CFB\u6211\uFF0C\u6211\u4F1A\u5C3D\u53EF\u80FD\u6839\u636E\u5B8C\u6574\u6570\u636E\u5E2E\u4F60\u5206\u6790\u8BF4\u660E\u3002");
+  sr.push("\u7238\u5988\u627E\u5317 \u00B7 \u4FE1\u606F\u5DEE\u6BD4\u5206\u6570\u5DEE\u66F4\u53EF\u6015");
+  return sr.join("\n");
+}
+
+// === GLOBAL: Download Button Handler ===
+function doDownload(){
+  if(!window._lastEval){alertx("请先进行评估，完成后才能下载报告");return;}
+  var e=window._lastEval;
+  var shortRpt=buildShortReport(e.score,e.top,e.P,e.I,e.E,e.T,e.PS,e.SJ,e.PK,e.R,e.M,e.FI,e.EW,e.tc,e.oc,e.lc);
+  var escRpt=shortRpt.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+  var w=window.open("","rep","width=600,height=400");
+  setTimeout(function(){
+    var h="<!DOCTYPE html><html><head><meta charset='UTF-8'><title>爸妈找北评估报告</title></head><body>";
+    h+="<div style='padding:10px 12px;background:#1f3864;color:#fff;font-size:13px'>爸妈找北 · 评估报告 ";
+    h+="<a href='#' onclick='var t=document.getElementById(\"rpt\").textContent;var b=new Blob([t],{type:\"text/plain;charset=utf-8\"});var a=document.createElement(\"a\");a.href=URL.createObjectURL(b);a.download=\"爸妈找北报告.txt\";a.click();return false' style='float:right;color:#fff;font-weight:bold;text-decoration:underline'>💾 保存为 .txt</a>";
+    h+="</div><pre id='rpt' style='white-space:pre-wrap;font-family:Consolas,monospace;font-size:13px;padding:12px;margin:0;line-height:1.5'>"+escRpt+"</pre></body></html>";
+    w.document.write(h);
+    w.document.close();
+  },500);
+  alertx("报告已在新窗口打开");
+
+  try{
+    var rid=window._lastRecordId||"";
+    var trk=JSON.stringify({action:"download",recordId:rid,fullReport:(window._lastReport||{}).text||""});
+    var trq=new XMLHttpRequest();trq.open("POST","https://1328240627-4863wzlpg3.ap-guangzhou.tencentscf.com",true);
+    trq.setRequestHeader("Content-Type","application/json");trq.send(trk);
+  }catch(e){}
+}
 
 function alertx(m){var d=document.createElement("div");d.textContent=m;d.style.cssText="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1f3864;color:#fff;padding:10px 20px;border-radius:8px;z-index:9999;font-size:14px;";document.body.appendChild(d);setTimeout(function(){d.remove();},2000);}
 var adminTapCount=0,adminTapTimer=null;

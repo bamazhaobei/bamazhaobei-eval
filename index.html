@@ -372,7 +372,7 @@ function doDownload(){
   setTimeout(function(){
     var h="<!DOCTYPE html><html><head><meta charset='UTF-8'><title>爸妈找北评估报告</title></head><body>";
     h+="<div style='padding:10px 12px;background:#1f3864;color:#fff;font-size:13px'>爸妈找北 · 评估报告 ";
-    h+="<a href='#' onclick='var t=document.getElementById(\"rpt\").textContent;var b=new Blob([t],{type:\"text/plain;charset=utf-8\"});var a=document.createElement(\"a\");a.href=URL.createObjectURL(b);a.download=\"爸妈找北报告.txt\";a.click();return false' style='float:right;color:#fff;font-weight:bold;text-decoration:underline'>💾 保存为 .txt</a>";
+    h+="<button onclick='navigator.clipboard.writeText(document.getElementById(\"rpt\").textContent).then(function(){alert(\"报告已复制到剪贴板，可粘贴到备忘录或发给朋友\")}).catch(function(){alert(\"请手动全选复制(Ctrl+A, Ctrl+C)\")})' style='float:right;background:#059669;color:#fff;border:none;padding:4px 12px;border-radius:4px;font-size:12px;cursor:pointer'>📋 一键复制</button>";
     h+="</div><pre id='rpt' style='white-space:pre-wrap;font-family:Consolas,monospace;font-size:13px;padding:12px;margin:0;line-height:1.5'>"+escRpt+"</pre></body></html>";
     w.document.write(h);
     w.document.close();

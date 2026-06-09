@@ -250,8 +250,8 @@ def main_handler(event, context):
     }
 
     try:
-        # 自动创建缺失字段
-        ensure_fields()
+        # (ensure_fields disabled - will add manually later)
+        # ensure_fields()
 
         # 兼容 API 网关 v1 / v2
         method = (event.get("httpMethod", "")
@@ -322,8 +322,12 @@ def main_handler(event, context):
 
                 ts = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time() + 8 * 3600))
 
-                # 标记是否下载 + 下载时间
-                update_record(record_id, {"是否下载": True, "下载时间": ts})
+                # 标记是否下载 + 下载时间（字段可能不存在，容错）
+                for fname, fval in [("是否下载", True), ("下载时间", ts)]:
+                    try:
+                        update_record(record_id, {fname: fval})
+                    except Exception:
+                        pass
 
                 # 上传完整报告为附件
                 if full_report:
@@ -334,8 +338,7 @@ def main_handler(event, context):
                         )
                         if file_token:
                             update_record(record_id, {"附件": [{"file_token": file_token}]})
-                    except Exception as ue:
-                        # 附件上传失败不影响下载标记
+                    except Exception:
                         pass
 
                 return {"statusCode": 200, "headers": headers,
