@@ -323,42 +323,158 @@ document.addEventListener("DOMContentLoaded",function(){
   loadAdminStats();
 });
 
-// === GLOBAL: Short Report Builder ===
+// === GLOBAL: Dimension Explanation Helper ===
+function dimExp(di,ds,sc,P,I,E,T,PS,SJ,PK,R,M,FI,EW,lv,ci,dir1,dir2,em,tu,dm){
+  var pct=Math.round(ds/dm*100);
+  if(di===0){// Score
+    if(pct===100)return "分数完全覆盖该校录取区间，不会被卡分";
+    if(pct>=80)return "分数接近该校录取区间上限，有把握";
+    if(pct>=60)return "分数在校区间偏中下段，需查位次确认";
+    return "分数低于该校常规录取区间，需关注是否有波动年";
+  }if(di===1){// Industry
+    if(I==="不限")return "未设行业限制，所有方向均开放匹配";
+    if(pct===100)return "该校方向直接吻合你选的"+I;
+    if(pct>=60)return "该校方向与"+I+"部分交集，建议确认课程";
+    return "该校方向与你选的"+I+"差异较大";
+  }if(di===2){// Income
+    if(M==="不限")return "未设薪资要求";
+    if(pct===100)return ci+"城市薪资水平能支撑你的收入预期";
+    if(pct>=60)return ci+"城市薪资尚可，需看具体岗位";
+    return ci+"城市起薪可能低于你的预期";
+  }if(di===3){// Practice
+    if(R.indexOf("特别")>=0)return "你热爱动手，职业本科所有专业都重实操";
+    if(R.indexOf("愿意")>=0)return "你接受实操，职业本科的实训比理论多";
+    return "你不太喜欢动手，需关注该校理论课占比";
+  }if(di===4){// Interest
+    if(T==="不限")return "未设兴趣偏好";
+    if(pct===100)return "你的"+T+"兴趣与该校方向高度吻合";
+    if(pct>=60)return "该校方向与你的"+T+"兴趣有部分交集";
+    return "该校方向与你的"+T+"兴趣关联度不高";
+  }if(di===5){// Personality
+    if(PS==="不限")return "未设性格偏好";
+    if(PS.indexOf("动手")>=0)return "动手型性格与职业本科实操导向天然匹配";
+    if(PS.indexOf("琢磨")>=0&&lv==="A档")return "钻研型性格+A档院校，学术氛围合适";
+    return "你的性格特点与该校教学风格需进一步了解";
+  }if(di===6){// Subject
+    if(SJ==="不限")return "未设学科偏好";
+    if(pct===100)return "你的学科强项是该校专业的底子学科";
+    if(pct>=60)return "学科与专业有基础关联";
+    return "学科强项与该校专业的学科要求关联度较低";
+  }if(di===7){// Practical
+    if(PK==="不限")return "未设实践偏好";
+    if(pct===100)return lv+"院校实训资源充足，适合发展你的"+PK+"实践能力";
+    if(pct>=60)return "该校有实训条件，可以锻炼你的实践技能";
+    return "该校实训方向与你的实践经历错位";
+  }if(di===8){// Exam
+    if(E==="未定")return "考研意愿待定，暂不影响评估";
+    if(E.indexOf("一定要")>=0)return lv+"院校考研通道较好，能支撑你的考研规划";
+    return "你优先就业，"+(em>=0.95?"该校就业率高，是好选择":"需关注该校就业数据");
+  }if(di===9){// Family
+    if(FI==="不限")return "未设收入限制";
+    if(tu<=5000||pct>=80)return "学费在你家庭承受范围之内";
+    return "学费"+tu+"元/年，需要注意预算";
+  }// Early work
+  if(EW.indexOf("是")<0)return "不急于工作，可以慢慢选";
+  if(tu<=5500&&em>=0.92)return "学费较低+就业率高，适合想尽快工作的你";
+  return "注意学费和就业周期是否符合你尽早工作的需求";
+}
+
+// === GLOBAL: Deep School Analysis ===
+function schoolDeep(sc,ds,dm,P,I,E,T,PS,SJ,PK,R,M,FI,EW,lv,ci,dir1,dir2,em,tu){
+  var lines=[],nh=0,nl=0;
+  var dimH=DIM_H;
+  for(var di=0;di<dimH.length;di++){
+    var pct=Math.round(ds[di]/dm[di]*100);
+    if(pct>=80)nh++;else if(pct<50)nl++;
+  }
+  // Overall assessment
+  if(nh>=7)lines.push("你的条件与这所学校高度契合——"+nh+"个维度达到满分或接近满分。");
+  else if(nh>=4)lines.push("有"+nh+"个维度匹配度很高，整体来看是合理的选择。");
+  else if(nh>=2)lines.push(nh+"个维度匹配不错但有"+(nl+"/11")+"个维度需要你留意。");
+  else lines.push("匹配度一般，建议仔细对比其他学校后再决定。");
+  // Score-specific
+  if(Math.round(ds[0]/dm[0]*100)===100)lines.push("分数稳，不用担心卡线。");
+  // Direction match
+  if(I!=="不限"){
+    if(Math.round(ds[1]/dm[1]*100)===100)lines.push("方向匹配——"+dir1+"/"+dir2+"正是你选的"+I+"相关领域。");
+    else if(Math.round(ds[1]/dm[1]*100)<=40)lines.push("注意："+dir1+"/"+dir2+"与你选的"+I+"差异较大，建议查课程表确认。");
+  }
+  // Employment
+  if(em>=0.96)lines.push("就业率"+Math.round(em*100)+"%，在校企合作和实习资源上有明显优势。");
+  // Practice match
+  if(R.indexOf("愿意")>=0||R.indexOf("特别")>=0){
+    if(lv==="A档")lines.push("A档双高院校，实训基地和设备是国家级的，动手机会多。");
+  }
+  // Interest + direction synergy
+  if(T!=="不限"&&Math.round(ds[4]/dm[4]*100)===100){
+    if(T==="技术研发")lines.push("技术研发兴趣配"+dir1+"方向，能在真实项目里锻炼而不是纯学理论。");
+    else if(T==="动手制造")lines.push(dir1+"方向实操占比高，适合喜欢动手制造的你。");
+  }
+  // City
+  if(ci==="1线")lines.push("学校在"+ci+"城市，实习机会和企业资源比二三线城市丰富很多。");
+  // Warning
+  if(nl>=4)lines.push("不过有"+nl+"个维度得分偏低，建议对照列出几个备选学校一起比较。");
+  lines.push("");
+  return lines.join("。");
+}
 function buildShortReport(sc,top,P,I,E,T,PS,SJ,PK,R,M,FI,EW,tc,oc,lc){
   var dimH=DIM_H,dimM=DIM_M;
   var sr=[];
-  sr.push("\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550");
-  sr.push("  \u7238\u5988\u627E\u5317 \u00B7 \u804C\u4E1A\u672C\u79D1\u62E9\u6821\u8BC4\u4F30\u62A5\u544A");
-  sr.push("\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550");
-  sr.push("\u751F\u6210\u65F6\u95F4\uFF1A"+new Date().toLocaleString("zh-CN"));
+  // ====== HEADER ======
+  sr.push("══════════════════════════════════");
+  sr.push("  爸妈找北 · 职业本科择校评估报告");
+  sr.push("══════════════════════════════════");
+  sr.push("生成时间："+new Date().toLocaleString("zh-CN"));
   sr.push("");
-  sr.push("\u2500\u2500 \u4F60\u7684\u6761\u4EF6 \u2500\u2500");
-  sr.push("\u9AD8\u8003 "+sc+"\u5206 \u00B7 \u76EE\u6807"+(P!=="\u4E0D\u9650"?P:"\u5168\u56FD") + " \u00B7 "+(I!=="\u4E0D\u9650"?I:"\u5168\u884C\u4E1A"));
-  var extra=[];if(E!=="\u672A\u5B9A")extra.push("\u8003\u7814\uFF1A"+E);if(T!=="\u4E0D\u9650")extra.push("\u5174\u8DA3\uFF1A"+T);if(M!=="\u4E0D\u9650")extra.push("\u85AA\u8D44\uFF1A"+M);if(extra.length>0)sr.push(extra.join(" \u00B7 "));
+  // ====== CONDITIONS ======
+  sr.push("━━━━ 你的条件 ━━━━");
+  sr.push("高考 "+sc+" 分 · 目标"+(P!=="不限"?P:"全国")+" · "+(I!=="不限"?I:"全行业"));
+  var extra=[];if(E!=="未定")extra.push("考研："+E);if(T!=="不限")extra.push("兴趣："+T);if(M!=="不限")extra.push("薪资："+M);if(PS!=="不限")extra.push("性格："+PS);if(SJ!=="不限")extra.push("学科："+SJ);if(PK!=="不限")extra.push("实践："+PK);if(FI!=="不限")extra.push("收入："+FI);if(EW.indexOf("不是")<0&&EW.indexOf("不限")<0)extra.push("尽早工作：是");
+  if(extra.length>0)sr.push(extra.join(" · "));
   sr.push("");
-  sr.push("\u2500\u2500 TOP10 \u63A8\u8350\u5B66\u6821 \u2500\u2500");
+  // ====== TOP10 SCHOOLS ======
+  sr.push("━━━━ TOP10 推荐学校 ━━━━");
   for(var q=0;q<Math.min(top.length,10);q++){
-    var r=top[q],dims=r[10].split(",");var gr=r[2]>=80?"\u2605\u5F3A\u70C8\u63A8\u8350":(r[2]>=60?"\u25C7\u53EF\u9009":"\u25B3\u9700\u8C28\u614E");
+    var r=top[q],dims=r[10].split(",");
+    var lv=r[7],ci=r[4],em=r[6],tu=r[5],dir1=r[8],dir2=r[9];
+    var gr=r[2]>=80?"★ 强烈推荐":"◇ 可选";
+    var bar="══════════════════";
     sr.push("");
-    sr.push((q+1)+". "+r[0]+" | "+r[2].toFixed(1)+"\u5206 | "+gr);
-    sr.push("   \u7701\u4EFD\uFF1A"+r[1]+" | \u53CC\u9AD8\uFF1A"+r[7]+" | \u57CE\u5E02\uFF1A"+r[4]);
-    sr.push("   \u65B9\u5411\uFF1A"+r[8]+" / "+r[9]+" | \u5B66\u8D39\uFF1A"+r[5]+"\u5143/\u5E74 | \u5C31\u4E1A\u7387\uFF1A"+Math.round(r[6]*100)+"%");
-    var highs=[],lows=[];
+    sr.push(bar);
+    sr.push("  "+(q+1)+". "+r[0]+"  ·  "+r[2].toFixed(1)+" 分  ·  "+gr);
+    sr.push(bar);
+    sr.push("");
+    sr.push("  【学校概况】");
+    sr.push("  省份："+r[1]+"    双高评级："+r[7]+"    城市等级："+r[4]);
+    sr.push("  方向："+dir1+" / "+dir2+"    学费："+r[5]+"元/年    就业率："+Math.round(r[6]*100)+"%");
+    sr.push("");
+    sr.push("  【维度得分】（得分 / 满分 → 解读）");
     for(var di=0;di<dimH.length;di++){
-      var pct=Math.round(dims[di]/dimM[di]*100);
-      if(pct>=80)highs.push(dimH[di]+"("+dims[di]+"/"+dimM[di]+")");
-      else if(pct<50)lows.push(dimH[di]+"("+dims[di]+"/"+dimM[di]+")");
+      var dsi=Number(dims[di]),dmx=Number(dimM[di]),pct=Math.round(dsi/dmx*100);
+      var barv=pct>=100?"██████████":pct>=80?"████████  ":pct>=60?"██████    ":pct>=40?"████      ":"██        ";
+      var lbl=dimH[di];
+      var pad="";for(var j=0;j<4;j++){if(lbl.length<4+2*j)pad="　";}
+      var exp=dimExp(di,dsi,sc,P,I,E,T,PS,SJ,PK,R,M,FI,EW,lv,ci,dir1,dir2,em,tu,dmx);
+      sr.push("  "+lbl+pad+dsi+"/"+dmx+" "+barv+"("+pct+"%)\n    → "+exp);
     }
-    if(highs.length>0)sr.push("   \u4EAE\u70B9\u7EF4\u5EA6\uFF1A"+highs.slice(0,3).join(" \u3001"));
-    if(lows.length>0)sr.push("   \u8584\u5F31\u7EF4\u5EA6\uFF1A"+lows.join(" \u3001"));
+    sr.push("");
+    sr.push("  【深度分析】");
+    sr.push("  "+schoolDeep(sc,dims.map(Number),dimM,P,I,E,T,PS,SJ,PK,R,M,FI,EW,lv,ci,dir1,dir2,em,tu).replace(/\n$/,""));
+    sr.push("  推荐理由："+r[11]);
   }
   sr.push("");
-  sr.push("\u2500\u2500 \u6570\u636E\u6982\u89C8 \u2500\u2500");
-  sr.push("\u603B\u5339\u914D "+top.length+"\u6240\u5B66\u6821 | \u5F3A\u70C8\u63A8\u8350 "+tc+"\u6240 | \u53EF\u9009 "+oc+"\u6240 | \u9700\u8C28\u614E "+lc+"\u6240");
+  // ====== SUMMARY ======
+  sr.push("━━━━ 数据概览 ━━━━");
+  sr.push("总匹配 "+top.length+" 所学校");
+  sr.push("强烈推荐 (80-100分)："+tc+" 所");
+  sr.push("可选 (60-79分)："+oc+" 所");
+  sr.push("需谨慎 (60分以下)："+lc+" 所");
   sr.push("");
-  sr.push("\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500");
-  sr.push("\u4EE5\u4E0A\u4E3A\u8BC4\u4F30\u6A21\u578B\u57FA\u4E8E 11 \u4E2A\u7EF4\u5EA6\u7684\u521D\u6B65\u5206\u6790\u3002\u5982\u679C\u62A5\u544A\u5185\u5BB9\u6709\u672A\u80FD\u89E3\u7B54\u7684\u7591\u95EE\uFF0C\u6B22\u8FCE\u79C1\u4FE1\u8054\u7CFB\u6211\uFF0C\u6211\u4F1A\u5C3D\u53EF\u80FD\u6839\u636E\u5B8C\u6574\u6570\u636E\u5E2E\u4F60\u5206\u6790\u8BF4\u660E\u3002");
-  sr.push("\u7238\u5988\u627E\u5317 \u00B7 \u4FE1\u606F\u5DEE\u6BD4\u5206\u6570\u5DEE\u66F4\u53EF\u6015");
+  sr.push("——————————————");
+  sr.push("以上为评估模型基于 11 个维度的初步分析。");
+  sr.push("如有疑问，欢迎私信联系，会根据完整数据帮你进一步说明。");
+  sr.push("");
+  sr.push("爸妈找北 · 信息差比分数差更可怕");
   return sr.join("\n");
 }
 
